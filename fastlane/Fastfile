@@ -1,0 +1,41 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+default_platform(:android)
+
+platform :android do
+
+#     desc "Lane for distributing app using Firebase App Distributions"
+#     lane :distribute do
+#         gradle(task: "bundleDebug")
+#         firebase_app_distribution(
+#             service_credentials_file: "firebase_credentials.json",
+#             app: ENV['FIREBASE_APP_ID'],
+#             android_artifact_type: "AAB",
+#             firebase_cli_token: ENV['FIREBASE_TOKEN'],
+#             debug: true
+#         )
+#     end
+
+desc "Lane for distributing the app using VS App Center"
+lane :distributeDebug do
+    gradle(task: "bundleDebug")
+    appcenter_upload(
+        api_token: ENV["APP_CENTER_TOKEN"],
+        owner_name: ENV["APP_CENTER_OWNER"],
+        owner_type: "user", # Default is user - set to organization for appcenter organizations
+        app_name: ENV["APP_CENTER_APP_NAME_DEBUG"],
+        file: ENV["ABB_FILE_PATH_DEBUG"],
+        notify_testers: false
+    )
+end 
+
+end
