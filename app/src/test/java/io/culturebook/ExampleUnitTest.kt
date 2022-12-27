@@ -1,4 +1,4 @@
-package g.sig.culturebook
+package io.culturebook
 
 import org.junit.Test
 
