@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'io.culturebook.ui'
+    compileSdk "$target_sdk".toInteger()
+
+    defaultConfig {
+        minSdk "$min_sdk".toInteger()
+        targetSdk "$target_sdk".toInteger()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    api "androidx.compose.ui:ui:$compose_version"
+    api "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    api "androidx.compose.material3:material3:$material"
+
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test.ext:junit:$android_junit"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    androidTestApi "androidx.compose.ui:ui-test-junit4:$compose_version"
+    debugApi "androidx.compose.ui:ui-tooling:$compose_version"
+    debugApi "androidx.compose.ui:ui-test-manifest:$compose_version"
+}

@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CultureBook"
 include ':app'
+include ':app:core:ui'
+include ':app:core:data'
