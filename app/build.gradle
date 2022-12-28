@@ -22,8 +22,14 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+        }
+        pre_release {
+            minifyEnabled true
+        }
+        release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,7 +44,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion compose_version
     }
     packagingOptions {
         resources {
@@ -49,6 +55,7 @@ android {
 
 dependencies {
     implementation project(":app:core:ui")
+    implementation project(":app:core:data")
     implementation "androidx.core:core-ktx:$android_core"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
     implementation "androidx.activity:activity-compose:$activity_compose"

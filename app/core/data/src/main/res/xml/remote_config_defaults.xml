@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaults>
+    <entry>
+        <key>api_url</key>
+        <value>http://localhost:8080</value>
+    </entry>
+</defaults>
