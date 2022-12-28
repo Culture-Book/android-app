@@ -62,6 +62,9 @@ dependencies {
     implementation "androidx.security:security-app-authenticator:1.0.0-alpha02"
     androidTestImplementation "androidx.security:security-app-authenticator:1.0.0-alpha02"
 
-    testImplementation "junit:junit:$junit"
-    androidTestImplementation "androidx.test.ext:junit:$android_junit"
+    //ViewModels
+    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
+
+    testApi "junit:junit:$junit"
+    androidTestApi "androidx.test.ext:junit:$android_junit"
 }

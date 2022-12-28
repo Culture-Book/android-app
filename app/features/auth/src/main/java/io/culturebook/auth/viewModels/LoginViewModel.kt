@@ -25,16 +25,17 @@ class LoginViewModel(
                 login(loginEvent.email, loginEvent.password)
             }
             LoginEvent.Register -> viewModelScope.launch {
-                _loginState.emit(LoginState.Redirection(Route.Registration.route))
+                _loginState.emit(LoginState.Redirection(Route.Registration))
             }
         }
     }
 
     private suspend fun login(email: String, password: String) {
+        _loginState.emit(LoginState.Loading)
         when (val loginRes = userRepository.login(User(email = email, password = password))) {
             is ApiResponse.Success -> {
                 userRepository.saveUserToken(loginRes.data)
-                _loginState.emit(LoginState.Redirection(Route.Nearby.route))
+                _loginState.emit(LoginState.Redirection(Route.Nearby))
             }
             is ApiResponse.Failure -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
             is ApiResponse.Exception -> _loginState.emit(LoginState.Error(loginRes.errorMessage))

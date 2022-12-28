@@ -11,6 +11,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,8 +20,10 @@ import io.culturebook.auth.events.LoginEvent
 import io.culturebook.auth.states.LoginState
 import io.culturebook.auth.viewModels.LoginViewModel
 import io.culturebook.data.repositories.authentication.UserRepository
+import io.culturebook.nav.navigateTop
 import io.culturebook.ui.R
 import io.culturebook.ui.theme.*
+import io.culturebook.ui.theme.AppIcons.getPainter
 import io.culturebook.ui.theme.molecules.LogoComposable
 
 @Composable
@@ -31,30 +34,38 @@ fun LoginRoute(navController: NavController) {
     }
 
     val loginState by viewModel.loginState.collectAsState()
-    LoginComposable(navController, loginState, viewModel::postEvent)
+    LoginComposable(
+        Modifier.padding(mediumPadding),
+        navController,
+        loginState,
+        viewModel::postEvent
+    )
 }
 
 @Composable
 fun LoginComposable(
+    modifier: Modifier,
     navController: NavController,
     state: LoginState,
     postEvent: (LoginEvent) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         when (state) {
-            is LoginState.Error -> TODO()
-            LoginState.Idle -> LoginComponents(
-                onLoginPressed = { email, password ->
-                    postEvent(LoginEvent.Login(email, password))
-                },
-                onRegistrationPressed = { postEvent(LoginEvent.Register) }
-            )
+            is LoginState.Error, LoginState.Idle ->
+                LoginComponents(
+                    onLoginPressed = { email, password ->
+                        postEvent(LoginEvent.Login(email, password))
+                    },
+                    onRegistrationPressed = { postEvent(LoginEvent.Register) }
+                )
             LoginState.Loading -> CircularProgressIndicator()
-            is LoginState.Redirection -> navController.navigate(state.destination)
+            is LoginState.Redirection -> LaunchedEffect(state) {
+                navController.navigateTop(state.destination)
+            }
         }
     }
 }
@@ -71,6 +82,7 @@ fun LoginComponents(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordFocus by remember { mutableStateOf(false) }
+    var showPassword by remember { mutableStateOf(false) }
 
     LaunchedEffect(passwordFocus) {
         if (passwordFocus) {
@@ -111,9 +123,17 @@ fun LoginComponents(
         shape = mediumRoundedShape,
         label = { Text(stringResource(R.string.password)) },
         singleLine = true,
-        visualTransformation = PasswordVisualTransformation(),
+        visualTransformation = if (!showPassword) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = passwordKeyboardOptions,
-        keyboardActions = KeyboardActions(onDone = { onLoginPressed(email, password) })
+        keyboardActions = KeyboardActions(onDone = { onLoginPressed(email, password) }),
+        trailingIcon = {
+            IconButton(onClick = { showPassword = !showPassword }) {
+                Icon(
+                    painter = if (showPassword) AppIcons.visibility.getPainter() else AppIcons.visibility_off.getPainter(),
+                    contentDescription = "password_visibility"
+                )
+            }
+        }
     )
 
     Button(

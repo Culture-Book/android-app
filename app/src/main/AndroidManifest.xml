@@ -18,6 +18,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:resizeableActivity="true"
             android:theme="@style/Theme.CultureBook">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

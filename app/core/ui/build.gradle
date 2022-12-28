@@ -46,12 +46,10 @@ dependencies {
     api "androidx.compose.ui:ui:$compose_version"
     api "androidx.compose.ui:ui-tooling-preview:$compose_version"
     api "androidx.compose.material3:material3:$material"
-    api "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
 
-    testImplementation "junit:junit:$junit"
-    androidTestImplementation "androidx.test.ext:junit:$android_junit"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
-    androidTestApi "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugApi "androidx.compose.ui:ui-tooling:$compose_version"
     debugApi "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    androidTestApi "androidx.test.espresso:espresso-core:$espresso"
+    androidTestApi "androidx.compose.ui:ui-test-junit4:$compose_version"
 }

@@ -12,6 +12,6 @@ sealed interface Route {
     }
 
     object Nearby : Route {
-        override val route = "login"
+        override val route = "nearby"
     }
 }

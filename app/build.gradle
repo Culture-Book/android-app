@@ -63,8 +63,4 @@ dependencies {
     implementation "androidx.core:core-ktx:$android_core"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
     implementation "androidx.activity:activity-compose:$activity_compose"
-
-    testImplementation "junit:junit:$junit"
-    androidTestImplementation "androidx.test.ext:junit:$android_junit"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
 }

@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
 }
 
@@ -8,14 +8,12 @@ android {
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
-        applicationId "io.culturebook.auth"
+        namespace "io.culturebook.auth"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        vectorDrawables {
-            useSupportLibrary true
-        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
     }
 
     buildTypes {
@@ -54,11 +52,4 @@ dependencies {
     implementation project(":app:core:ui")
     implementation project(":app:core:data")
     implementation project(":app:core:nav")
-
-    implementation "androidx.core:core-ktx:$android_core"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
-
-    testImplementation "junit:junit:$junit"
-    androidTestImplementation "androidx.test.ext:junit:$android_junit"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
 }
