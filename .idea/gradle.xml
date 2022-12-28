@@ -13,7 +13,11 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/app/core" />
             <option value="$PROJECT_DIR$/app/core/data" />
+            <option value="$PROJECT_DIR$/app/core/nav" />
             <option value="$PROJECT_DIR$/app/core/ui" />
+            <option value="$PROJECT_DIR$/app/features" />
+            <option value="$PROJECT_DIR$/app/features/auth" />
+            <option value="$PROJECT_DIR$/app/features/nearby" />
           </set>
         </option>
       </GradleProjectSettings>

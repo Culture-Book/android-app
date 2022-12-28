@@ -18,10 +18,22 @@ val Context.sharedPreferences: SharedPreferences
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
 
-sealed interface SharedPrefs {
+inline fun <reified T : Any?> SharedPreferences.put(prefKey: PrefKey, value: T) {
+    when (value) {
+        is Int -> edit().putInt(prefKey.key, value).apply()
+        is Float -> edit().putFloat(prefKey.key, value).apply()
+        is Long -> edit().putLong(prefKey.key, value).apply()
+        is String -> edit().putString(prefKey.key, value).apply()
+        is Boolean -> edit().putBoolean(prefKey.key, value).apply()
+        is Set<*> -> edit().putStringSet(prefKey.key, value.filterIsInstance<String>().toSet())
+            .apply()
+    }
+}
+
+sealed interface PrefKey {
     val key: String
 
-    object UserSession : SharedPrefs {
+    object UserSession : PrefKey {
         override val key: String = "user_session"
     }
 }

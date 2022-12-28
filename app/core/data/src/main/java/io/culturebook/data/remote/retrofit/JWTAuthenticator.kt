@@ -1,7 +1,7 @@
 package io.culturebook.data.remote.retrofit
 
 import android.content.Context
-import io.culturebook.data.SharedPrefs
+import io.culturebook.data.PrefKey
 import io.culturebook.data.sharedPreferences
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
@@ -14,7 +14,7 @@ class JWTAuthenticator(private val context: Context) : Authenticator {
     @OptIn(InternalCoroutinesApi::class)
     override fun authenticate(route: Route?, response: Response): Request {
         val credential =
-            context.sharedPreferences.getString(SharedPrefs.UserSession.key, "") ?: ""
+            context.sharedPreferences.getString(PrefKey.UserSession.key, "") ?: ""
         synchronized(credential) {
             return response.request.newBuilder().header("Authorization", "Bearer $credential")
                 .build()

@@ -8,12 +8,9 @@ android {
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
-        applicationId "io.culturebook"
+        applicationId "io.culturebook.nearby"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
-        versionCode version_code
-        versionName "Culturebook v${majorRelease}.${minorRelease}.${buildNumber}"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables {
@@ -57,12 +54,9 @@ dependencies {
     implementation project(":app:core:ui")
     implementation project(":app:core:data")
     implementation project(":app:core:nav")
-    implementation project(":app:features:auth")
-    implementation project(":app:features:nearby")
 
     implementation "androidx.core:core-ktx:$android_core"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
-    implementation "androidx.activity:activity-compose:$activity_compose"
 
     testImplementation "junit:junit:$junit"
     androidTestImplementation "androidx.test.ext:junit:$android_junit"
