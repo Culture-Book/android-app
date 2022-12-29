@@ -1,7 +1,6 @@
 plugins {
-    id "com.android.application"
-    id "org.jetbrains.kotlin.android"
-    id 'com.google.gms.google-services'
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -9,53 +8,59 @@ android {
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
-        applicationId "g.sig.culturebook"
+        applicationId "io.culturebook"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
         versionCode version_code
         versionName "Culturebook v${majorRelease}.${minorRelease}.${buildNumber}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        vectorDrawables {
+            useSupportLibrary true
         }
     }
 
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        pre_release {
+            minifyEnabled true
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = '1.8'
     }
-
     buildFeatures {
-        viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
     }
 }
 
 dependencies {
-
-    implementation platform("com.google.firebase:firebase-bom:$firebase_bom")
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    // Add the dependencies for any other desired Firebase products
-    // https://firebase.google.com/docs/android/setup#available-libraries
+    implementation project(":app:core:ui")
+    implementation project(":app:core:data")
+    implementation project(":app:core:nav")
+    implementation project(":app:features:auth")
+    implementation project(":app:features:nearby")
 
     implementation "androidx.core:core-ktx:$android_core"
-    implementation "androidx.appcompat:appcompat:$appcompat"
-    implementation "com.google.android.material:material:$material"
-    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
-    implementation "androidx.navigation:navigation-fragment-ktx:$ui_navigation"
-    implementation "androidx.navigation:navigation-ui-ktx:$ui_navigation"
-
-    testImplementation "junit:junit:$junit"
-    androidTestImplementation "androidx.test.ext:junit:$android_junit"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
+    implementation "androidx.activity:activity-compose:$activity_compose"
 }
