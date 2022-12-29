@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import io.culturebook.auth.events.LoginEvent
+import io.culturebook.auth.events.LoginHState
 import io.culturebook.auth.states.LoginState
 import io.culturebook.auth.viewModels.LoginViewModel
 import io.culturebook.data.repositories.authentication.UserRepository
@@ -52,7 +53,7 @@ fun LoginComposable(
     postEvent: (LoginEvent) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-
+    val loginState = remember { LoginHState() }
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Column(
             modifier = modifier
@@ -70,8 +71,9 @@ fun LoginComposable(
             when (state) {
                 is LoginState.Error, LoginState.Idle ->
                     LoginComponents(
-                        onLoginPressed = { email, password ->
-                            postEvent(LoginEvent.Login(email, password))
+                        loginState,
+                        onLoginPressed = { loginHState ->
+                            postEvent(LoginEvent.Login(loginHState.email, loginHState.password))
                         },
                         onRegistrationPressed = { navController.navigate(Route.Registration.route) }
                     )
@@ -86,14 +88,12 @@ fun LoginComposable(
 @Composable
 @Preview
 fun LoginComponents(
-    onLoginPressed: (String, String) -> Unit = { _, _ -> },
+    loginHState: LoginHState = LoginHState(),
+    onLoginPressed: (LoginHState) -> Unit = { _ -> },
     onRegistrationPressed: () -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    // TODO HOIST the state
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var passwordFocus by remember { mutableStateOf(false) }
     var showPassword by remember { mutableStateOf(false) }
 
@@ -117,8 +117,8 @@ fun LoginComponents(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = smallPadding),
-        value = email,
-        onValueChange = { email = it },
+        value = loginHState.email,
+        onValueChange = { loginHState.email = it },
         shape = mediumRoundedShape,
         label = { Text(stringResource(R.string.email)) },
         singleLine = true,
@@ -131,14 +131,14 @@ fun LoginComponents(
             .fillMaxWidth()
             .padding(vertical = smallPadding)
             .focusRequester(focusRequester),
-        value = password,
-        onValueChange = { password = it },
+        value = loginHState.password,
+        onValueChange = { loginHState.password = it },
         shape = mediumRoundedShape,
         label = { Text(stringResource(R.string.password)) },
         singleLine = true,
         visualTransformation = if (!showPassword) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = passwordKeyboardOptions,
-        keyboardActions = KeyboardActions(onDone = { onLoginPressed(email, password) }),
+        keyboardActions = KeyboardActions(onDone = { onLoginPressed(loginHState) }),
         trailingIcon = {
             IconButton(onClick = { showPassword = !showPassword }) {
                 Icon(
@@ -153,7 +153,7 @@ fun LoginComponents(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = smallPadding),
-        onClick = { onLoginPressed(email, password) }) {
+        onClick = { onLoginPressed(loginHState) }) {
         Text(text = stringResource(R.string.login))
     }
 

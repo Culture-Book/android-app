@@ -28,8 +28,5 @@ class RegisterState {
     var displayName by mutableStateOf("")
     var tosChecked by mutableStateOf(false)
     var privacyChecked by mutableStateOf(false)
-    var showPassword by mutableStateOf(false)
-    var showConfirmPassword by mutableStateOf(false)
-
 }
 
