@@ -20,6 +20,7 @@ import io.culturebook.auth.events.LoginEvent
 import io.culturebook.auth.states.LoginState
 import io.culturebook.auth.viewModels.LoginViewModel
 import io.culturebook.data.repositories.authentication.UserRepository
+import io.culturebook.nav.Route
 import io.culturebook.nav.navigateTop
 import io.culturebook.ui.R
 import io.culturebook.ui.theme.*
@@ -42,6 +43,7 @@ fun LoginRoute(navController: NavController) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginComposable(
     modifier: Modifier,
@@ -49,22 +51,32 @@ fun LoginComposable(
     state: LoginState,
     postEvent: (LoginEvent) -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        when (state) {
-            is LoginState.Error, LoginState.Idle ->
-                LoginComponents(
-                    onLoginPressed = { email, password ->
-                        postEvent(LoginEvent.Login(email, password))
-                    },
-                    onRegistrationPressed = { postEvent(LoginEvent.Register) }
-                )
-            LoginState.Loading -> CircularProgressIndicator()
-            is LoginState.Redirection -> LaunchedEffect(state) {
-                navController.navigateTop(state.destination)
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+        Column(
+            modifier = modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (state is LoginState.Error) {
+                val errorMessage = stringResource(state.message)
+                LaunchedEffect(errorMessage) {
+                    snackbarHostState.showSnackbar(errorMessage)
+                }
+            }
+            when (state) {
+                is LoginState.Error, LoginState.Idle ->
+                    LoginComponents(
+                        onLoginPressed = { email, password ->
+                            postEvent(LoginEvent.Login(email, password))
+                        },
+                        onRegistrationPressed = { navController.navigate(Route.Registration.route) }
+                    )
+                LoginState.Loading -> CircularProgressIndicator()
+                is LoginState.Success -> navController.navigateTop(Route.Nearby)
             }
         }
     }
@@ -79,6 +91,7 @@ fun LoginComponents(
 ) {
     val focusRequester = remember { FocusRequester() }
 
+    // TODO HOIST the state
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordFocus by remember { mutableStateOf(false) }

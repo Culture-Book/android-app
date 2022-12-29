@@ -12,7 +12,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import java.net.CookieHandler
 import java.net.CookieManager
 
 private val contentType = "application/json".toMediaType()

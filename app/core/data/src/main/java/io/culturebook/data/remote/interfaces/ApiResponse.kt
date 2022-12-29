@@ -9,6 +9,7 @@ sealed interface ApiResponse<T : Any> {
             message.logD()
         }
     }
+
     data class Exception<T : Any>(val throwable: Throwable) : ApiResponse<T> {
         init {
             throwable.message.logD()

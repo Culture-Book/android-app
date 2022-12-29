@@ -14,4 +14,16 @@ sealed interface Route {
     object Nearby : Route {
         override val route = "nearby"
     }
+
+    object WebView : Route {
+        override val route = "webview"
+
+        object ToS : Route {
+            override val route = "webview/tos"
+        }
+
+        object Privacy : Route {
+            override val route = "webview/privacy"
+        }
+    }
 }

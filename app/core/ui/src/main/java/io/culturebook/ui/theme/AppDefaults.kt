@@ -18,3 +18,14 @@ val passwordKeyboardOptions = KeyboardOptions(
     keyboardType = KeyboardType.Password,
     imeAction = ImeAction.Done
 )
+val defaultEmailKeyboardOptions = KeyboardOptions(
+    capitalization = KeyboardCapitalization.None,
+    autoCorrect = false,
+    keyboardType = KeyboardType.Email,
+)
+
+val defaultPasswordKeyboardOptions = KeyboardOptions(
+    capitalization = KeyboardCapitalization.None,
+    autoCorrect = false,
+    keyboardType = KeyboardType.Password,
+)

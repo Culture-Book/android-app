@@ -1,6 +1,5 @@
 package io.culturebook.ui.theme
 
-import androidx.annotation.DrawableRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.DateRange
@@ -22,6 +21,7 @@ object AppIcons {
     val chevron_right = Icons.Filled.KeyboardArrowRight
     val add = Icons.Default.Add
     val tick = Icons.Default.Check
+    val arrow_back = Icons.Default.ArrowBack
     val visibility = R.drawable.ic_outline_visibility
     val visibility_off = R.drawable.ic_outline_visibility_off
 
