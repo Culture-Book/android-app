@@ -6,6 +6,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +23,7 @@ fun WebViewComposable(
     url: String,
     onBack: () -> Unit
 ) {
-    Column(modifier) {
+    Scaffold(modifier, topBar = {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
             title = { Text(stringResource(titleId)) },
@@ -31,14 +32,18 @@ fun WebViewComposable(
                     Icon(painter = AppIcons.arrow_back.getPainter(), contentDescription = "back")
                 }
             })
-        AndroidView(
-            factory = {
-                WebView(it).apply {
-                    layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-                    webViewClient = WebViewClient()
-                    loadUrl(url)
-                }
-            }, update = { it.loadUrl(url) })
+    }) { padding ->
+        Column(modifier = Modifier.padding(padding)) {
+            AndroidView(
+                factory = {
+                    WebView(it).apply {
+                        layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                        webViewClient = WebViewClient()
+                        loadUrl(url)
+                    }
+                }, update = { it.loadUrl(url) })
+        }
+
     }
 
 }

@@ -11,7 +11,6 @@ android {
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -22,9 +21,12 @@ android {
         pre_release {
             minifyEnabled true
         }
+        pre_release_debug {
+            debuggable true
+            minifyEnabled true
+        }
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {

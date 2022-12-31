@@ -16,4 +16,7 @@ interface AuthInterface {
 
     @POST("/auth/v1/login")
     suspend fun login(@Body user: User): ApiResponse<UserSession>
+
+    @POST("/auth/v1/register-login")
+    suspend fun registerOrLogin(@Body user: User?): ApiResponse<UserSession>
 }

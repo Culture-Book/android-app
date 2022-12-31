@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+    <entry>
+        <key>google_key</key>
+        <value>935632169082-7mvq02va387rn17sal0b4qprfjt4gha3.apps.googleusercontent.com</value>
+    </entry>
+    <entry>
+        <key>privacy_url</key>
+        <value>http://10.0.2.2:8080/privacy/Privacy_Notice.html</value>
+    </entry>
+    <entry>
+        <key>tos_url</key>
+        <value>http://10.0.2.2:8080/tos/EULA.html</value>
+    </entry>
+</defaults>

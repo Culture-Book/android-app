@@ -23,9 +23,12 @@ android {
         pre_release {
             minifyEnabled true
         }
+        pre_release_debug {
+            debuggable true
+            minifyEnabled true
+        }
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -52,4 +55,6 @@ dependencies {
     implementation project(":app:core:ui")
     implementation project(":app:core:data")
     implementation project(":app:core:nav")
+
+    implementation 'com.google.android.gms:play-services-auth:20.4.0'
 }

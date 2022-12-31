@@ -22,9 +22,12 @@ android {
         pre_release {
             minifyEnabled true
         }
+        pre_release_debug {
+            debuggable true
+            minifyEnabled true
+        }
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -46,6 +49,8 @@ dependencies {
     api "androidx.compose.ui:ui:$compose_version"
     api "androidx.compose.ui:ui-tooling-preview:$compose_version"
     api "androidx.compose.material3:material3:$material"
+
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 
     debugApi "androidx.compose.ui:ui-tooling:$compose_version"
     debugApi "androidx.compose.ui:ui-test-manifest:$compose_version"

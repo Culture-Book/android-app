@@ -33,4 +33,8 @@ sealed interface RemoteConfig {
     object PrivacyUrl : RemoteConfig {
         override val key: String = "privacy_url"
     }
+
+    object GoogleKey : RemoteConfig {
+        override val key: String = "google_key"
+    }
 }

@@ -2,9 +2,30 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('./debug.keystore')
+            storePassword System.getenv("DEBUG_PASS")
+            keyAlias System.getenv("DEBUG_ALIAS")
+            keyPassword System.getenv("DEBUG_PASS")
+        }
+        pre_release {
+            storeFile file('./pre_release.keystore')
+            storePassword System.getenv("PRE_RELEASE_PASS")
+            keyAlias System.getenv("PRE_RELEASE_ALIAS")
+            keyPassword System.getenv("PRE_RELEASE_PASS")
+        }
+        release {
+            storeFile file('./release.keystore')
+            storePassword System.getenv("RELEASE_PASS")
+            keyAlias System.getenv("RELEASE_ALIAS")
+            keyPassword System.getenv("RELEASE_PASS")
+        }
+    }
     namespace "$app_id"
     compileSdk "$target_sdk".toInteger()
 
@@ -24,12 +45,29 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-DEBUG'
+            signingConfig signingConfigs.debug
             minifyEnabled false
         }
-        pre_release {
+        pre_release_debug {
+            applicationIdSuffix ".pre_release"
+            versionNameSuffix '-PRE_RELEASE'
+            debuggable true
+            signingConfig signingConfigs.pre_release
             minifyEnabled true
+            matchingFallbacks = ['pre_release']
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        pre_release {
+            applicationIdSuffix ".pre_release"
+            versionNameSuffix '-PRE_RELEASE'
+            signingConfig signingConfigs.pre_release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

@@ -36,6 +36,13 @@ class UserRepository(context: Context) {
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
         }
 
+    suspend fun registerOrLogin(user: User?): ApiResponse<UserSession> =
+        when (val keyResponse = getPublicOauthKey()) {
+            is ApiResponse.Success -> authInterface.registerOrLogin(user?.encodeUser(keyResponse.data.jwt))
+            is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
+            is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
+        }
+
     fun saveUserToken(userSession: UserSession) {
         sharedPrefs.put(PrefKey.UserSession, userSession.jwt)
     }
@@ -43,5 +50,4 @@ class UserRepository(context: Context) {
     private fun User.encodeUser(publicKey: String) =
         copy(email = email.encrypt(publicKey), password = password.encrypt(publicKey))
 
-    suspend fun getUser(): ApiResponse<User> = apiInterface.getUser()
 }

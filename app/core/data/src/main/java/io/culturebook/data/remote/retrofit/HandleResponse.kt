@@ -13,7 +13,10 @@ suspend fun <T : Any> handleResponse(
         if (response.isSuccessful && body != null) {
             ApiResponse.Success(body)
         } else {
-            ApiResponse.Failure(code = response.code(), message = response.message())
+            ApiResponse.Failure(
+                code = response.code(),
+                message = response.errorBody()?.string()?.removeSurrounding("\"", "\"")
+            )
         }
     } catch (e: HttpException) {
         ApiResponse.Failure(code = e.code(), message = e.message())

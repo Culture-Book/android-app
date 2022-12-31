@@ -1,0 +1,32 @@
+<resources>
+    <color name="seed">#6b705c</color>
+    <color name="primary">#4D6706</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="primaryContainer">#CEEF83</color>
+    <color name="onPrimaryContainer">#151F00</color>
+    <color name="secondary">#974810</color>
+    <color name="onSecondary">#FFFFFF</color>
+    <color name="secondaryContainer">#FFDBC9</color>
+    <color name="onSecondaryContainer">#331200</color>
+    <color name="tertiary">#1E5FA6</color>
+    <color name="onTertiary">#FFFFFF</color>
+    <color name="tertiaryContainer">#D4E3FF</color>
+    <color name="onTertiaryContainer">#001C3A</color>
+    <color name="error">#BA1A1A</color>
+    <color name="errorContainer">#FFDAD6</color>
+    <color name="onError">#FFFFFF</color>
+    <color name="onErrorContainer">#410002</color>
+    <color name="background">#FEFCF4</color>
+    <color name="onBackground">#1B1C17</color>
+    <color name="surface">#FEFCF4</color>
+    <color name="onSurface">#1B1C17</color>
+    <color name="surfaceVariant">#E2E4D4</color>
+    <color name="onSurfaceVariant">#45483C</color>
+    <color name="outline">#76786B</color>
+    <color name="inverseOnSurface">#F2F1E9</color>
+    <color name="inverseSurface">#30312C</color>
+    <color name="inversePrimary">#B3D26B</color>
+    <color name="shadow">#000000</color>
+    <color name="surfaceTint">#4D6706</color>
+    <color name="surfaceTintColor">#4D6706</color>
+</resources>

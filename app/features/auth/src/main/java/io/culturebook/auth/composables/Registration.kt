@@ -9,8 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,7 +24,7 @@ import io.culturebook.nav.navigateTop
 import io.culturebook.ui.R
 import io.culturebook.ui.theme.*
 import io.culturebook.ui.theme.AppIcons.getPainter
-import io.culturebook.ui.theme.molecules.TertiarySwitchSurface
+import io.culturebook.ui.theme.molecules.*
 
 @Composable
 fun RegistrationRoute(navController: NavController) {
@@ -63,7 +61,7 @@ fun RegistrationComposable(
                 .fillMaxSize()
         ) {
             if (registrationState is RegistrationState.Error) {
-                val errorString = stringResource(registrationState.message)
+                val errorString = stringResource(registrationState.messageId)
                 LaunchedEffect(errorString) {
                     snackbarState.showSnackbar(errorString)
                 }
@@ -78,7 +76,8 @@ fun RegistrationComposable(
                     Box(
                         Modifier
                             .fillMaxSize()
-                            .padding(padding), contentAlignment = Center) {
+                            .padding(padding), contentAlignment = Center
+                    ) {
                         CircularProgressIndicator()
                     }
                 RegistrationState.Success -> navController.navigateTop(Route.Nearby)
@@ -105,119 +104,6 @@ fun Form(
         SubmitButton(onRegistration = { onRegistration(registerState.toEvent()) })
     }
 
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EmailField(value: String, onValueChanged: (String) -> Unit) {
-    OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = smallPadding),
-        value = value,
-        onValueChange = onValueChanged,
-        shape = mediumRoundedShape,
-        label = { Text(stringResource(R.string.email)) },
-        singleLine = true,
-        keyboardOptions = defaultEmailKeyboardOptions,
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DisplayNameField(value: String, onValueChanged: (String) -> Unit) {
-    OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = smallPadding),
-        value = value,
-        onValueChange = onValueChanged,
-        shape = mediumRoundedShape,
-        label = { Text(stringResource(R.string.display_name)) },
-        singleLine = true,
-    )
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PasswordField(value: String, confirmPassword: String, onValueChanged: (String) -> Unit) {
-    var showPassword by remember { mutableStateOf(false) }
-    OutlinedTextField(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = smallPadding),
-        value = value,
-        onValueChange = onValueChanged,
-        isError = value != confirmPassword,
-        supportingText = {
-            if (value != confirmPassword) Text(stringResource(R.string.password_match))
-        },
-        shape = mediumRoundedShape,
-        label = { Text(stringResource(R.string.password)) },
-        singleLine = true,
-        visualTransformation = if (!showPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        keyboardOptions = defaultPasswordKeyboardOptions,
-        trailingIcon = {
-            IconButton(onClick = { showPassword = !showPassword }) {
-                Icon(
-                    painter = if (showPassword) AppIcons.visibility.getPainter() else AppIcons.visibility_off.getPainter(),
-                    contentDescription = "password_visibility"
-                )
-            }
-        })
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ConfirmPasswordField(value: String, password: String, onValueChanged: (String) -> Unit) {
-    var showConfirmPassword by remember { mutableStateOf(false) }
-    OutlinedTextField(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = smallPadding),
-        value = value,
-        onValueChange = onValueChanged,
-        shape = mediumRoundedShape,
-        label = { Text(stringResource(R.string.confirm_password)) },
-        singleLine = true,
-        isError = password != value,
-        supportingText = {
-            if (password != value) Text(stringResource(R.string.password_match))
-        },
-        visualTransformation = if (!showConfirmPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        keyboardOptions = defaultPasswordKeyboardOptions,
-        trailingIcon = {
-            IconButton(onClick = { showConfirmPassword = !showConfirmPassword }) {
-                Icon(
-                    painter = if (showConfirmPassword) AppIcons.visibility.getPainter() else AppIcons.visibility_off.getPainter(),
-                    contentDescription = "password_visibility"
-                )
-            }
-        })
-
-}
-
-@Composable
-fun ToSSwitch(isChecked: Boolean, onChanged: (Boolean) -> Unit, onClick: () -> Unit) {
-    TertiarySwitchSurface(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = smallPadding),
-        title = stringResource(R.string.tos),
-        subtitle = stringResource(R.string.read_tos),
-        checked = isChecked,
-        onSwitchChanged = { onChanged(it) },
-        onSubtitleClicked = { onClick() })
-}
-
-@Composable
-fun PrivacySwitch(isChecked: Boolean, onChanged: (Boolean) -> Unit, onClick: () -> Unit) {
-    TertiarySwitchSurface(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = smallPadding),
-        title = stringResource(R.string.privacy),
-        subtitle = stringResource(R.string.read_privacy),
-        checked = isChecked,
-        onSwitchChanged = { onChanged(it) },
-        onSubtitleClicked = { onClick() })
 }
 
 @Composable

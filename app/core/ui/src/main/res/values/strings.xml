@@ -16,7 +16,11 @@
     <string name="duplicate">Sorry this email is already registered.</string>
     <string name="invalid_email">Sorry this email is not valid.</string>
     <string name="invalid_password">Sorry this password is not valid.</string>
-    <string name="generic_sorry">Sorry something went wrong, try again later.</string>
+    <string name="generic_sorry">Sorry something went wrong, please try again later.</string>
+    <string name="google_crapped">Sorry we couldn\'t fetch your account, please try again later.</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+
+    <string name="or">Or</string>
+    <string name="continue_with_google">Continue with Google</string>
 </resources>
