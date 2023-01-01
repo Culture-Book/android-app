@@ -6,7 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,29 +62,28 @@ fun RegistrationComposable(
         ) {
             if (registrationState is RegistrationState.Error) {
                 val errorString = stringResource(registrationState.messageId)
-                LaunchedEffect(errorString) {
+                LaunchedEffect(Unit) {
                     snackbarState.showSnackbar(errorString)
                 }
             }
-
             when (registrationState) {
                 is RegistrationState.Error, RegistrationState.Idle -> Form(registerState = registerState,
                     onRegistration = { postEvent(it) },
                     onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
                     onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) })
-                RegistrationState.Loading ->
-                    Box(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(padding), contentAlignment = Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                RegistrationState.Success -> navController.navigateTop(Route.Nearby)
+                RegistrationState.Loading -> Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                RegistrationState.Success -> LaunchedEffect(Unit){
+                    navController.navigateTop(Route.Nearby)
+                }
             }
         }
     }
-
 }
 
 @Composable

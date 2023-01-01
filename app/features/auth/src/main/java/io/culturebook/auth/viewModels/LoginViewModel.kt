@@ -22,6 +22,12 @@ class LoginViewModel(
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState = _loginState.asStateFlow()
 
+    init {
+        if (userRepository.isUserLoggedIn()) {
+            viewModelScope.launch { _loginState.emit(LoginState.Success) }
+        }
+    }
+
     fun postEvent(loginEvent: LoginEvent) {
         viewModelScope.launch {
             when (loginEvent) {

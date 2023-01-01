@@ -1,6 +1,7 @@
 package io.culturebook.data.remote.interfaces
 
 import io.culturebook.data.models.authentication.User
+import io.culturebook.data.models.authentication.UserSession
 import retrofit2.http.GET
 
 interface ApiInterface {

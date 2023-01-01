@@ -18,19 +18,17 @@ private val contentType = "application/json".toMediaType()
 private val cookieHandler = CookieManager()
 private val json = Json { ignoreUnknownKeys = true }
 
-private fun authenticatedClient(context: Context) =
-    OkHttpClient.Builder()
-        .addNetworkInterceptor(HttpLoggingInterceptor())
-        .authenticator(JWTAuthenticator(context))
-        .cookieJar(JavaNetCookieJar(cookieHandler))
-        .build()
-
-private val authenticationClient by lazy {
+private val nonAuthClient by lazy {
     OkHttpClient.Builder()
         .addNetworkInterceptor(HttpLoggingInterceptor())
         .cookieJar(JavaNetCookieJar(cookieHandler))
-        .build()
 }
+
+private fun authenticatedClient(context: Context) =
+    nonAuthClient
+        .addInterceptor(AuthenticatorInterceptor)
+        .authenticator(JWTAuthenticator(context))
+        .build()
 
 @OptIn(ExperimentalSerializationApi::class)
 fun getAuthenticatedRetrofitClient(context: Context): ApiInterface =
@@ -45,7 +43,7 @@ fun getAuthenticatedRetrofitClient(context: Context): ApiInterface =
 @OptIn(ExperimentalSerializationApi::class)
 fun getAuthenticationRetrofitClient(): AuthInterface =
     Retrofit.Builder()
-        .client(authenticationClient)
+        .client(nonAuthClient.build())
         .baseUrl(BuildConfig.API_URL)
         .addConverterFactory(Json.asConverterFactory(contentType))
         .addCallAdapterFactory(ResponseCallFactory.create())

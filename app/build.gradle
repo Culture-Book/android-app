@@ -99,6 +99,7 @@ dependencies {
     implementation project(":app:features:auth")
     implementation project(":app:features:nearby")
 
+    implementation 'androidx.core:core-splashscreen:1.0.0'
     implementation "androidx.core:core-ktx:$android_core"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime"
     implementation "androidx.activity:activity-compose:$activity_compose"

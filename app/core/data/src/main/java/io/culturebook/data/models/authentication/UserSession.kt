@@ -3,4 +3,4 @@ package io.culturebook.data.models.authentication
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserSession(val jwt: String)
+data class UserSession(val jwt: String, val refreshJwt: String)

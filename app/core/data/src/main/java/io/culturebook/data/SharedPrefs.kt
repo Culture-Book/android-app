@@ -30,10 +30,16 @@ inline fun <reified T : Any?> SharedPreferences.put(prefKey: PrefKey, value: T) 
     }
 }
 
+fun SharedPreferences.remove(prefKey: PrefKey) = edit().remove(prefKey.key).apply()
+
 sealed interface PrefKey {
     val key: String
 
-    object UserSession : PrefKey {
-        override val key: String = "user_session"
+    object AccessToken : PrefKey {
+        override val key: String = "access_token"
+    }
+
+    object RefreshToken : PrefKey {
+        override val key: String = "refresh_token"
     }
 }

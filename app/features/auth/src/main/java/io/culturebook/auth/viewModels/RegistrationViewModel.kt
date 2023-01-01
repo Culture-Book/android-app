@@ -52,7 +52,9 @@ class RegistrationViewModel(
             "InvalidPassword" -> R.string.invalid_password
             else -> R.string.generic_sorry
         }
-    private val <T : Any> ApiResponse.Exception<T>.errorMessage
-        get() = throwable.message.logD()?.also { R.string.generic_sorry } ?: R.string.generic_sorry
+    private val <T : Any> ApiResponse.Exception<T>.errorMessage: Int
+        get() {
+            throwable.message.logD().also { return R.string.generic_sorry }
+        }
 
 }

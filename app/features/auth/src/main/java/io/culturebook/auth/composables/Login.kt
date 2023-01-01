@@ -22,11 +22,13 @@ import io.culturebook.data.repositories.authentication.UserRepository
 import io.culturebook.nav.Route
 import io.culturebook.nav.navigateTop
 import io.culturebook.ui.R
-import io.culturebook.ui.theme.*
+import io.culturebook.ui.theme.mediumPadding
 import io.culturebook.ui.theme.molecules.LoginEmailField
 import io.culturebook.ui.theme.molecules.LoginPasswordField
 import io.culturebook.ui.theme.molecules.LogoComposable
 import io.culturebook.ui.theme.molecules.OrDivider
+import io.culturebook.ui.theme.smallPadding
+import io.culturebook.ui.theme.xxxlSize
 
 @Composable
 fun LoginRoute(navController: NavController) {
@@ -65,7 +67,7 @@ fun LoginComposable(
         ) {
             if (state is LoginState.Error) {
                 val errorMessage = stringResource(state.message)
-                LaunchedEffect(errorMessage) {
+                LaunchedEffect(Unit) {
                     snackbarHostState.showSnackbar(errorMessage)
                 }
             }
@@ -97,7 +99,9 @@ fun LoginComposable(
                     }
                 }
                 LoginState.Loading -> CircularProgressIndicator()
-                is LoginState.Success -> navController.navigateTop(Route.Nearby)
+                is LoginState.Success -> LaunchedEffect(Unit){
+                    navController.navigateTop(Route.Nearby)
+                }
             }
         }
     }

@@ -19,4 +19,7 @@ interface AuthInterface {
 
     @POST("/auth/v1/register-login")
     suspend fun registerOrLogin(@Body user: User?): ApiResponse<UserSession>
+
+    @POST("/auth/v1/jwt-refresh")
+    suspend fun refreshJwt(@Body userSession: UserSession): ApiResponse<UserSession>
 }
