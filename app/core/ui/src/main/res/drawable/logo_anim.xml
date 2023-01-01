@@ -16,7 +16,7 @@
                 <path
                     android:name="path_2"
                     android:pathData="M 63 27 L 63 27 C 72.544 27 81.707 30.795 88.456 37.544 C 95.205 44.293 99 53.456 99 63 L 99 63 C 99 72.544 95.205 81.707 88.456 88.456 C 81.707 95.205 72.544 99 63 99 L 63 99 C 53.456 99 44.293 95.205 37.544 88.456 C 30.795 81.707 27 72.544 27 63 L 27 63 C 27 53.456 30.795 44.293 37.544 37.544 C 44.293 30.795 53.456 27 63 27 Z"
-                    android:fillColor="@color/primaryContainer"/>
+                    android:fillColor="@color/primary"/>
             </group>
             <path
                 android:name="path_1"
@@ -30,7 +30,7 @@
                 android:propertyName="fillColor"
                 android:duration="1000"
                 android:valueFrom="@color/onSurfaceVariant"
-                android:valueTo="@color/onPrimaryContainer"
+                android:valueTo="@color/onPrimary"
                 android:valueType="colorType"
                 android:interpolator="@android:anim/decelerate_interpolator"/>
         </aapt:attr>
