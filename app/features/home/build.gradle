@@ -8,7 +8,7 @@ android {
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
-        namespace "io.culturebook.nearby"
+        namespace "io.culturebook.home"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
 

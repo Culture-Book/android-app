@@ -23,7 +23,6 @@ import io.culturebook.nav.Route
 import io.culturebook.nav.navigateTop
 import io.culturebook.ui.R
 import io.culturebook.ui.theme.*
-import io.culturebook.ui.theme.AppIcons.getPainter
 import io.culturebook.ui.theme.molecules.*
 
 @Composable
@@ -78,8 +77,8 @@ fun RegistrationComposable(
                 ) {
                     CircularProgressIndicator()
                 }
-                RegistrationState.Success -> LaunchedEffect(Unit){
-                    navController.navigateTop(Route.Nearby)
+                RegistrationState.Success -> LaunchedEffect(Unit) {
+                    navController.navigateTop(Route.Home)
                 }
             }
         }
@@ -124,7 +123,7 @@ fun RegistrationAppBar(navigateBack: () -> Unit = {}) {
         navigationIcon = {
             IconButton(onClick = { navigateBack() }) {
                 Icon(
-                    painter = AppIcons.arrow_back.getPainter(), contentDescription = "navigate back"
+                    painter = AppIcon.ArrowBack.getPainter(), contentDescription = "navigate back"
                 )
             }
         })

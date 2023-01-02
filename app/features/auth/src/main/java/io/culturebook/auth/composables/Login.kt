@@ -99,8 +99,8 @@ fun LoginComposable(
                     }
                 }
                 LoginState.Loading -> CircularProgressIndicator()
-                is LoginState.Success -> LaunchedEffect(Unit){
-                    navController.navigateTop(Route.Nearby)
+                is LoginState.Success -> LaunchedEffect(Unit) {
+                    navController.navigateTop(Route.Home)
                 }
             }
         }

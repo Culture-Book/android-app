@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  AUTHENTICATION  -->
     <string name="app_name">CultureBook</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -21,6 +22,17 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
 
+    <string name="tos_update_title">Terms &amp; Conditions update</string>
+    <string name="tos_update">The Terms of Service have changed, please accept them to continue.</string>
+
+    <string name="accept">Accept</string>
+    <string name="logout">Logout</string>
+
     <string name="or">Or</string>
     <string name="continue_with_google">Continue with Google</string>
+
+    <!--  HOME  -->
+    <string name="explore">Explore</string>
+    <string name="account">Account</string>
+    <string name="social">Social</string>
 </resources>

@@ -27,9 +27,9 @@ import io.culturebook.data.remote_config.RemoteConfig
 import io.culturebook.data.remote_config.getRemoteConfig
 import io.culturebook.data.remove
 import io.culturebook.data.sharedPreferences
+import io.culturebook.home.composables.homeGraph
 import io.culturebook.nav.Route
 import io.culturebook.nav.navigateTop
-import io.culturebook.nearby.composables.NearbyRoute
 import io.culturebook.ui.theme.AppTheme
 import io.culturebook.ui.theme.molecules.WebViewComposable
 
@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
 
             AppEventBus(navController)
 
+            //TODO Add a navigation bus and pass events to a bottom sheet wrapper
             AppTheme {
                 Scaffold { padding ->
                     AppNavHost(navController, padding)
@@ -80,9 +81,9 @@ class MainActivity : ComponentActivity() {
             navController = navController,
             startDestination = Route.Login.route
         ) {
+            homeGraph(navController)
             composable(Route.Login.route) { LoginRoute(navController) }
             composable(Route.Registration.route) { RegistrationRoute(navController) }
-            composable(Route.Nearby.route) { NearbyRoute() }
             composable(Route.WebView.ToS.route) {
                 WebViewComposable(
                     titleId = io.culturebook.ui.R.string.tos,

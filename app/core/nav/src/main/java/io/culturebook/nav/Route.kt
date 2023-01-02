@@ -11,8 +11,8 @@ sealed interface Route {
         override val route = "login"
     }
 
-    object Nearby : Route {
-        override val route = "nearby"
+    object Home : Route {
+        override val route = "home"
     }
 
     object WebView : Route {

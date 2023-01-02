@@ -13,7 +13,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import io.culturebook.ui.R
 import io.culturebook.ui.theme.*
-import io.culturebook.ui.theme.AppIcons.getPainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,7 +67,7 @@ fun PasswordField(value: String, confirmPassword: String, onValueChanged: (Strin
         trailingIcon = {
             IconButton(onClick = { showPassword = !showPassword }) {
                 Icon(
-                    painter = if (!showPassword) AppIcons.visibility.getPainter() else AppIcons.visibility_off.getPainter(),
+                    painter = if (!showPassword) AppIcon.Visibility.getPainter() else AppIcon.VisibilityOff.getPainter(),
                     contentDescription = "password_visibility"
                 )
             }
@@ -96,7 +95,7 @@ fun ConfirmPasswordField(value: String, password: String, onValueChanged: (Strin
         trailingIcon = {
             IconButton(onClick = { showConfirmPassword = !showConfirmPassword }) {
                 Icon(
-                    painter = if (!showConfirmPassword) AppIcons.visibility.getPainter() else AppIcons.visibility_off.getPainter(),
+                    painter = if (!showConfirmPassword) AppIcon.Visibility.getPainter() else AppIcon.VisibilityOff.getPainter(),
                     contentDescription = "password_visibility"
                 )
             }
@@ -147,7 +146,7 @@ fun LoginPasswordField(
         trailingIcon = {
             IconButton(onClick = { showPassword = !showPassword }) {
                 Icon(
-                    painter = if (!showPassword) AppIcons.visibility.getPainter() else AppIcons.visibility_off.getPainter(),
+                    painter = if (!showPassword) AppIcon.Visibility.getPainter() else AppIcon.VisibilityOff.getPainter(),
                     contentDescription = "password_visibility"
                 )
             }
