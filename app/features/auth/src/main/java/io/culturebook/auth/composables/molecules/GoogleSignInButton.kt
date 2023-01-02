@@ -3,8 +3,8 @@ package io.culturebook.auth.composables.molecules
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -50,7 +50,7 @@ fun GoogleSignInButton(
 
     val context = LocalContext.current
 
-    TextButton(
+    OutlinedButton(
         modifier = modifier,
         onClick = { getGoogleClient(context).also { activityResult.launch(it.signInIntent) } }) {
         Text(stringResource(R.string.continue_with_google))

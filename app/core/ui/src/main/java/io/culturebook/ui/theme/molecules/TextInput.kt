@@ -1,5 +1,6 @@
 package io.culturebook.ui.theme.molecules
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
@@ -14,6 +15,17 @@ import androidx.compose.ui.text.input.VisualTransformation
 import io.culturebook.ui.R
 import io.culturebook.ui.theme.*
 
+
+fun String.isNotValidEmail() =
+    !Regex("(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+))")
+        .matches(this)
+
+fun String.isNotValidPassword() = !Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[a-zA-Z]).{8,}\$").matches(this)
+
+private val String.isNotValidEmailValue get() = isNotValidEmail() && isNotBlank()
+
+private val String.isNotValidPasswordValue get() = isNotValidPassword() && isNotBlank()
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailField(value: String, onValueChanged: (String) -> Unit) {
@@ -25,6 +37,10 @@ fun EmailField(value: String, onValueChanged: (String) -> Unit) {
         onValueChange = onValueChanged,
         shape = mediumRoundedShape,
         label = { Text(stringResource(R.string.email)) },
+        isError = value.isNotValidEmailValue,
+        supportingText = {
+            if (value.isNotValidEmailValue) Text(stringResource(R.string.email_invalid))
+        },
         singleLine = true,
         keyboardOptions = defaultEmailKeyboardOptions,
     )
@@ -55,9 +71,12 @@ fun PasswordField(value: String, confirmPassword: String, onValueChanged: (Strin
         .padding(vertical = smallPadding),
         value = value,
         onValueChange = onValueChanged,
-        isError = value != confirmPassword,
+        isError = value != confirmPassword || value.isNotValidPasswordValue,
         supportingText = {
-            if (value != confirmPassword) Text(stringResource(R.string.password_match))
+            Column {
+                if (value != confirmPassword) Text(stringResource(R.string.password_match))
+                if (value.isNotValidPasswordValue) Text(stringResource(R.string.password_invalid))
+            }
         },
         shape = mediumRoundedShape,
         label = { Text(stringResource(R.string.password)) },

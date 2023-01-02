@@ -2,13 +2,14 @@ package io.culturebook.auth.composables
 
 import android.app.Application
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -56,6 +57,7 @@ fun LoginComposable(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val loginState = remember { LoginHState() }
+    val scrollState = rememberScrollState()
 
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
         Column(
@@ -67,34 +69,44 @@ fun LoginComposable(
         ) {
             if (state is LoginState.Error) {
                 val errorMessage = stringResource(state.message)
-                LaunchedEffect(Unit) {
+                LaunchedEffect(state) {
                     snackbarHostState.showSnackbar(errorMessage)
+                    postEvent(LoginEvent.Idle)
                 }
             }
             when (state) {
                 is LoginState.Error, LoginState.Idle -> {
-                    Form(
-                        loginState,
-                        onLoginPressed = { postEvent(LoginEvent.Login(it.email, it.password)) }
-                    )
-
-                    FilledTonalButton(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = smallPadding),
-                        onClick = { navController.navigate(Route.Registration.route) }) {
-                        Text(text = stringResource(R.string.register))
-                    }
+                            .verticalScroll(scrollState),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Form(
+                            loginState,
+                            onLoginPressed = { postEvent(LoginEvent.Login(it.email, it.password)) },
+                        )
 
-                    OrDivider(modifier = Modifier.fillMaxWidth())
-
-                    GoogleSignInButton {
-                        when {
-                            it.isSuccessful -> postEvent(LoginEvent.GoogleLogin(it.result))
-                            !it.isSuccessful -> {
-                                postEvent(LoginEvent.Error(R.string.google_crapped))
-                                it.exception.logE()
+                        GoogleSignInButton(modifier = Modifier.fillMaxWidth()) {
+                            when {
+                                it.isSuccessful -> postEvent(LoginEvent.GoogleLogin(it.result))
+                                !it.isSuccessful -> {
+                                    postEvent(LoginEvent.Error(R.string.google_crapped))
+                                    it.exception.logE()
+                                }
                             }
+                        }
+
+                        OrDivider(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(smallPadding))
+
+                        TextButton(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            onClick = { navController.navigate(Route.Registration.route) }) {
+                            Text(text = stringResource(R.string.register))
                         }
                     }
                 }
@@ -108,7 +120,6 @@ fun LoginComposable(
 }
 
 @Composable
-@Preview
 fun Form(
     loginHState: LoginHState = LoginHState(),
     onLoginPressed: (LoginHState) -> Unit = { _ -> }
@@ -119,8 +130,6 @@ fun Form(
     LaunchedEffect(passwordFocus) {
         if (passwordFocus) {
             focusRequester.requestFocus()
-        } else {
-            focusRequester.freeFocus()
         }
     }
 

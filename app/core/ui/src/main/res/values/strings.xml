@@ -6,6 +6,8 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="password_match">Passwords don\'t match</string>
+    <string name="password_invalid">Invalid password, make sure it is at least 8 characters in length and contains 1 number</string>
+    <string name="email_invalid">Invalid email, make sure it is of the form email@domain.com</string>
     <string name="display_name">Display name</string>
 
     <string name="tos">Terms and Conditions</string>

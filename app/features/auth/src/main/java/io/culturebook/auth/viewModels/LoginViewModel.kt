@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.net.URI
+import java.util.*
 
 class LoginViewModel(
     private val userRepository: UserRepository
@@ -58,7 +59,7 @@ class LoginViewModel(
                 User(
                     URI.create(photoUrl.toString()),
                     displayName,
-                    id,
+                    UUID.nameUUIDFromBytes(id.toByteArray()).toString(),
                     email,
                     registrationStatus = RegistrationStatus.Registered.ordinal
                 )

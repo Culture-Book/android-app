@@ -7,12 +7,6 @@ plugins {
 
 android {
     signingConfigs {
-        debug {
-            storeFile file('./debug.keystore')
-            storePassword System.getenv("DEBUG_PASS")
-            keyAlias System.getenv("DEBUG_ALIAS")
-            keyPassword System.getenv("DEBUG_PASS")
-        }
         pre_release {
             storeFile file('./pre_release.keystore')
             storePassword System.getenv("PRE_RELEASE_PASS")
@@ -47,7 +41,6 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
-            signingConfig signingConfigs.debug
             minifyEnabled false
         }
         pre_release_debug {

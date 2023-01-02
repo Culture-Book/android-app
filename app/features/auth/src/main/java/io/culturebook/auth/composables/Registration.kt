@@ -61,8 +61,9 @@ fun RegistrationComposable(
         ) {
             if (registrationState is RegistrationState.Error) {
                 val errorString = stringResource(registrationState.messageId)
-                LaunchedEffect(Unit) {
+                LaunchedEffect(registrationState) {
                     snackbarState.showSnackbar(errorString)
+                    postEvent(RegistrationEvent.Idle)
                 }
             }
             when (registrationState) {

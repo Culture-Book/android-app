@@ -9,6 +9,8 @@ import io.culturebook.data.models.authentication.User
 import io.culturebook.data.remote.interfaces.ApiResponse
 import io.culturebook.data.repositories.authentication.UserRepository
 import io.culturebook.ui.R
+import io.culturebook.ui.theme.molecules.isNotValidEmail
+import io.culturebook.ui.theme.molecules.isNotValidPassword
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -23,10 +25,7 @@ class RegistrationViewModel(
         viewModelScope.launch {
             when (event) {
                 is RegistrationEvent.Idle -> _registrationState.emit(RegistrationState.Idle)
-                is RegistrationEvent.Register -> {
-                    if (event.tosAccepted && event.privacyAccepted) register(event)
-                    else _registrationState.emit(RegistrationState.Error(R.string.accept_tos))
-                }
+                is RegistrationEvent.Register -> if (validateEvent(event)) register(event)
             }
         }
     }
@@ -45,6 +44,22 @@ class RegistrationViewModel(
         }
     }
 
+    private fun validateEvent(event: RegistrationEvent.Register): Boolean {
+        return if (event.email.isNotValidEmail()) {
+            viewModelScope.launch { _registrationState.emit(RegistrationState.Error(R.string.email_invalid)) }
+            false
+        } else if (event.password.isNotValidPassword()) {
+            viewModelScope.launch { _registrationState.emit(RegistrationState.Error(R.string.password_invalid)) }
+            false
+        } else if (!event.tosAccepted && !event.privacyAccepted) {
+            viewModelScope.launch { _registrationState.emit(RegistrationState.Error(R.string.accept_tos)) }
+            false
+        } else {
+            true
+        }
+    }
+
+
     private val <T : Any> ApiResponse.Failure<T>.errorMessage
         get() = when (message) {
             "DuplicateEmail" -> R.string.duplicate
@@ -56,5 +71,4 @@ class RegistrationViewModel(
         get() {
             throwable.message.logD().also { return R.string.generic_sorry }
         }
-
 }
