@@ -24,7 +24,7 @@ android {
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
-        applicationId "io.culturebook"
+        applicationId "uk.co.culturebook"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
         versionCode version_code

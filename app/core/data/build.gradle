@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'io.culturebook.data'
+    namespace 'uk.co.culturebook.data'
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {

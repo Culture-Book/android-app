@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'io.culturebook.nav'
+    namespace 'uk.co.culturebook.nav'
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {

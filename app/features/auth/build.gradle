@@ -8,7 +8,7 @@ android {
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
-        namespace "io.culturebook.auth"
+        namespace "uk.co.culturebook.auth"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
 
