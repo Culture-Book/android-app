@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 object EventBus {
     private val _userSessionFlow = MutableStateFlow<UserSessionState>(UserSessionState.Idle)
