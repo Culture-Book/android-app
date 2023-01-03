@@ -1,5 +1,6 @@
 package uk.co.culturebook
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import uk.co.culturebook.auth.composables.ForgotRoute
 import uk.co.culturebook.auth.composables.LoginRoute
 import uk.co.culturebook.auth.composables.RegistrationRoute
 import uk.co.culturebook.data.PrefKey
@@ -28,12 +30,14 @@ import uk.co.culturebook.data.remote_config.getRemoteConfig
 import uk.co.culturebook.data.remove
 import uk.co.culturebook.data.sharedPreferences
 import uk.co.culturebook.home.composables.homeGraph
+import uk.co.culturebook.nav.DeepLinks
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.theme.AppTheme
 import uk.co.culturebook.ui.theme.molecules.WebViewComposable
 
 class MainActivity : ComponentActivity() {
+    private lateinit var navController: NavController
 
     private fun initializeFirebase() {
         FirebaseApp.initializeApp(this) ?: "Firebase not Initialised".logD().also { return }
@@ -48,7 +52,9 @@ class MainActivity : ComponentActivity() {
         initializeFirebase()
 
         setContent {
-            val navController = rememberNavController()
+            val navController = rememberNavController().also {
+                navController = it
+            }
 
             AppEventBus(navController)
 
@@ -98,7 +104,20 @@ class MainActivity : ComponentActivity() {
                     onBack = { navController.navigateUp() }
                 )
             }
+            composable(
+                Route.Forgot.route,
+                deepLinks = DeepLinks.forgotPasswordDeepLinks,
+                arguments = Route.Forgot.arguments
+            ) { backStackEntry ->
+                val email = backStackEntry.arguments?.getString(Route.Forgot.emailArgument) ?: ""
+                val token = backStackEntry.arguments?.getString(Route.Forgot.tokenArgument) ?: ""
+                ForgotRoute(navController, email, token)
+            }
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navController.handleDeepLink(intent)
+    }
 }

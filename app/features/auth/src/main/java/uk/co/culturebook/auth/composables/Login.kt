@@ -98,15 +98,24 @@ fun LoginComposable(
                             }
                         }
 
-                        OrDivider(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(smallPadding))
+                        OrDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(smallPadding)
+                        )
 
-                        TextButton(
+                        OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             onClick = { navController.navigate(Route.Registration.route) }) {
                             Text(text = stringResource(R.string.register))
+                        }
+
+                        TextButton(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            onClick = { navController.navigate(Route.Forgot.route) }) {
+                            Text(text = stringResource(R.string.forgot_password))
                         }
                     }
                 }

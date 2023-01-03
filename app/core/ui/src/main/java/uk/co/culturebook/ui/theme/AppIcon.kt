@@ -2,6 +2,7 @@ package uk.co.culturebook.ui.theme
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Person
@@ -19,6 +20,13 @@ sealed interface AppIcon {
 
     object ArrowBack : AppIcon {
         private val icon = Icons.Default.ArrowBack
+
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Close : AppIcon {
+        private val icon = Icons.Default.Close
 
         @Composable
         override fun getPainter() = icon.getPainter()

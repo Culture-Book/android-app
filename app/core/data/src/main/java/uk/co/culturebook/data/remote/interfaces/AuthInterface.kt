@@ -3,9 +3,7 @@ package uk.co.culturebook.data.remote.interfaces
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import uk.co.culturebook.data.models.authentication.PublicJWT
-import uk.co.culturebook.data.models.authentication.User
-import uk.co.culturebook.data.models.authentication.UserSession
+import uk.co.culturebook.data.models.authentication.*
 
 interface AuthInterface {
     @GET("/auth/v1/.well-known/oauth/public")
@@ -22,4 +20,10 @@ interface AuthInterface {
 
     @POST("/auth/v1/jwt-refresh")
     suspend fun refreshJwt(@Body userSession: UserSession): ApiResponse<UserSession>
+
+    @POST("/auth/v1/forgot")
+    suspend fun requestPasswordReset(@Body passwordReset: PasswordResetRequest): ApiResponse<Void>
+
+    @POST("/auth/v1/reset-password")
+    suspend fun resetPassword(@Body passwordReset: PasswordReset): ApiResponse<Void>
 }

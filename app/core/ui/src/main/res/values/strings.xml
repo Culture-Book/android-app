@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--  AUTHENTICATION  -->
     <string name="app_name">CultureBook</string>
+    <string name="app_host">culturebook.co.uk</string>
+
+    <!--  AUTHENTICATION  -->
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
@@ -32,6 +34,13 @@
 
     <string name="or">Or</string>
     <string name="continue_with_google">Continue with Google</string>
+
+    <string name="change_password">Change Password</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="change_password_message">Please enter the email address associated with your account, if it exists we will send you an email to reset your password.</string>
+    <string name="new_password_message">Please enter a new password</string>
+    <string name="new_password">New Password</string>
+    <string name="submit">Submit</string>
 
     <!--  HOME  -->
     <string name="explore">Explore</string>
