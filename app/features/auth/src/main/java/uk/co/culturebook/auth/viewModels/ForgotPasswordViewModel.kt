@@ -21,9 +21,9 @@ class ForgotPasswordViewModel(
         }
     }
 
-    fun passwordReset(email: String, password: String, passwordResetToken: String) {
+    fun passwordReset(userId: String, password: String, passwordResetToken: String) {
         viewModelScope.launch {
-            userRepository.passwordReset(email, password, UUID.fromString(passwordResetToken))
+            userRepository.passwordReset(userId, password, UUID.fromString(passwordResetToken))
         }
     }
 }

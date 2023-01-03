@@ -109,9 +109,9 @@ class MainActivity : ComponentActivity() {
                 deepLinks = DeepLinks.forgotPasswordDeepLinks,
                 arguments = Route.Forgot.arguments
             ) { backStackEntry ->
-                val email = backStackEntry.arguments?.getString(Route.Forgot.emailArgument) ?: ""
+                val userId = backStackEntry.arguments?.getString(Route.Forgot.userIdArgument) ?: ""
                 val token = backStackEntry.arguments?.getString(Route.Forgot.tokenArgument) ?: ""
-                ForgotRoute(navController, email, token)
+                ForgotRoute(navController, userId, token)
             }
         }
     }

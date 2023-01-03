@@ -20,20 +20,20 @@ import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.*
 
 @Composable
-fun ForgotRoute(navController: NavController, email: String, token: String) {
+fun ForgotRoute(navController: NavController, userId: String, token: String) {
     val viewModel = viewModel {
         val userRepository = UserRepository(this[APPLICATION_KEY] as Application)
         ForgotPasswordViewModel(userRepository)
     }
 
-    val newPassword by remember { mutableStateOf(email.isNotEmpty() && token.isNotEmpty()) }
+    val newPassword by remember { mutableStateOf(userId.isNotEmpty() && token.isNotEmpty()) }
 
     if (newPassword) {
         val state by viewModel.forgotState.collectAsState()
         ForgotComposable(
             state,
             navController = navController,
-            requestForgotPassword = { viewModel.passwordReset(email, it, token) })
+            requestForgotPassword = { viewModel.passwordReset(userId, it, token) })
     } else {
         RequestForgotComposable(navController, viewModel::requestPasswordReset)
     }

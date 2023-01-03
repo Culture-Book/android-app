@@ -15,11 +15,11 @@ sealed interface Route {
     }
 
     object Forgot : Route {
-        const val emailArgument = "email"
+        const val userIdArgument = "userId"
         const val tokenArgument = "token"
         override val route = "forgot"
         val arguments = listOf(
-            navArgument(emailArgument) {
+            navArgument(userIdArgument) {
                 defaultValue = ""
                 type = NavType.StringType
             },

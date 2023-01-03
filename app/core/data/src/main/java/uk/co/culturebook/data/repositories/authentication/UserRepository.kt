@@ -55,14 +55,14 @@ class UserRepository(context: Context) {
                 )
         }
 
-    suspend fun passwordReset(email: String, password: String, token: UUID): ApiResponse<Void> =
+    suspend fun passwordReset(userId: String, password: String, token: UUID): ApiResponse<Void> =
         when (val keyResponse = getPublicOauthKey()) {
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
             is ApiResponse.Success ->
                 authInterface.resetPassword(
                     PasswordReset(
-                        email = email.encrypt(keyResponse.data.jwt),
+                        userId = userId.encrypt(keyResponse.data.jwt),
                         password = password.encrypt(keyResponse.data.jwt),
                         passwordResetToken = token
                     )

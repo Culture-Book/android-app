@@ -9,13 +9,13 @@ object DeepLinks {
     val forgotPasswordDeepLinks = listOf(
         navDeepLink {
             uriPattern =
-                "https://$deepLinkUri/{${Route.Forgot.emailArgument}}/{${Route.Forgot.tokenArgument}}"
+                "https://$deepLinkUri/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
             action = Intent.ACTION_VIEW
 
         },
         navDeepLink {
             uriPattern =
-                "app://$deepLinkUri/{${Route.Forgot.emailArgument}}/{${Route.Forgot.tokenArgument}}"
+                "app://$deepLinkUri/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
             action = Intent.ACTION_VIEW
         }
     )
