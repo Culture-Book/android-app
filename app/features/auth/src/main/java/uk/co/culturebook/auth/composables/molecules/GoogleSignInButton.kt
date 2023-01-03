@@ -27,10 +27,8 @@ fun GoogleSignInButton(
     handleSignInResult: (Task<GoogleSignInAccount>) -> Unit = {}
 ) {
     fun getGoogleClient(context: Context): GoogleSignInClient {
-        val key = Firebase.remoteConfig.getString(RemoteConfig.GoogleKey.key)
         return GoogleSignIn.getClient(
             context, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(key)
                 .requestEmail()
                 .requestId()
                 .requestProfile()

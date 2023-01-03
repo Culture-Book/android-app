@@ -22,16 +22,16 @@ android {
         }
         pre_release {
             minifyEnabled true
-            buildConfigField "String", "API_URL", '\"https://api-culture-book-beta.onrender.com\"'
+            buildConfigField "String", "API_URL", '\"https://culturebook.co.uk\"'
         }
         pre_release_debug {
             debuggable true
             minifyEnabled true
-            buildConfigField "String", "API_URL", '\"https://api-culture-book-beta.onrender.com\"'
+            buildConfigField "String", "API_URL", '\"https://culturebook.co.uk\"'
         }
         release {
             minifyEnabled true
-            buildConfigField "String", "API_URL", '\"https://api-culture-book-io.onrender.com\"'
+            buildConfigField "String", "API_URL", '\"https://culturebook.co.uk\"'
         }
     }
     compileOptions {
