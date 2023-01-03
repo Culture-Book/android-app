@@ -3,6 +3,9 @@ package uk.co.culturebook.auth.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import uk.co.culturebook.auth.events.LoginEvent
 import uk.co.culturebook.auth.states.LoginState
 import uk.co.culturebook.data.logD
@@ -11,9 +14,6 @@ import uk.co.culturebook.data.models.authentication.enums.RegistrationStatus
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.ui.R
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.net.URI
 import java.util.*
 

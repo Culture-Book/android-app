@@ -2,6 +2,9 @@ package uk.co.culturebook.home.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
@@ -9,9 +12,6 @@ import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.home.events.ExploreEvent
 import uk.co.culturebook.home.states.ExploreState
 import uk.co.culturebook.ui.R
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 class ExploreViewModel(
     private val userRepository: UserRepository

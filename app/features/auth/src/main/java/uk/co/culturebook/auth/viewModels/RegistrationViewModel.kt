@@ -2,6 +2,9 @@ package uk.co.culturebook.auth.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import uk.co.culturebook.auth.events.RegistrationEvent
 import uk.co.culturebook.auth.states.RegistrationState
 import uk.co.culturebook.data.logD
@@ -11,9 +14,6 @@ import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.molecules.isNotValidEmail
 import uk.co.culturebook.ui.theme.molecules.isNotValidPassword
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 class RegistrationViewModel(
     private val userRepository: UserRepository
