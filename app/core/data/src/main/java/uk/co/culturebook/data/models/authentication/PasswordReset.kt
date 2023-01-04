@@ -7,7 +7,7 @@ import java.util.*
 @Serializable
 data class PasswordReset(
     @Serializable(with = UUIDSerializer::class)
-    val passwordResetToken: UUID,
+    val token: UUID,
     val userId: String,
     val password: String,
 )

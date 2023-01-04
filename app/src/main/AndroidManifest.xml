@@ -38,10 +38,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="culturebook.co.uk"
+                    android:host="api.culturebook.co.uk"
                     android:scheme="https" />
                 <data
-                    android:host="culturebook.co.uk"
+                    android:host="api.culturebook.co.uk"
                     android:scheme="app" />
             </intent-filter>
         </activity>

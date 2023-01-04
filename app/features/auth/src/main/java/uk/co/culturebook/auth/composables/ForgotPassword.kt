@@ -27,28 +27,31 @@ fun ForgotRoute(navController: NavController, userId: String, token: String) {
     }
 
     val newPassword by remember { mutableStateOf(userId.isNotEmpty() && token.isNotEmpty()) }
+    val state by viewModel.forgotState.collectAsState()
 
     if (newPassword) {
-        val state by viewModel.forgotState.collectAsState()
         ForgotComposable(
             state,
             navController = navController,
             requestForgotPassword = { viewModel.passwordReset(userId, it, token) })
     } else {
-        RequestForgotComposable(navController, viewModel::requestPasswordReset)
+        RequestForgotComposable(state, navController, viewModel::requestPasswordReset)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestForgotComposable(
+    state: ForgotState,
     navController: NavController,
     requestForgotPassword: (String) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
+    val snackbarState = remember { SnackbarHostState() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarState) },
         topBar = { ForgotAppBar { navController.navigateTop(Route.Login) } }) { padding ->
         Column(
             modifier = Modifier
@@ -56,18 +59,43 @@ fun RequestForgotComposable(
                 .padding(mediumPadding)
                 .fillMaxSize()
         ) {
-            Text(
-                stringResource(R.string.change_password),
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                modifier = Modifier.padding(vertical = mediumPadding),
-                text = stringResource(R.string.change_password_message)
-            )
+            if (state is ForgotState.Error) {
+                val errorString = stringResource(state.messageId)
+                LaunchedEffect(state) {
+                    snackbarState.showSnackbar(errorString)
+                }
+            }
+            if (state is ForgotState.Success) {
+                val successString = stringResource(R.string.new_password_request_success)
+                LaunchedEffect(Unit) {
+                    snackbarState.showSnackbar(successString)
+                }
+            }
 
-            EmailField(value = email, onValueChanged = { email = it })
+            when (state) {
+                is ForgotState.Error, ForgotState.Idle, ForgotState.Success -> {
+                    Text(
+                        stringResource(R.string.change_password),
+                        style = MaterialTheme.typography.titleLarge
+                    )
 
-            SubmitButtonForgot { requestForgotPassword(email) }
+                    Text(
+                        modifier = Modifier.padding(vertical = mediumPadding),
+                        text = stringResource(R.string.change_password_message)
+                    )
+
+                    EmailField(value = email, onValueChanged = { email = it })
+
+                    SubmitButtonForgot { requestForgotPassword(email) }
+                }
+                ForgotState.Loading -> Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
         }
     }
 }
@@ -128,17 +156,22 @@ fun ForgotComposable(
             }
         }
 
+        if (state is ForgotState.Success) {
+            val successString = stringResource(R.string.new_password_success)
+            LaunchedEffect(Unit) {
+                snackbarState.showSnackbar(successString)
+                navController.navigateTop(Route.Login)
+            }
+        }
+
         when (state) {
-            is ForgotState.Error, ForgotState.Idle -> ShowForm(padding)
+            is ForgotState.Error, ForgotState.Idle, ForgotState.Success -> ShowForm(padding)
             ForgotState.Loading -> Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 CircularProgressIndicator()
-            }
-            ForgotState.Success -> LaunchedEffect(Unit) {
-                navController.navigateTop(Route.Login)
             }
         }
     }

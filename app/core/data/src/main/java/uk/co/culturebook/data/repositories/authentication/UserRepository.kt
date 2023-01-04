@@ -4,6 +4,7 @@ import android.content.Context
 import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.encoders.encrypt
+import uk.co.culturebook.data.models.GenericResponse
 import uk.co.culturebook.data.models.authentication.*
 import uk.co.culturebook.data.put
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
@@ -43,9 +44,9 @@ class UserRepository(context: Context) {
 
     suspend fun getUser(): ApiResponse<User> = apiInterface.getUser()
 
-    suspend fun updateTos(): ApiResponse<Void> = apiInterface.updateTos()
+    suspend fun updateTos(): ApiResponse<GenericResponse> = apiInterface.updateTos()
 
-    suspend fun requestPasswordReset(email: String): ApiResponse<Void> =
+    suspend fun requestPasswordReset(email: String): ApiResponse<GenericResponse> =
         when (val keyResponse = getPublicOauthKey()) {
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
@@ -55,7 +56,7 @@ class UserRepository(context: Context) {
                 )
         }
 
-    suspend fun passwordReset(userId: String, password: String, token: UUID): ApiResponse<Void> =
+    suspend fun passwordReset(userId: String, password: String, token: UUID): ApiResponse<GenericResponse> =
         when (val keyResponse = getPublicOauthKey()) {
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
@@ -64,7 +65,7 @@ class UserRepository(context: Context) {
                     PasswordReset(
                         userId = userId.encrypt(keyResponse.data.jwt),
                         password = password.encrypt(keyResponse.data.jwt),
-                        passwordResetToken = token
+                        token = token
                     )
                 )
         }

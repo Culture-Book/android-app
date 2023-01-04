@@ -4,18 +4,18 @@ import android.content.Intent
 import androidx.navigation.navDeepLink
 
 object DeepLinks {
-    const val deepLinkUri = "culturebook.co.uk"
+    private const val deepLinkUri = "api.culturebook.co.uk"
 
     val forgotPasswordDeepLinks = listOf(
         navDeepLink {
             uriPattern =
-                "https://$deepLinkUri/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
+                "https://$deepLinkUri/forgot/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
             action = Intent.ACTION_VIEW
 
         },
         navDeepLink {
             uriPattern =
-                "app://$deepLinkUri/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
+                "app://$deepLinkUri/forgot/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
             action = Intent.ACTION_VIEW
         }
     )

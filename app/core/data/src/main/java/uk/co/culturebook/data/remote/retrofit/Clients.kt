@@ -13,6 +13,7 @@ import uk.co.culturebook.data.BuildConfig
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.remote.interfaces.AuthInterface
 import java.net.CookieManager
+import java.util.concurrent.TimeUnit
 
 private val contentType = "application/json".toMediaType()
 private val cookieHandler = CookieManager()
@@ -22,6 +23,8 @@ private val nonAuthClient by lazy {
     OkHttpClient.Builder()
         .addNetworkInterceptor(HttpLoggingInterceptor())
         .cookieJar(JavaNetCookieJar(cookieHandler))
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
 }
 
 private fun authenticatedClient(context: Context) =

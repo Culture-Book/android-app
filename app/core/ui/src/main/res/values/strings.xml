@@ -40,6 +40,8 @@
     <string name="change_password_message">Please enter the email address associated with your account, if it exists we will send you an email to reset your password.</string>
     <string name="new_password_message">Please enter a new password</string>
     <string name="new_password">New Password</string>
+    <string name="new_password_success">New password set successfully, please log in.</string>
+    <string name="new_password_request_success">Password reset link requested.</string>
     <string name="submit">Submit</string>
 
     <!--  HOME  -->
