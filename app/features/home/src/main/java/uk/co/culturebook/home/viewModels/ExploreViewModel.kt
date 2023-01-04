@@ -37,7 +37,7 @@ class ExploreViewModel(
         viewModelScope.launch {
             _exploreState.emit(ExploreState.Loading)
             when (val user = userRepository.getUser()) {
-                is ApiResponse.Success -> postEvent(ExploreEvent.Success)
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.Success)
                 is ApiResponse.Failure -> {
                     when (user.message) {
                         "ToSUpdate", "PrivacyUpdate" -> postEvent(ExploreEvent.Error.ToSUpdate)
@@ -53,7 +53,7 @@ class ExploreViewModel(
         viewModelScope.launch {
             _exploreState.emit(ExploreState.Loading)
             when (val apiResponse = userRepository.updateTos()) {
-                is ApiResponse.Success -> postEvent(ExploreEvent.Success)
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.Success)
                 is ApiResponse.Failure -> {
                     postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
                     apiResponse.message.logD()

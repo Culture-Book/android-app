@@ -22,7 +22,7 @@ class ForgotPasswordViewModel(
             val state = when (userRepository.requestPasswordReset(email)) {
                 is ApiResponse.Exception -> ForgotState.Idle
                 is ApiResponse.Failure -> ForgotState.Idle
-                is ApiResponse.Success -> ForgotState.Success
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> ForgotState.Success
             }
             _forgotState.emit(state)
         }
@@ -38,7 +38,7 @@ class ForgotPasswordViewModel(
             )) {
                 is ApiResponse.Exception -> ForgotState.Idle
                 is ApiResponse.Failure -> ForgotState.Idle
-                is ApiResponse.Success -> ForgotState.Success
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> ForgotState.Success
             }
             _forgotState.emit(state)
         }

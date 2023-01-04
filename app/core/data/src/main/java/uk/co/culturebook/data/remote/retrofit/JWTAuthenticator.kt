@@ -26,6 +26,7 @@ class JWTAuthenticator(private val context: Context) : Authenticator {
                 authInterface.refreshJwt(UserSession(accessToken, refreshToken))) {
                 is ApiResponse.Exception -> refreshed.throwable.logE()
                 is ApiResponse.Failure -> refreshed.message.logE()
+                is ApiResponse.Success.Empty -> {}
                 is ApiResponse.Success -> {
                     with(context.sharedPreferences) {
                         put(PrefKey.AccessToken, refreshed.data.jwt)

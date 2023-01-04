@@ -3,7 +3,6 @@ package uk.co.culturebook.data.remote.interfaces
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import uk.co.culturebook.data.models.GenericResponse
 import uk.co.culturebook.data.models.authentication.*
 
 interface AuthInterface {
@@ -23,8 +22,8 @@ interface AuthInterface {
     suspend fun refreshJwt(@Body userSession: UserSession): ApiResponse<UserSession>
 
     @POST("/auth/v1/forgot")
-    suspend fun requestPasswordReset(@Body passwordReset: PasswordResetRequest): ApiResponse<GenericResponse>
+    suspend fun requestPasswordReset(@Body passwordReset: PasswordResetRequest): ApiResponse<Void>
 
     @POST("/auth/v1/reset-password")
-    suspend fun resetPassword(@Body passwordReset: PasswordReset): ApiResponse<GenericResponse>
+    suspend fun resetPassword(@Body passwordReset: PasswordReset): ApiResponse<Void>
 }

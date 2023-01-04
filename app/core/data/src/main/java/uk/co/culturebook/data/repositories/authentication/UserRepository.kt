@@ -4,7 +4,6 @@ import android.content.Context
 import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.encoders.encrypt
-import uk.co.culturebook.data.models.GenericResponse
 import uk.co.culturebook.data.models.authentication.*
 import uk.co.culturebook.data.put
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
@@ -26,6 +25,7 @@ class UserRepository(context: Context) {
             is ApiResponse.Success -> authInterface.register(user.encodeUser(keyResponse.data.jwt))
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
+            is ApiResponse.Success.Empty -> ApiResponse.Success.Empty()
         }
 
     suspend fun login(user: User): ApiResponse<UserSession> =
@@ -33,6 +33,7 @@ class UserRepository(context: Context) {
             is ApiResponse.Success -> authInterface.login(user.encodeUser(keyResponse.data.jwt))
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
+            is ApiResponse.Success.Empty -> ApiResponse.Success.Empty()
         }
 
     suspend fun registerOrLogin(user: User?): ApiResponse<UserSession> =
@@ -40,26 +41,33 @@ class UserRepository(context: Context) {
             is ApiResponse.Success -> authInterface.registerOrLogin(user?.encodeUser(keyResponse.data.jwt))
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
+            is ApiResponse.Success.Empty -> ApiResponse.Success.Empty()
         }
 
     suspend fun getUser(): ApiResponse<User> = apiInterface.getUser()
 
-    suspend fun updateTos(): ApiResponse<GenericResponse> = apiInterface.updateTos()
+    suspend fun updateTos(): ApiResponse<Void> = apiInterface.updateTos()
 
-    suspend fun requestPasswordReset(email: String): ApiResponse<GenericResponse> =
+    suspend fun requestPasswordReset(email: String): ApiResponse<Void> =
         when (val keyResponse = getPublicOauthKey()) {
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
+            is ApiResponse.Success.Empty -> ApiResponse.Success.Empty()
             is ApiResponse.Success ->
                 authInterface.requestPasswordReset(
                     PasswordResetRequest(email = email.encrypt(keyResponse.data.jwt))
                 )
         }
 
-    suspend fun passwordReset(userId: String, password: String, token: UUID): ApiResponse<GenericResponse> =
+    suspend fun passwordReset(
+        userId: String,
+        password: String,
+        token: UUID
+    ): ApiResponse<Void> =
         when (val keyResponse = getPublicOauthKey()) {
             is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
             is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
+            is ApiResponse.Success.Empty -> ApiResponse.Success.Empty()
             is ApiResponse.Success ->
                 authInterface.resetPassword(
                     PasswordReset(

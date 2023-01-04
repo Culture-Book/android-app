@@ -10,8 +10,8 @@ suspend fun <T : Any> handleResponse(
     return try {
         val response = execute()
         val body = response.body()
-        if (response.isSuccessful && body != null) {
-            ApiResponse.Success(body)
+        if (response.isSuccessful) {
+            if (body != null) ApiResponse.Success(body) else ApiResponse.Success.Empty()
         } else {
             ApiResponse.Failure(
                 code = response.code(),

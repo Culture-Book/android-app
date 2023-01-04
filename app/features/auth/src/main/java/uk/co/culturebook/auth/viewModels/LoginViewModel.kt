@@ -50,6 +50,7 @@ class LoginViewModel(
             }
             is ApiResponse.Failure -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
             is ApiResponse.Exception -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
+            is ApiResponse.Success.Empty -> _loginState.emit(LoginState.Idle)
         }
     }
 
@@ -75,6 +76,7 @@ class LoginViewModel(
             }
             is ApiResponse.Failure -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
             is ApiResponse.Exception -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
+            is ApiResponse.Success.Empty -> _loginState.emit(LoginState.Idle)
         }
     }
 
