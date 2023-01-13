@@ -4,8 +4,11 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
@@ -92,14 +95,25 @@ fun AppTheme(
 }
 
 @Composable
-fun SystemBarsColors() {
+fun SystemBarsColors(
+    navigationColor: Color = MaterialTheme.colorScheme.background,
+    systemBarColor: Color = MaterialTheme.colorScheme.background
+) {
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = !isSystemInDarkTheme()
-    val backgroundColor = MaterialTheme.colorScheme.background
 
     DisposableEffect(systemUiController, useDarkIcons) {
-        systemUiController.setNavigationBarColor(backgroundColor)
-        systemUiController.setStatusBarColor(backgroundColor)
+        systemUiController.setNavigationBarColor(navigationColor)
+        systemUiController.setStatusBarColor(systemBarColor)
         onDispose {}
+    }
+}
+
+@Composable
+fun surfaceColorAtElevation(color: Color, elevation: Dp): Color {
+    return if (color == MaterialTheme.colorScheme.surface) {
+        MaterialTheme.colorScheme.surfaceColorAtElevation(elevation)
+    } else {
+        color
     }
 }

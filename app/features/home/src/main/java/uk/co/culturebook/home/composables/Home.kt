@@ -1,12 +1,10 @@
 package uk.co.culturebook.home.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -17,6 +15,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import uk.co.culturebook.home.navigation.ExploreRoute
 import uk.co.culturebook.nav.Route
+import uk.co.culturebook.ui.theme.SystemBarsColors
+import uk.co.culturebook.ui.theme.surfaceColorAtElevation
 
 
 fun NavGraphBuilder.homeGraph(navController: NavController) {
@@ -38,7 +38,7 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
 
 
 @Composable
-@Preview
+@Preview(showSystemUi = true)
 fun AppBottomAppBar(
     modifier: Modifier = Modifier,
     currentDestination: NavDestination? = null,
@@ -49,7 +49,11 @@ fun AppBottomAppBar(
     ),
     onItemClicked: (ExploreRoute) -> Unit = {}
 ) {
-
+    val containerColor = surfaceColorAtElevation(
+        BottomAppBarDefaults.containerColor,
+        BottomAppBarDefaults.ContainerElevation
+    )
+    SystemBarsColors(navigationColor = containerColor)
     BottomAppBar(
         modifier = modifier.fillMaxWidth(),
     ) {
