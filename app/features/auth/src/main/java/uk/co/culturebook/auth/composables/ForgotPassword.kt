@@ -61,7 +61,7 @@ fun RequestForgotComposable(
         ) {
             if (state is ForgotState.Error) {
                 val errorString = stringResource(state.messageId)
-                LaunchedEffect(state) {
+                LaunchedEffect(Unit) {
                     snackbarState.showSnackbar(errorString)
                 }
             }
@@ -86,7 +86,7 @@ fun RequestForgotComposable(
 
                     EmailField(value = email, onValueChanged = { email = it })
 
-                    SubmitButtonForgot { requestForgotPassword(email) }
+                    SubmitButtonForgot(email.isValidEmail()) { requestForgotPassword(email) }
                 }
                 ForgotState.Loading -> Column(
                     modifier = Modifier.fillMaxSize(),
@@ -138,7 +138,7 @@ fun ForgotComposable(
                 password = password,
                 onValueChanged = { confirmPassword = it })
 
-            SubmitButtonForgot {
+            SubmitButtonForgot (password == confirmPassword) {
                 if (password == confirmPassword) requestForgotPassword(password)
             }
         }
@@ -179,10 +179,11 @@ fun ForgotComposable(
 
 
 @Composable
-fun SubmitButtonForgot(onRegistration: () -> Unit) {
+fun SubmitButtonForgot(enabled: Boolean = false, onRegistration: () -> Unit) {
     Button(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = smallPadding),
+        enabled = enabled,
         onClick = { onRegistration() }) {
         Text(text = stringResource(R.string.submit))
     }

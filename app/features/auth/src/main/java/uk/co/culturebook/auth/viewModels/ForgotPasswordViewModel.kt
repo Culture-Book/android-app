@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import uk.co.culturebook.ui.R
 import uk.co.culturebook.auth.states.ForgotState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.authentication.UserRepository
@@ -20,8 +21,8 @@ class ForgotPasswordViewModel(
         viewModelScope.launch {
             _forgotState.emit(ForgotState.Loading)
             val state = when (userRepository.requestPasswordReset(email)) {
-                is ApiResponse.Exception -> ForgotState.Idle
-                is ApiResponse.Failure -> ForgotState.Idle
+                is ApiResponse.Exception -> ForgotState.Error(R.string.generic_sorry)
+                is ApiResponse.Failure -> ForgotState.Error(R.string.generic_sorry)
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> ForgotState.Success
             }
             _forgotState.emit(state)
@@ -36,8 +37,8 @@ class ForgotPasswordViewModel(
                 password,
                 UUID.fromString(passwordResetToken)
             )) {
-                is ApiResponse.Exception -> ForgotState.Idle
-                is ApiResponse.Failure -> ForgotState.Idle
+                is ApiResponse.Exception -> ForgotState.Error(R.string.generic_sorry)
+                is ApiResponse.Failure -> ForgotState.Error(R.string.generic_sorry)
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> ForgotState.Success
             }
             _forgotState.emit(state)

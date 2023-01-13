@@ -22,6 +22,8 @@ fun String.isNotValidEmail() =
 
 fun String.isNotValidPassword() = !Regex("^(?=.*\\d)(?=.*[a-z])(?=.*[a-zA-Z]).{8,}\$").matches(this)
 
+fun String.isValidEmail() = !isNotValidEmail()
+
 private val String.isNotValidEmailValue get() = isNotValidEmail() && isNotBlank()
 
 private val String.isNotValidPasswordValue get() = isNotValidPassword() && isNotBlank()

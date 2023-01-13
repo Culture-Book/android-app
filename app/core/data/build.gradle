@@ -1,11 +1,11 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.plugin.serialization'
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
+    id "org.jetbrains.kotlin.plugin.serialization"
 }
 
 android {
-    namespace 'uk.co.culturebook.data'
+    namespace "uk.co.culturebook.data"
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
@@ -18,20 +18,20 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            buildConfigField "String", "API_URL", '\"http://10.0.2.2:8080\"'
+            buildConfigField "String", "API_URL", "\"http://10.0.2.2:8080\""
         }
         pre_release {
             minifyEnabled true
-            buildConfigField "String", "API_URL", '\"https://api.culturebook.co.uk\"'
+            buildConfigField "String", "API_URL", "\"https://api.culturebook.co.uk\""
         }
         pre_release_debug {
             debuggable true
             minifyEnabled true
-            buildConfigField "String", "API_URL", '\"https://api.culturebook.co.uk\"'
+            buildConfigField "String", "API_URL", "\"https://api.culturebook.co.uk\""
         }
         release {
             minifyEnabled true
-            buildConfigField "String", "API_URL", '\"https://api.culturebook.co.uk\"'
+            buildConfigField "String", "API_URL", "\"https://api.culturebook.co.uk\""
         }
     }
     compileOptions {
@@ -39,26 +39,26 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
 }
 
 dependencies {
     // Kotlin Serialization & Coroutines
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
-    api "org.jetbrains.kotlinx:kotlinx-serialization-json:$json"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+    api "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
 
     // Firebase
-    api platform('com.google.firebase:firebase-bom:31.1.1')
-    api 'com.google.firebase:firebase-config-ktx'
-    api 'com.google.firebase:firebase-analytics-ktx'
-    api 'com.google.firebase:firebase-crashlytics'
+    api platform("com.google.firebase:firebase-bom:31.1.1")
+    api "com.google.firebase:firebase-config-ktx"
+    api "com.google.firebase:firebase-analytics-ktx"
+    api "com.google.firebase:firebase-crashlytics"
 
     // Retrofit
-    implementation('com.squareup.okhttp3:okhttp-urlconnection:5.0.0-alpha.11')
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:5.0.0-alpha.11"
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
-    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
+    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11"
 
     // Crypto
     implementation "androidx.security:security-crypto:1.0.0"
@@ -68,6 +68,6 @@ dependencies {
     //ViewModels
     api "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
 
-    testApi "junit:junit:$junit"
-    androidTestApi "androidx.test.ext:junit:$android_junit"
+    testApi "junit:junit:4.13.2"
+    androidTestApi "androidx.test.ext:junit-ktx:1.1.5"
 }

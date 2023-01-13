@@ -1,10 +1,10 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+    id "com.android.library"
+    id "org.jetbrains.kotlin.android"
 }
 
 android {
-    namespace 'uk.co.culturebook.ui'
+    namespace "uk.co.culturebook.ui"
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
@@ -35,26 +35,26 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
 }
 
 dependencies {
     api "androidx.compose.ui:ui:$compose_version"
     api "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    api "androidx.compose.material3:material3:$material"
+    api "androidx.compose.material3:material3:1.0.1"
 
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 
     debugApi "androidx.compose.ui:ui-tooling:$compose_version"
     debugApi "androidx.compose.ui:ui-test-manifest:$compose_version"
 
-    androidTestApi "androidx.test.espresso:espresso-core:$espresso"
+    androidTestApi "androidx.test.espresso:espresso-core:3.5.1"
     androidTestApi "androidx.compose.ui:ui-test-junit4:$compose_version"
 }

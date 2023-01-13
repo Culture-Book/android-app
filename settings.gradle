@@ -13,9 +13,9 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "CultureBook"
-include ':app'
-include ':app:core:ui'
-include ':app:core:data'
-include ':app:features:auth'
-include ':app:core:nav'
-include ':app:features:home'
+include ":app"
+include ":app:core:ui"
+include ":app:core:data"
+include ":app:features:auth"
+include ":app:core:nav"
+include ":app:features:home"
