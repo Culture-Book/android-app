@@ -48,4 +48,23 @@
     <string name="explore">Explore</string>
     <string name="account">Account</string>
     <string name="social">Social</string>
+
+    <!--  Add New  -->
+    <string name="add_new">Add new element</string>
+    <string name="select_location">Select location</string>
+    <string name="location_title">Where is it from?</string>
+    <string name="location_subtitle">Select the location this element originates from.</string>
+    <string name="location_permission">Please allow location access for a better user experience.</string>
+    <string name="location_permission_title">Location access permission</string>
+    <string name="location_permission_rationale">Location access is needed for showing you nearby cultural elements and when adding a new element.</string>
+    <string name="request_permission">Request permission</string>
+    <string name="close">Close</string>
+
+    <string name="add_culture_message">Please add a culture name, only alphabetic characters and spaces are allowed.</string>
+    <string name="add_culture_title">Add a culture</string>
+    <string name="add_new_culture">Add a new culture</string>
+    <string name="culture_name">Culture name</string>
+    <string name="select_culture">Select culture</string>
+    <string name="select_culture_error">Please select a culture to continue</string>
+    <string name="select_culture_message">We found these cultures near you, please select one that relates to your cultural element.</string>
 </resources>

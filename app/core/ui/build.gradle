@@ -49,6 +49,7 @@ dependencies {
     api "androidx.compose.ui:ui:$compose_version"
     api "androidx.compose.ui:ui-tooling-preview:$compose_version"
     api "androidx.compose.material3:material3:1.0.1"
+    api 'com.google.maps.android:maps-compose:2.8.0'
 
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 

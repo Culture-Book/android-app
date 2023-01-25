@@ -19,3 +19,4 @@ include ":app:core:data"
 include ":app:features:auth"
 include ":app:core:nav"
 include ":app:features:home"
+include ':app:features:add_new'

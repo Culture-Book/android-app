@@ -56,5 +56,5 @@ dependencies {
     implementation project(":app:core:data")
     implementation project(":app:core:nav")
 
-    implementation "com.google.android.gms:play-services-auth:20.4.0"
+    implementation "com.google.android.gms:play-services-auth:20.4.1"
 }

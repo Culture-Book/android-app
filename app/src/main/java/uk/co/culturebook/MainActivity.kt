@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import uk.co.culturebook.add_new.addNewGraph
 import uk.co.culturebook.auth.composables.ForgotRoute
 import uk.co.culturebook.auth.composables.LoginRoute
 import uk.co.culturebook.auth.composables.RegistrationRoute
@@ -88,6 +89,7 @@ class MainActivity : ComponentActivity() {
             startDestination = Route.Login.route
         ) {
             homeGraph(navController)
+            addNewGraph(navController)
             composable(Route.Login.route) { LoginRoute(navController) }
             composable(Route.Registration.route) { RegistrationRoute(navController) }
             composable(Route.WebView.ToS.route) {

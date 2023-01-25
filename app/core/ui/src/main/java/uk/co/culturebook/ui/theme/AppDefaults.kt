@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import com.google.maps.android.compose.MapUiSettings
 
 val emailKeyboardOptions = KeyboardOptions(
     capitalization = KeyboardCapitalization.None,
@@ -28,4 +29,10 @@ val defaultPasswordKeyboardOptions = KeyboardOptions(
     capitalization = KeyboardCapitalization.None,
     autoCorrect = false,
     keyboardType = KeyboardType.Password,
+)
+
+val mapUiSettings = MapUiSettings(
+    compassEnabled = false,
+    myLocationButtonEnabled = true,
+    zoomControlsEnabled = false
 )

@@ -22,6 +22,7 @@ import uk.co.culturebook.home.states.ExploreState
 import uk.co.culturebook.home.viewModels.ExploreViewModel
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
+import uk.co.culturebook.ui.theme.AppIcon
 
 @Composable
 fun ExploreRoute(navController: NavController) {
@@ -47,7 +48,13 @@ fun Explore(
             AppBottomAppBar(
                 currentDestination = navController.currentDestination,
                 onItemClicked = { navController.navigate(it.route) })
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { navController.navigate(Route.AddNew.Location.route) }) {
+                Icon(AppIcon.Add.getPainter(), contentDescription = "Add new element")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
         when (exploreState) {
             is ExploreState.Error.Generic, ExploreState.Error.ToSUpdate ->
