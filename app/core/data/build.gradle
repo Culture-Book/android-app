@@ -22,12 +22,12 @@ android {
         }
         pre_release {
             minifyEnabled true
-            buildConfigField "String", "API_URL", "\"https://api.culturebook.co.uk\""
+            buildConfigField "String", "API_URL", "\"https://api-beta.culturebook.co.uk\""
         }
         pre_release_debug {
             debuggable true
             minifyEnabled true
-            buildConfigField "String", "API_URL", "\"https://api.culturebook.co.uk\""
+            buildConfigField "String", "API_URL", "\"https://api-beta.culturebook.co.uk\""
         }
         release {
             minifyEnabled true

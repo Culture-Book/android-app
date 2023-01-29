@@ -18,7 +18,8 @@ import uk.co.culturebook.data.models.cultural.isNotEmpty
 import uk.co.culturebook.data.models.cultural.toLatLng
 import uk.co.culturebook.data.models.cultural.toLocation
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.mediumPadding
+import uk.co.culturebook.ui.theme.mediumSize
+import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
 
 
 @Composable
@@ -52,14 +53,9 @@ fun LocationBody(
     }
 
     Column(modifier = modifier) {
-        Text(
-            text = stringResource(R.string.location_title),
-            style = MaterialTheme.typography.titleLarge
-        )
-        Text(
-            modifier = Modifier.padding(vertical = mediumPadding),
-            text = stringResource(R.string.location_subtitle),
-            style = MaterialTheme.typography.bodyMedium
+        TitleAndSubtitle(
+            title = stringResource(R.string.location_title),
+            message = stringResource(R.string.location_subtitle)
         )
 
         GoogleMapComposable(
@@ -73,7 +69,7 @@ fun LocationBody(
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(mediumPadding),
+                .padding(mediumSize),
             onClick = {
                 val currentLocation = cameraPositionState.position.target
                 postEvent(LocationEvent.GetCultures(currentLocation.toLocation()))

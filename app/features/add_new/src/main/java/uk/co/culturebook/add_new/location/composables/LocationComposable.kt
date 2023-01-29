@@ -23,12 +23,14 @@ import uk.co.culturebook.add_new.location.states.LocationState
 import uk.co.culturebook.data.location.*
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.cultural.AddNewRepository
+import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LocationRoute(navController: NavController) {
+fun LocationRoute(navController: NavController, onCultureSelected: (Culture) -> Unit) {
     val viewModel = viewModel {
         val addNewRepository =
             AddNewRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
@@ -58,7 +60,10 @@ fun LocationRoute(navController: NavController) {
         }
     }
 
-    LocationScreen(onBack = { navController.navigateUp() }, state = state, viewModel::postEvent, {})
+    LocationScreen(onBack = { navController.navigateUp() }, state = state, viewModel::postEvent, {
+        onCultureSelected(it)
+        navController.navigate(Route.AddNew.TitleAndType.route)
+    })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,31 +89,29 @@ fun LocationScreen(
         topBar = { LocationAppBar(onBack) },
         snackbarHost = { SnackbarHost(snackbarState) }) { padding ->
         when (state) {
-            is LocationState.Loading -> {
-                BoxWithConstraints(
-                    modifier = Modifier
-                        .padding(padding)
-                        .fillMaxSize()
-                ) { CircularProgressIndicator(modifier = Modifier.align(Alignment.Center)) }
-            }
+            is LocationState.Loading -> LoadingComposable(padding)
             is LocationState.AddCulture -> {
                 AddNewCulture(
                     modifier = Modifier
                         .padding(padding)
-                        .padding(horizontal = mediumPadding),
+                        .padding(horizontal = mediumSize),
                     location = userLatLng.toLocation(),
                     postEvent = postEvent
                 )
             }
             is LocationState.SelectedCulture -> {
-                LaunchedEffect(Unit) { snackbarState.showSnackbar("Culture selected: ${state.culture.name}") }
-                onCultureSelected(state.culture)
+                DisposableEffect(state) {
+                    onCultureSelected(state.culture)
+                    onDispose {
+                        postEvent(LocationEvent.ShowMap)
+                    }
+                }
             }
             is LocationState.ShowCultures -> {
                 ShowCultures(
                     modifier = Modifier
                         .padding(padding)
-                        .padding(horizontal = mediumPadding),
+                        .padding(horizontal = mediumSize),
                     cultures = state.cultures,
                     onCultureSelected = { postEvent(LocationEvent.SelectCulture(it)) },
                     onAddNewCultureClicked = {
@@ -123,7 +126,7 @@ fun LocationScreen(
                 LocationBody(
                     modifier = Modifier
                         .padding(padding)
-                        .padding(mediumPadding),
+                        .padding(mediumSize),
                     postEvent = postEvent,
                     cameraPositionState = cameraPositionState
                 )

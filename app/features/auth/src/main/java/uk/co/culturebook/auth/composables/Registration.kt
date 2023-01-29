@@ -6,7 +6,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,7 +42,6 @@ fun RegistrationComposable(
     navController: NavController,
     postEvent: (RegistrationEvent) -> Unit
 ) {
-    val scrollState = rememberScrollState()
     val snackbarState = remember { SnackbarHostState() }
 
     val registerState = remember { RegisterState() }
@@ -52,64 +50,68 @@ fun RegistrationComposable(
         modifier = Modifier.fillMaxSize(),
         topBar = { RegistrationAppBar { navController.navigateTop(Route.Login) } },
         snackbarHost = { SnackbarHost(hostState = snackbarState) }) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(mediumPadding)
-                .verticalScroll(scrollState)
-                .fillMaxSize()
-        ) {
-            if (registrationState is RegistrationState.Error) {
-                val errorString = stringResource(registrationState.messageId)
-                LaunchedEffect(registrationState) {
-                    snackbarState.showSnackbar(errorString)
-                    postEvent(RegistrationEvent.Idle)
-                }
+
+        if (registrationState is RegistrationState.Error) {
+            val errorString = stringResource(registrationState.messageId)
+            LaunchedEffect(registrationState) {
+                snackbarState.showSnackbar(errorString)
+                postEvent(RegistrationEvent.Idle)
             }
-            when (registrationState) {
-                is RegistrationState.Error, RegistrationState.Idle -> Form(registerState = registerState,
+        }
+
+        when (registrationState) {
+            is RegistrationState.Error, RegistrationState.Idle -> {
+                Form(
+                    modifier = Modifier.padding(padding),
+                    registerState = registerState,
                     onRegistration = { postEvent(it) },
                     onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
                     onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) })
-                RegistrationState.Loading -> Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-                RegistrationState.Success -> LaunchedEffect(Unit) {
-                    navController.navigateTop(Route.Home)
-                }
+            }
+            RegistrationState.Loading -> LoadingComposable(padding)
+            RegistrationState.Success -> LaunchedEffect(Unit) {
+                navController.navigateTop(Route.Home)
             }
         }
+
     }
 }
 
 @Composable
 fun Form(
+    modifier: Modifier,
     registerState: RegisterState,
     onRegistration: (RegistrationEvent) -> Unit,
     onTosClicked: () -> Unit,
     onPrivacyClicked: () -> Unit,
 ) {
-    with(registerState) {
-        EmailField(email) { email = it }
-        DisplayNameField(displayName) { displayName = it }
-        PasswordField(password, confirmPassword) { password = it }
-        ConfirmPasswordField(confirmPassword, password) { confirmPassword = it }
-        ToSSwitch(tosChecked, onChanged = { tosChecked = it }) { onTosClicked() }
-        PrivacySwitch(privacyChecked, onChanged = { privacyChecked = it }) { onPrivacyClicked() }
-        SubmitButton(onRegistration = { onRegistration(registerState.toEvent()) })
-    }
+    val scrollState = rememberScrollState()
 
+    Column(
+        modifier = modifier
+            .padding(mediumSize)
+            .verticalScroll(scrollState)
+            .fillMaxSize()
+    ) {
+        with(registerState) {
+            EmailField(email) { email = it }
+            DisplayNameField(displayName) { displayName = it }
+            PasswordField(password, confirmPassword) { password = it }
+            ConfirmPasswordField(confirmPassword, password) { confirmPassword = it }
+            ToSSwitch(tosChecked, onChanged = { tosChecked = it }) { onTosClicked() }
+            PrivacySwitch(
+                privacyChecked,
+                onChanged = { privacyChecked = it }) { onPrivacyClicked() }
+            SubmitButton(onRegistration = { onRegistration(registerState.toEvent()) })
+        }
+    }
 }
 
 @Composable
 fun SubmitButton(onRegistration: () -> Unit) {
     Button(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = smallPadding),
+        .padding(vertical = smallSize),
         onClick = { onRegistration() }) {
         Text(text = stringResource(R.string.register))
     }

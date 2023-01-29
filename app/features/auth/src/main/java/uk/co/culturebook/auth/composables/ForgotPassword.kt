@@ -56,7 +56,7 @@ fun RequestForgotComposable(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(mediumPadding)
+                .padding(mediumSize)
                 .fillMaxSize()
         ) {
             if (state is ForgotState.Error) {
@@ -80,7 +80,7 @@ fun RequestForgotComposable(
                     )
 
                     Text(
-                        modifier = Modifier.padding(vertical = mediumPadding),
+                        modifier = Modifier.padding(vertical = mediumSize),
                         text = stringResource(R.string.change_password_message)
                     )
 
@@ -88,13 +88,7 @@ fun RequestForgotComposable(
 
                     SubmitButtonForgot(email.isValidEmail()) { requestForgotPassword(email) }
                 }
-                ForgotState.Loading -> Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+                ForgotState.Loading -> LoadingComposable(padding)
             }
         }
     }
@@ -117,7 +111,7 @@ fun ForgotComposable(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(mediumPadding)
+                .padding(mediumSize)
                 .fillMaxSize()
         ) {
             Text(
@@ -125,7 +119,7 @@ fun ForgotComposable(
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                modifier = Modifier.padding(vertical = mediumPadding),
+                modifier = Modifier.padding(vertical = mediumSize),
                 text = stringResource(R.string.new_password_message)
             )
 
@@ -166,13 +160,7 @@ fun ForgotComposable(
 
         when (state) {
             is ForgotState.Error, ForgotState.Idle, ForgotState.Success -> ShowForm(padding)
-            ForgotState.Loading -> Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
-            }
+            ForgotState.Loading -> LoadingComposable(padding)
         }
     }
 }
@@ -182,7 +170,7 @@ fun ForgotComposable(
 fun SubmitButtonForgot(enabled: Boolean = false, onRegistration: () -> Unit) {
     Button(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = smallPadding),
+        .padding(vertical = smallSize),
         enabled = enabled,
         onClick = { onRegistration() }) {
         Text(text = stringResource(R.string.submit))

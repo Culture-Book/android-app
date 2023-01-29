@@ -23,6 +23,7 @@ import uk.co.culturebook.home.viewModels.ExploreViewModel
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
 fun ExploreRoute(navController: NavController) {
@@ -57,7 +58,7 @@ fun Explore(
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
         when (exploreState) {
-            is ExploreState.Error.Generic, ExploreState.Error.ToSUpdate ->
+            is ExploreState.Error.ToSUpdate ->
                 ToSDialog(
                     modifier = Modifier.padding(paddingValues),
                     onCancel = { EventBus.logout() },
@@ -68,15 +69,7 @@ fun Explore(
             ExploreState.Idle, is ExploreState.Error -> LaunchedEffect(Unit) {
                 postEvent(ExploreEvent.GetUser)
             }
-            ExploreState.Loading -> Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
-            }
+            ExploreState.Loading -> LoadingComposable(paddingValues)
             ExploreState.Success -> Text("EXPLORE Success")
         }
     }

@@ -3,11 +3,9 @@ package uk.co.culturebook.data.remote.interfaces
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 import uk.co.culturebook.data.models.authentication.User
-import uk.co.culturebook.data.models.cultural.Culture
-import uk.co.culturebook.data.models.cultural.CultureRequest
-import uk.co.culturebook.data.models.cultural.CultureResponse
-import uk.co.culturebook.data.models.cultural.Location
+import uk.co.culturebook.data.models.cultural.*
 
 interface ApiInterface {
     @GET("/auth/v1/user")
@@ -21,4 +19,7 @@ interface ApiInterface {
 
     @POST("/add_new/v1/culture")
     suspend fun addNewCulture(@Body cultureRequest: CultureRequest): ApiResponse<Culture>
+
+    @GET("/add_new/v1/element/duplicate")
+    suspend fun getDuplicateElement(@Query("name") name: String, @Query("type") type: String): ApiResponse<List<Element>>
 }

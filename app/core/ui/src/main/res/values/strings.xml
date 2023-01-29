@@ -61,10 +61,36 @@
     <string name="close">Close</string>
 
     <string name="add_culture_message">Please add a culture name, only alphabetic characters and spaces are allowed.</string>
+    <string name="add_culture_duplicate">This culture already exists near you.</string>
     <string name="add_culture_title">Add a culture</string>
     <string name="add_new_culture">Add a new culture</string>
     <string name="culture_name">Culture name</string>
     <string name="select_culture">Select culture</string>
     <string name="select_culture_error">Please select a culture to continue</string>
     <string name="select_culture_message">We found these cultures near you, please select one that relates to your cultural element.</string>
+
+    <string name="select_type_and_title_title">What is it?</string>
+    <string name="select_type_title">What is its element type?</string>
+    <string name="select_type_message">Select the cultural element type this tradition falls under.</string>
+
+    <string name="select_title">What is the name of this element?</string>
+    <string name="select_title_message">Add the name that best describes this tradition.</string>
+    <string name="name">Name</string>
+    <string name="next">Next</string>
+    <string name="duplicate_element_title">Duplicate element</string>
+    <string name="duplicate_element_message">Duplicate element found.</string>
+
+    <string name="add_info">Add information</string>
+    <string name="background">Background</string>
+    <string name="background_message">You can add any piece of information you think is relevant.</string>
+    <string name="link_elements">Link other elements</string>
+    <string name="select_date">Select date</string>
+    <string name="media">Media</string>
+
+<!--    Element Types-->
+    <string name="food">Gastronomy</string>
+    <string name="music">Music</string>
+    <string name="story">Story</string>
+    <string name="poi">Point of Interest</string>
+    <string name="event">Local event</string>
 </resources>

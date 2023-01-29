@@ -3,6 +3,7 @@ package uk.co.culturebook.data.repositories.cultural
 import android.content.Context
 import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.models.cultural.CultureRequest
+import uk.co.culturebook.data.models.cultural.ElementType
 import uk.co.culturebook.data.models.cultural.Location
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.sharedPreferences
@@ -13,4 +14,5 @@ class AddNewRepository(context: Context) {
 
     suspend fun getCultures(location: Location) = apiInterface.getNearbyCultures(location)
     suspend fun addCulture(culture: CultureRequest) = apiInterface.addNewCulture(culture)
+    suspend fun getDuplicateElements(name:String, type: ElementType) = apiInterface.getDuplicateElement(name, type.name)
 }

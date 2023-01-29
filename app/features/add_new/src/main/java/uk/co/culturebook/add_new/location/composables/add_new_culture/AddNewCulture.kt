@@ -10,7 +10,8 @@ import androidx.compose.ui.res.stringResource
 import uk.co.culturebook.add_new.location.events.LocationEvent
 import uk.co.culturebook.data.models.cultural.Location
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.mediumPadding
+import uk.co.culturebook.ui.theme.mediumRoundedShape
+import uk.co.culturebook.ui.theme.mediumSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,13 +31,14 @@ fun AddNewCulture(
         )
 
         Text(
-            modifier = Modifier.padding(vertical = mediumPadding),
+            modifier = Modifier.padding(vertical = mediumSize),
             text = stringResource(R.string.add_culture_message),
             style = MaterialTheme.typography.bodyMedium
         )
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
+            shape = mediumRoundedShape,
             value = cultureName,
             isError = isError && cultureName.isNotBlank(),
             onValueChange = { cultureName = it },
@@ -45,7 +47,7 @@ fun AddNewCulture(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = mediumPadding)
+                .padding(vertical = mediumSize)
         ) {
             Button(
                 modifier = Modifier.fillMaxWidth(),

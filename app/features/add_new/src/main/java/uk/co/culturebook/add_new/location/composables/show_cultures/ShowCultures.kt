@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import uk.co.culturebook.data.models.cultural.Culture
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
+import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,15 +25,9 @@ fun ShowCultures(
     var selectedCulture by remember { mutableStateOf<Culture?>(null) }
     Column(modifier = modifier) {
 
-        Text(
-            text = stringResource(R.string.select_culture),
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Text(
-            modifier = Modifier.padding(vertical = mediumPadding),
-            text = stringResource(R.string.select_culture_message),
-            style = MaterialTheme.typography.bodyMedium
+        TitleAndSubtitle(
+            title = stringResource(R.string.select_culture),
+            message = stringResource(R.string.select_culture_message)
         )
 
         LazyColumn {
@@ -43,9 +38,9 @@ fun ShowCultures(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = smallPadding),
+                        .padding(bottom = smallSize),
                     color = selectedColor,
-                    tonalElevation = smallPadding,
+                    tonalElevation = smallSize,
                     shape = smallRoundedShape,
                     onClick = { selectedCulture = culture })
                 {
@@ -68,7 +63,7 @@ fun ShowCultures(
             item {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    tonalElevation = smallPadding,
+                    tonalElevation = smallSize,
                     shape = smallRoundedShape,
                     onClick = { onAddNewCultureClicked() })
                 {
@@ -91,7 +86,7 @@ fun ShowCultures(
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = smallPadding),
+                        .padding(vertical = smallSize),
                     enabled = selectedCulture != null,
                     onClick = { selectedCulture?.let { onCultureSelected(it) } }
                 ) {

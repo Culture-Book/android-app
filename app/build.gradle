@@ -5,6 +5,9 @@ plugins {
     id "com.google.firebase.crashlytics"
 }
 
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
     signingConfigs {
         pre_release {
@@ -42,7 +45,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-DEBUG"
             minifyEnabled false
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: "maps_key"
+            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
         }
         pre_release_debug {
             applicationIdSuffix ".pre_release"
@@ -52,7 +55,7 @@ android {
             minifyEnabled true
             matchingFallbacks = ["pre_release"]
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: "maps_key"
+            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
         }
         pre_release {
             applicationIdSuffix ".pre_release"
@@ -60,13 +63,13 @@ android {
             signingConfig signingConfigs.pre_release
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: "maps_key"
+            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
         }
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: "maps_key"
+            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
         }
     }
     compileOptions {

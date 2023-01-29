@@ -71,6 +71,9 @@ class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewMo
         }
     }
 
-    private val <T : Any> ApiResponse.Failure<T>.errorMessage get() = R.string.generic_sorry
+    private val <T : Any> ApiResponse.Failure<T>.errorMessage get() = when(this.message) {
+        "DuplicateCulture" -> R.string.add_culture_duplicate
+        else -> R.string.generic_sorry
+    }
     private val <T : Any> ApiResponse.Exception<T>.errorMessage get() = R.string.generic_sorry
 }

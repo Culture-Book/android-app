@@ -34,7 +34,7 @@ fun EmailField(value: String, onValueChanged: (String) -> Unit) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = smallPadding),
+            .padding(vertical = smallSize),
         value = value,
         onValueChange = onValueChanged,
         shape = mediumRoundedShape,
@@ -54,7 +54,7 @@ fun DisplayNameField(value: String, onValueChanged: (String) -> Unit) {
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = smallPadding),
+            .padding(vertical = smallSize),
         value = value,
         onValueChange = onValueChanged,
         shape = mediumRoundedShape,
@@ -70,7 +70,7 @@ fun PasswordField(value: String, confirmPassword: String, onValueChanged: (Strin
     var showPassword by remember { mutableStateOf(false) }
     OutlinedTextField(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = smallPadding),
+        .padding(vertical = smallSize),
         value = value,
         onValueChange = onValueChanged,
         isError = value != confirmPassword || value.isNotValidPasswordValue,
@@ -101,7 +101,7 @@ fun ConfirmPasswordField(value: String, password: String, onValueChanged: (Strin
     var showConfirmPassword by remember { mutableStateOf(false) }
     OutlinedTextField(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = smallPadding),
+        .padding(vertical = smallSize),
         value = value,
         onValueChange = onValueChanged,
         shape = mediumRoundedShape,
@@ -130,7 +130,7 @@ fun LoginEmailField(value: String, onValueChanged: (String) -> Unit, onNext: (Bo
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = smallPadding),
+            .padding(vertical = smallSize),
         value = value,
         onValueChange = onValueChanged,
         shape = mediumRoundedShape,
@@ -154,7 +154,7 @@ fun LoginPasswordField(
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = smallPadding)
+            .padding(vertical = smallSize)
             .focusRequester(focusRequester),
         value = value,
         onValueChange = onValueChanged,

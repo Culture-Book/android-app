@@ -13,6 +13,14 @@ enum class ElementType {
     Event
 }
 
+val allElementTypes = listOf(
+    ElementType.Food,
+    ElementType.Music,
+    ElementType.Story,
+    ElementType.PoI,
+    ElementType.Event
+)
+
 @Serializable
 data class EventType(
     @Serializable(with = LocalDateTimeSerializer::class)

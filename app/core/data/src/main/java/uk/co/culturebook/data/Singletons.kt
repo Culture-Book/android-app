@@ -33,4 +33,9 @@ object Singletons {
                 return it
             }
         }
+
+    fun resetInterfaces() {
+        authInterface = null
+        apiInterface = null
+    }
 }

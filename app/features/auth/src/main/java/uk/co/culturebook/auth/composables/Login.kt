@@ -23,12 +23,9 @@ import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.mediumPadding
-import uk.co.culturebook.ui.theme.molecules.LoginEmailField
-import uk.co.culturebook.ui.theme.molecules.LoginPasswordField
-import uk.co.culturebook.ui.theme.molecules.LogoComposable
-import uk.co.culturebook.ui.theme.molecules.OrDivider
-import uk.co.culturebook.ui.theme.smallPadding
+import uk.co.culturebook.ui.theme.mediumSize
+import uk.co.culturebook.ui.theme.molecules.*
+import uk.co.culturebook.ui.theme.smallSize
 import uk.co.culturebook.ui.theme.xxxlSize
 
 @Composable
@@ -40,7 +37,7 @@ fun LoginRoute(navController: NavController) {
 
     val loginState by viewModel.loginState.collectAsState()
     LoginComposable(
-        Modifier.padding(mediumPadding),
+        Modifier.padding(mediumSize),
         navController,
         loginState,
         viewModel::postEvent
@@ -101,7 +98,7 @@ fun LoginComposable(
                         OrDivider(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(smallPadding)
+                                .padding(smallSize)
                         )
 
                         OutlinedButton(
@@ -119,7 +116,7 @@ fun LoginComposable(
                         }
                     }
                 }
-                LoginState.Loading -> CircularProgressIndicator()
+                LoginState.Loading -> LoadingComposable(paddingValues)
                 is LoginState.Success -> LaunchedEffect(Unit) {
                     navController.navigateTop(Route.Home)
                 }
@@ -144,7 +141,7 @@ fun Form(
 
     LogoComposable(
         modifier = Modifier
-            .padding(mediumPadding)
+            .padding(mediumSize)
             .size(xxxlSize)
     )
 
@@ -166,7 +163,7 @@ fun Form(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = smallPadding),
+            .padding(vertical = smallSize),
         onClick = { onLoginPressed(loginHState) }) {
         Text(text = stringResource(R.string.login))
     }

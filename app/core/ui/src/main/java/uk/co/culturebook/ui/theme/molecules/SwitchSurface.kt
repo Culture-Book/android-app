@@ -13,9 +13,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import uk.co.culturebook.ui.theme.mediumPadding
+import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.mediumRoundedShape
-import uk.co.culturebook.ui.theme.smallPadding
+import uk.co.culturebook.ui.theme.smallSize
 
 @Composable
 @Preview
@@ -35,7 +35,7 @@ fun TertiarySwitchSurface(
         color = MaterialTheme.colorScheme.tertiaryContainer
     ) {
         Row(
-            modifier = Modifier.padding(mediumPadding),
+            modifier = Modifier.padding(mediumSize),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -50,7 +50,7 @@ fun TertiarySwitchSurface(
                 Text(
                     modifier = if (onSubtitleClicked != null) {
                         Modifier
-                            .padding(top = smallPadding)
+                            .padding(top = smallSize)
                             .clickable { onSubtitleClicked() }
                     } else Modifier,
                     text = subtitle,
@@ -74,7 +74,7 @@ fun TertiarySwitchSurface(
 fun ToSSwitch(isChecked: Boolean, onChanged: (Boolean) -> Unit, onClick: () -> Unit) {
     TertiarySwitchSurface(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = smallPadding),
+        .padding(vertical = smallSize),
         title = stringResource(uk.co.culturebook.ui.R.string.tos),
         subtitle = stringResource(uk.co.culturebook.ui.R.string.read_tos),
         checked = isChecked,
@@ -86,7 +86,7 @@ fun ToSSwitch(isChecked: Boolean, onChanged: (Boolean) -> Unit, onClick: () -> U
 fun PrivacySwitch(isChecked: Boolean, onChanged: (Boolean) -> Unit, onClick: () -> Unit) {
     TertiarySwitchSurface(modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = smallPadding),
+        .padding(vertical = smallSize),
         title = stringResource(uk.co.culturebook.ui.R.string.privacy),
         subtitle = stringResource(uk.co.culturebook.ui.R.string.read_privacy),
         checked = isChecked,

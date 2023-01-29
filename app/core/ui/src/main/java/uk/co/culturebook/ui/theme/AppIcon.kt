@@ -121,6 +121,36 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = Icons.Default.Check.getPainter()
     }
+
+    object Food : AppIcon {
+        private val icon = R.drawable.ic_restaurant
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Music : AppIcon {
+        private val icon = R.drawable.ic_music
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Story : AppIcon {
+        private val icon = R.drawable.ic_book
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object PointOfInterest : AppIcon {
+        private val icon = R.drawable.ic_pin_drop
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Event : AppIcon {
+        private val icon = R.drawable.ic_event
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
 }
 
 @Composable

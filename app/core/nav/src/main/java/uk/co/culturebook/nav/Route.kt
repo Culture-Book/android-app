@@ -40,6 +40,15 @@ sealed interface Route {
         object Location : Route {
             override val route = "location"
         }
+
+        object TitleAndType : Route {
+            override val route = "title_type"
+        }
+
+        object AddInfo : Route {
+            override val route = "add_info"
+        }
+
     }
 
     object WebView : Route {

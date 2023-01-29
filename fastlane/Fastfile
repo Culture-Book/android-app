@@ -36,6 +36,18 @@ lane :distributeDebug do
         file: ENV["ABB_FILE_PATH_DEBUG"],
         notify_testers: false
     )
-end 
+end
+desc "Lane for distributing the app using VS App Center"
+lane :distributeRelease do
+    gradle(task: "bundleRelease")
+    appcenter_upload(
+        api_token: ENV["APP_CENTER_TOKEN"],
+        owner_name: ENV["APP_CENTER_OWNER"],
+        owner_type: "user", # Default is user - set to organization for appcenter organizations
+        app_name: ENV["APP_CENTER_APP_NAME_RELEASE"],
+        file: ENV["ABB_FILE_PATH_RELEASE"],
+        notify_testers: false
+    )
+end
 
 end
