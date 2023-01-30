@@ -2,9 +2,7 @@ name: Android Workflow
 "on":
   push:
     branches:
-      - "*"
-      - "*/*"
-      - "**"
+      - "pre_release/*"
 
 jobs:
   Android_workflow:
