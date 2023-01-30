@@ -9,6 +9,7 @@ def localProperties = new Properties()
 try {
     localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 } catch (Exception ignored) {}
+def mapsKey = System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
 
 android {
     signingConfigs {
@@ -47,7 +48,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-DEBUG"
             minifyEnabled false
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
+            resValue "string", "MAPS_API_KEY", "$mapsKey"
         }
         pre_release_debug {
             applicationIdSuffix ".pre_release"
@@ -57,7 +58,7 @@ android {
             minifyEnabled true
             matchingFallbacks = ["pre_release"]
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
+            resValue "string", "MAPS_API_KEY", "$mapsKey"
         }
         pre_release {
             applicationIdSuffix ".pre_release"
@@ -65,13 +66,13 @@ android {
             signingConfig signingConfigs.pre_release
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
+            resValue "string", "MAPS_API_KEY", "$mapsKey"
         }
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-            resValue "string", "MAPS_API_KEY", System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
+            resValue "string", "MAPS_API_KEY", "$mapsKey"
         }
     }
     compileOptions {
