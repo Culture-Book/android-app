@@ -9,6 +9,6 @@ sealed interface LocationState {
     object Loading : LocationState
     data class AddCulture(val location: Location) : LocationState
     data class ShowCultures(val cultures: List<Culture>) : LocationState
-    data class SelectedCulture(val culture: Culture) : LocationState
+    data class SelectedCulture(val culture: Culture, val location: Location) : LocationState
     data class Error(@StringRes val errorId: Int) : LocationState
 }

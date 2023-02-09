@@ -1,5 +1,6 @@
 package uk.co.culturebook.data.models.cultural
 
+import androidx.compose.runtime.Stable
 import kotlinx.serialization.Serializable
 import uk.co.culturebook.data.serializers.LocalDateTimeSerializer
 import java.time.LocalDateTime
@@ -22,11 +23,14 @@ val allElementTypes = listOf(
 )
 
 @Serializable
+@Stable
 data class EventType(
     @Serializable(with = LocalDateTimeSerializer::class)
     val startDateTime: LocalDateTime,
     val location: Location
 )
+
+val EventType.Companion.Empty get() = EventType(LocalDateTime.MIN, Location.Empty)
 
 fun String.decodeElementType() = when {
     equals(ElementType.Food.name) -> ElementType.Food
@@ -38,12 +42,4 @@ fun String.decodeElementType() = when {
     else -> throw IllegalArgumentException()
 }
 
-fun String?.isValidElementTypeName() = when {
-    equals(ElementType.Food.name) -> true
-    equals(ElementType.PoI.name) -> true
-    equals(ElementType.Music.name) -> true
-    equals(ElementType.Story.name) -> true
-    equals(ElementType.Event.name) -> true
-    else -> false
-}
 

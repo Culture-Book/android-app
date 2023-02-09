@@ -23,8 +23,8 @@ private val nonAuthClient by lazy {
     OkHttpClient.Builder()
         .addNetworkInterceptor(HttpLoggingInterceptor())
         .cookieJar(JavaNetCookieJar(cookieHandler))
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
 }
 
 private fun authenticatedClient(context: Context) =

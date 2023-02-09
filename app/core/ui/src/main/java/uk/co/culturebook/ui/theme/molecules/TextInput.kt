@@ -1,17 +1,20 @@
 package uk.co.culturebook.ui.theme.molecules
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 
@@ -173,4 +176,61 @@ fun LoginPasswordField(
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun LargeDynamicRoundedTextField(
+    modifier: Modifier = Modifier,
+    value: String = "",
+    onValueChange: (String) -> Unit = {},
+    readOnly: Boolean = false
+) {
+    var expand by remember { mutableStateOf(false) }
+
+    BoxWithConstraints(
+        modifier = modifier
+            .animateContentSize()
+    ) {
+        val height = if (expand) maxHeight else minHeight
+        TextField(
+            modifier = Modifier
+                .defaultMinSize(minHeight = xxxxlSize)
+                .padding(bottom = mediumSize)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        expand = true
+                    }
+                }
+                .height(height)
+                .fillMaxWidth(),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            value = value,
+            shape = mediumRoundedShape,
+            onValueChange = onValueChange,
+            readOnly = readOnly
+        )
+
+        if (maxHeight != minHeight) {
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(mediumSize),
+                onClick = { expand = !expand }) {
+                if (expand) Icon(
+                    painter = AppIcon.ChevronUp.getPainter(),
+                    contentDescription = "expand button"
+                ) else Icon(
+                    painter = AppIcon.ChevronDown.getPainter(),
+                    contentDescription = "expand button"
+                )
+            }
+        }
+    }
 }

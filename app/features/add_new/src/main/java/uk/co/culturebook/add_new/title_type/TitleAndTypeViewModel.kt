@@ -40,7 +40,7 @@ class TitleAndTypeViewModel(private val addNewRepository: AddNewRepository) : Vi
                                     )
                                 )
                             } else {
-                                _titleAndTypeState.emit(TitleAndTypeState.Duplicate(response.data.first()))
+                                _titleAndTypeState.emit(TitleAndTypeState.Error.Duplicate(response.data.first()))
                             }
                         }
                     }

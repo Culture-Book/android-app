@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -18,6 +17,7 @@ import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.*
+import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @Composable
 fun ForgotRoute(navController: NavController, userId: String, token: String) {
@@ -60,16 +60,13 @@ fun RequestForgotComposable(
                 .fillMaxSize()
         ) {
             if (state is ForgotState.Error) {
-                val errorString = stringResource(state.messageId)
-                LaunchedEffect(Unit) {
-                    snackbarState.showSnackbar(errorString)
-                }
+                ShowSnackbar(stringId = state.messageId, snackbarState = snackbarState)
             }
             if (state is ForgotState.Success) {
-                val successString = stringResource(R.string.new_password_request_success)
-                LaunchedEffect(Unit) {
-                    snackbarState.showSnackbar(successString)
-                }
+                ShowSnackbar(
+                    stringId = R.string.new_password_request_success,
+                    snackbarState = snackbarState
+                )
             }
 
             when (state) {
@@ -132,7 +129,7 @@ fun ForgotComposable(
                 password = password,
                 onValueChanged = { confirmPassword = it })
 
-            SubmitButtonForgot (password == confirmPassword) {
+            SubmitButtonForgot(password == confirmPassword) {
                 if (password == confirmPassword) requestForgotPassword(password)
             }
         }
@@ -144,18 +141,15 @@ fun ForgotComposable(
         snackbarHost = { SnackbarHost(hostState = snackbarState) }) { padding ->
 
         if (state is ForgotState.Error) {
-            val errorString = stringResource(state.messageId)
-            LaunchedEffect(state) {
-                snackbarState.showSnackbar(errorString)
-            }
+            ShowSnackbar(stringId = state.messageId, snackbarState = snackbarState)
         }
 
         if (state is ForgotState.Success) {
-            val successString = stringResource(R.string.new_password_success)
-            LaunchedEffect(Unit) {
-                snackbarState.showSnackbar(successString)
-                navController.navigateTop(Route.Login)
-            }
+            ShowSnackbar(
+                stringId = R.string.new_password_success,
+                onShow = { navController.navigateTop(Route.Login) },
+                snackbarState = snackbarState
+            )
         }
 
         when (state) {

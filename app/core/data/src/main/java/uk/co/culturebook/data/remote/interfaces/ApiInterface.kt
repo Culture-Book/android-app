@@ -1,9 +1,7 @@
 package uk.co.culturebook.data.remote.interfaces
 
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import okhttp3.MultipartBody
+import retrofit2.http.*
 import uk.co.culturebook.data.models.authentication.User
 import uk.co.culturebook.data.models.cultural.*
 
@@ -21,5 +19,16 @@ interface ApiInterface {
     suspend fun addNewCulture(@Body cultureRequest: CultureRequest): ApiResponse<Culture>
 
     @GET("/add_new/v1/element/duplicate")
-    suspend fun getDuplicateElement(@Query("name") name: String, @Query("type") type: String): ApiResponse<List<Element>>
+    suspend fun getDuplicateElement(
+        @Query("name") name: String,
+        @Query("type") type: String
+    ): ApiResponse<List<Element>>
+
+    @Streaming
+    @Multipart
+    @POST("/add_new/v1/element/submit")
+    suspend fun postElement(
+        @Part element: MultipartBody.Part,
+        @Part files: List<MultipartBody.Part>
+    ): ApiResponse<List<String>>
 }

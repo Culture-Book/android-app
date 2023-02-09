@@ -47,6 +47,20 @@ sealed interface Route {
 
         object AddInfo : Route {
             override val route = "add_info"
+
+            object Base : Route {
+                override val route = "base"
+            }
+
+            object LinkElements : Route {
+                const val linkedElementsParam = "elements"
+                override val route = "link_elements?$linkedElementsParam="
+            }
+
+        }
+
+        object Review : Route {
+            override val route = "review"
         }
 
     }

@@ -31,7 +31,8 @@ import uk.co.culturebook.ui.theme.xxlSize
 fun GoogleMapComposable(
     modifier: Modifier = Modifier,
     cameraPositionState: CameraPositionState,
-    onMyLocationClicked: (Boolean) -> Unit
+    onMyLocationClicked: (Boolean) -> Unit,
+    isDisplayOnly: Boolean = false
 ) {
     val locationPermission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val mapProperties = googleMapProperties()
@@ -54,15 +55,18 @@ fun GoogleMapComposable(
         ) {
             // TODO - Get the cultures in real time and show the geometry
         }
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(mediumSize),
-            onClick = { onMyLocationClicked(locationPermission.status.isGranted) }) {
-            Icon(
-                painter = if (locationPermission.status.isGranted) AppIcon.MyLocation.getPainter() else AppIcon.LocationOff.getPainter(),
-                contentDescription = "My location icon"
-            )
+
+        if (!isDisplayOnly) {
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(mediumSize),
+                onClick = { onMyLocationClicked(locationPermission.status.isGranted) }) {
+                Icon(
+                    painter = if (locationPermission.status.isGranted) AppIcon.MyLocation.getPainter() else AppIcon.LocationOff.getPainter(),
+                    contentDescription = "My location icon"
+                )
+            }
         }
     }
 }

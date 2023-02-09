@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import uk.co.culturebook.ui.R
 import uk.co.culturebook.auth.states.ForgotState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.authentication.UserRepository
+import uk.co.culturebook.ui.R
 import java.util.*
 
 class ForgotPasswordViewModel(

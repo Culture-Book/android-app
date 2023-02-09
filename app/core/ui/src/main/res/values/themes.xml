@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.DatePicker" parent="android:Widget.Material.DatePicker">
+        <item name="android:headerBackground">@color/surfaceVariant</item>
+        <item name="android:calendarTextColor">@color/onSurface</item>
+    </style>
+
+    <style name="Theme_DatePicker.Light" parent="android:Theme.Material.Light">
+        <item name="android:datePickerStyle">@style/Widget.DatePicker</item>
+        <item name="android:colorAccent">@color/primary</item>
+    </style>
+
+    <style name="Theme_TimePicker.Light" parent="android:Theme.Material.Light">
+        <item name="android:timePickerStyle">@style/Widget.TimePicker</item>
+        <item name="android:textColorPrimary">@color/onSurface</item>
+        <item name="android:textColorSecondary">@color/onSurfaceVariant</item>
+    </style>
+
+    <style name="Theme_DatePicker.Dark" parent="android:Theme.Material">
+        <item name="android:datePickerStyle">@style/Widget.DatePicker</item>
+        <item name="android:colorAccent">@color/primary</item>
+    </style>
+
+    <style name="Theme_TimePicker.Dark" parent="android:Theme.Material">
+        <item name="android:timePickerStyle">@style/Widget.TimePicker</item>
+        <item name="android:textColorPrimary">@color/onSurface</item>
+        <item name="android:textColorSecondary">@color/onSurfaceVariant</item>
+    </style>
+
+    <style name="Widget.TimePicker" parent="@android:style/Widget.Material.TimePicker">
+        <item name="android:numbersTextColor">@color/onSurface</item>
+        <item name="android:numbersInnerTextColor">@color/onSurfaceVariant</item>
+        <item name="android:numbersSelectorColor">@color/primary</item>
+        <item name="android:numbersBackgroundColor">@color/surface</item>
+        <item name="android:headerBackground">@color/surfaceVariant</item>
+    </style>
+
+</resources>

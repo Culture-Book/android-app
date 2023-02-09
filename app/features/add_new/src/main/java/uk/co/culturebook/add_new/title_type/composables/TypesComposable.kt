@@ -28,20 +28,6 @@ fun ElementTypesComposable(
 ) {
     LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(2)) {
         items(types) {
-            val label = when (it) {
-                ElementType.Food -> stringResource(R.string.food)
-                ElementType.Music -> stringResource(R.string.music)
-                ElementType.Story -> stringResource(R.string.story)
-                ElementType.PoI -> stringResource(R.string.poi)
-                ElementType.Event -> stringResource(R.string.event)
-            }
-            val icon = when (it) {
-                ElementType.Food -> AppIcon.Food.getPainter()
-                ElementType.Music -> AppIcon.Music.getPainter()
-                ElementType.Story -> AppIcon.Story.getPainter()
-                ElementType.PoI -> AppIcon.PointOfInterest.getPainter()
-                ElementType.Event -> AppIcon.Event.getPainter()
-            }
             val isSelected = it == selectedType
             FilterChip(
                 modifier = Modifier.padding(end = smallSize, bottom = smallSize),
@@ -55,14 +41,34 @@ fun ElementTypesComposable(
                         contentDescription = "Tick"
                     ) else Icon(
                         modifier = Modifier.padding(smallSize),
-                        painter = icon,
+                        painter = it.icon,
                         contentDescription = "Type icon"
                     )
                 },
                 label = {
-                    Text(modifier = Modifier.padding(vertical = mediumSize), text = label)
+                    Text(modifier = Modifier.padding(vertical = mediumSize), text = it.label)
                 }
             )
         }
     }
 }
+
+val ElementType.label
+    @Composable get() = when (this) {
+        ElementType.Food -> stringResource(R.string.food)
+        ElementType.Music -> stringResource(R.string.music)
+        ElementType.Story -> stringResource(R.string.story)
+        ElementType.PoI -> stringResource(R.string.poi)
+        ElementType.Event -> stringResource(R.string.event)
+        else -> ""
+    }
+
+val ElementType.icon
+    @Composable get() = when (this) {
+        ElementType.Food -> AppIcon.Food.getPainter()
+        ElementType.Music -> AppIcon.Music.getPainter()
+        ElementType.Story -> AppIcon.Story.getPainter()
+        ElementType.PoI -> AppIcon.PointOfInterest.getPainter()
+        ElementType.Event -> AppIcon.Event.getPainter()
+        else -> AppIcon.BrokenImage.getPainter()
+    }

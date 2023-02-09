@@ -19,12 +19,14 @@ import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
 fun TitleAndTypeScreen(
     state: TitleAndTypeState,
     onBack: () -> Unit,
+    title: String = "",
+    elementType: ElementType? = null,
     postEvent: (TitleAndTypeEvent) -> Unit
 ) {
-    val selectedElementType = remember { mutableStateOf<ElementType?>(null) }
+    val selectedElementType = remember { mutableStateOf(elementType) }
     val snackbarHostState = remember { SnackbarHostState() }
-    var title by remember { mutableStateOf("") }
-    val isError by remember { derivedStateOf { !title.matches(Regex("[a-zA-Z ]+")) } }
+    var localTitle by remember { mutableStateOf(title) }
+    val isError by remember { derivedStateOf { !localTitle.matches(Regex("[a-zA-Z ]+")) } }
     val type = selectedElementType.value
     val error = if (state is TitleAndTypeState.Error) stringResource(state.stringId) else null
 
@@ -39,13 +41,6 @@ fun TitleAndTypeScreen(
         topBar = { TitleAndTypeAppbar(onBack) },
         snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
         when (state) {
-            is TitleAndTypeState.Duplicate -> {
-                val string = stringResource(R.string.duplicate_element_title)
-                LaunchedEffect(state) {
-                    snackbarHostState.showSnackbar(string)
-                    postEvent(TitleAndTypeEvent.Idle)
-                }
-            }
             TitleAndTypeState.Loading -> LoadingComposable(padding)
             TitleAndTypeState.Idle,
             is TitleAndTypeState.Error,
@@ -69,16 +64,16 @@ fun TitleAndTypeScreen(
                         onTypeClicked = { selectedElementType.value = it })
 
                     TitleAndSubtitle(
-                        title = stringResource(R.string.select_type_title),
-                        message = stringResource(R.string.select_type_message)
+                        title = stringResource(R.string.select_title),
+                        message = stringResource(R.string.select_title_message)
                     )
 
                     TitleComposable(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = mediumSize),
-                        title = title,
-                        onTitleChange = { title = it },
+                        title = localTitle,
+                        onTitleChange = { localTitle = it },
                         isError = isError
                     )
 
@@ -87,7 +82,7 @@ fun TitleAndTypeScreen(
                         enabled = !isError && type != null,
                         onClick = {
                             if (type != null) {
-                                postEvent(TitleAndTypeEvent.Submit(title, type))
+                                postEvent(TitleAndTypeEvent.Submit(localTitle, type))
                             }
                         }) {
                         Text(stringResource(R.string.next))

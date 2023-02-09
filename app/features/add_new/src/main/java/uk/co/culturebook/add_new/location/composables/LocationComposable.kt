@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -27,10 +26,11 @@ import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
+import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun LocationRoute(navController: NavController, onCultureSelected: (Culture) -> Unit) {
+fun LocationRoute(navController: NavController, onDone: (Culture, Location) -> Unit) {
     val viewModel = viewModel {
         val addNewRepository =
             AddNewRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
@@ -60,10 +60,14 @@ fun LocationRoute(navController: NavController, onCultureSelected: (Culture) -> 
         }
     }
 
-    LocationScreen(onBack = { navController.navigateUp() }, state = state, viewModel::postEvent, {
-        onCultureSelected(it)
-        navController.navigate(Route.AddNew.TitleAndType.route)
-    })
+    LocationScreen(
+        onBack = { navController.navigateUp() },
+        state = state,
+        viewModel::postEvent,
+        { culture, location ->
+            onDone(culture, location)
+            navController.navigate(Route.AddNew.TitleAndType.route)
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,17 +76,18 @@ fun LocationScreen(
     onBack: () -> Unit,
     state: LocationState,
     postEvent: (LocationEvent) -> Unit,
-    onCultureSelected: (Culture) -> Unit
+    onDone: (Culture, Location) -> Unit
 ) {
     val snackbarState = remember { SnackbarHostState() }
     val cameraPositionState = rememberCameraPositionState()
     val userLatLng by remember { derivedStateOf { cameraPositionState.position.target } }
 
     if (state is LocationState.Error) {
-        val string = stringResource(state.errorId)
-        LaunchedEffect(Unit) {
-            snackbarState.showSnackbar(string)
-        }
+        ShowSnackbar(
+            stringId = state.errorId,
+            onShow = { postEvent(LocationEvent.ShowMap) },
+            snackbarState = snackbarState
+        )
     }
 
     Scaffold(
@@ -95,13 +100,13 @@ fun LocationScreen(
                     modifier = Modifier
                         .padding(padding)
                         .padding(horizontal = mediumSize),
-                    location = userLatLng.toLocation(),
+                    location = userLatLng.location,
                     postEvent = postEvent
                 )
             }
             is LocationState.SelectedCulture -> {
                 DisposableEffect(state) {
-                    onCultureSelected(state.culture)
+                    onDone(state.culture, state.location)
                     onDispose {
                         postEvent(LocationEvent.ShowMap)
                     }
@@ -113,9 +118,16 @@ fun LocationScreen(
                         .padding(padding)
                         .padding(horizontal = mediumSize),
                     cultures = state.cultures,
-                    onCultureSelected = { postEvent(LocationEvent.SelectCulture(it)) },
+                    onCultureSelected = {
+                        postEvent(
+                            LocationEvent.SelectCulture(
+                                it,
+                                cameraPositionState.position.target.location
+                            )
+                        )
+                    },
                     onAddNewCultureClicked = {
-                        postEvent(LocationEvent.AddCultureRequest(location = userLatLng.toLocation()))
+                        postEvent(LocationEvent.AddCultureRequest(location = userLatLng.location))
                     },
                     onSelectLocation = {
                         postEvent(LocationEvent.ShowMap)
@@ -127,7 +139,9 @@ fun LocationScreen(
                     modifier = Modifier
                         .padding(padding)
                         .padding(mediumSize),
-                    postEvent = postEvent,
+                    title = stringResource(R.string.location_title),
+                    subtitle = stringResource(R.string.location_subtitle),
+                    onLocationSelected = { postEvent(LocationEvent.GetCultures(it)) },
                     cameraPositionState = cameraPositionState
                 )
             }

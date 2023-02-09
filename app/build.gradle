@@ -8,7 +8,8 @@ plugins {
 def localProperties = new Properties()
 try {
     localProperties.load(new FileInputStream(rootProject.file("local.properties")))
-} catch (Exception ignored) {}
+} catch (Exception ignored) {
+}
 def mapsKey = System.getenv("MAPS_API_KEY") ?: localProperties["MAPS_API_KEY"]
 
 android {
@@ -76,8 +77,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = '1.8'

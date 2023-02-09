@@ -23,6 +23,7 @@ import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.*
+import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @Composable
 fun RegistrationRoute(navController: NavController) {
@@ -43,7 +44,6 @@ fun RegistrationComposable(
     postEvent: (RegistrationEvent) -> Unit
 ) {
     val snackbarState = remember { SnackbarHostState() }
-
     val registerState = remember { RegisterState() }
 
     Scaffold(
@@ -52,11 +52,11 @@ fun RegistrationComposable(
         snackbarHost = { SnackbarHost(hostState = snackbarState) }) { padding ->
 
         if (registrationState is RegistrationState.Error) {
-            val errorString = stringResource(registrationState.messageId)
-            LaunchedEffect(registrationState) {
-                snackbarState.showSnackbar(errorString)
-                postEvent(RegistrationEvent.Idle)
-            }
+            ShowSnackbar(
+                stringId = registrationState.messageId,
+                onShow = { postEvent(RegistrationEvent.Idle) },
+                snackbarState = snackbarState
+            )
         }
 
         when (registrationState) {

@@ -3,9 +3,7 @@ package uk.co.culturebook.data.remote.retrofit
 import okhttp3.Interceptor
 import okhttp3.Protocol
 import okhttp3.Response
-import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
-import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.flows.EventBus
 
 object AuthenticatorInterceptor : Interceptor {

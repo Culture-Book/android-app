@@ -6,8 +6,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Location(val latitude: Double, val longitude: Double)
 
-fun LatLng.toLocation() = Location(latitude, longitude)
-fun Location.toLatLng() = LatLng(latitude, longitude)
-fun android.location.Location.toLatLng() = LatLng(latitude, longitude)
+val Location.Companion.Empty get() = Location(0.0, 0.0)
+
+val LatLng.location get() = Location(latitude, longitude)
+
+val Location.latLng get() = LatLng(latitude, longitude)
+
 fun LatLng.isEmpty() = latitude == 0.0 && longitude == 0.0
 fun LatLng.isNotEmpty() = !isEmpty()
+
+fun Location.isEmpty() = latitude == 0.0 && longitude == 0.0
+fun Location.isNotEmpty() = !isEmpty()

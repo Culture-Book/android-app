@@ -11,5 +11,12 @@ data class Culture(
     val location: Location
 )
 
+val Culture.Companion.Empty
+    get() = Culture(
+        id = null,
+        name = "",
+        location = Location.Empty
+    )
+
 @Serializable
 data class CultureResponse(val cultures: List<Culture>)

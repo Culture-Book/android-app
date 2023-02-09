@@ -13,6 +13,7 @@ import uk.co.culturebook.data.models.cultural.Location
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.cultural.AddNewRepository
 import uk.co.culturebook.ui.R
+import java.util.*
 
 class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewModel() {
     private val _locationState = MutableStateFlow<LocationState>(LocationState.ShowMap)
@@ -32,7 +33,12 @@ class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewMo
                     )
                 }
                 is LocationEvent.SelectCulture -> {
-                    _locationState.emit(LocationState.SelectedCulture(locationEvent.culture))
+                    _locationState.emit(
+                        LocationState.SelectedCulture(
+                            locationEvent.culture,
+                            locationEvent.location
+                        )
+                    )
                 }
                 is LocationEvent.GetCultures -> _locationState.emit(getCultures(locationEvent.location))
                 is LocationEvent.AddCultureRequest -> _locationState.emit(
@@ -45,13 +51,13 @@ class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewMo
     }
 
     private suspend fun addCulture(cultureName: String, location: Location): LocationState {
-        val culture = Culture(name = cultureName, location = location)
+        val culture = Culture(id = UUID.randomUUID(), name = cultureName, location = location)
         return when (val response =
             addNewRepository.addCulture(CultureRequest(culture, location))) {
             is ApiResponse.Success.Empty -> LocationState.ShowMap
             is ApiResponse.Exception -> LocationState.Error(response.errorMessage)
             is ApiResponse.Failure -> LocationState.Error(response.errorMessage)
-            is ApiResponse.Success -> LocationState.SelectedCulture(response.data)
+            is ApiResponse.Success -> LocationState.SelectedCulture(response.data, location)
         }
     }
 
@@ -71,9 +77,10 @@ class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewMo
         }
     }
 
-    private val <T : Any> ApiResponse.Failure<T>.errorMessage get() = when(this.message) {
-        "DuplicateCulture" -> R.string.add_culture_duplicate
-        else -> R.string.generic_sorry
-    }
+    private val <T : Any> ApiResponse.Failure<T>.errorMessage
+        get() = when (this.message) {
+            "DuplicateCulture" -> R.string.add_culture_duplicate
+            else -> R.string.generic_sorry
+        }
     private val <T : Any> ApiResponse.Exception<T>.errorMessage get() = R.string.generic_sorry
 }
