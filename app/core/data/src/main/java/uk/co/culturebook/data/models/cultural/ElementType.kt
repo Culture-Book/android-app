@@ -31,6 +31,7 @@ data class EventType(
 )
 
 val EventType.Companion.Empty get() = EventType(LocalDateTime.MIN, Location.Empty)
+val EventType.isEmpty get() = location.isEmpty() && startDateTime == LocalDateTime.MIN
 
 fun String.decodeElementType() = when {
     equals(ElementType.Food.name) -> ElementType.Food

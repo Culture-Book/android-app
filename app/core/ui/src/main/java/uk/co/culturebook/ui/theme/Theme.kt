@@ -6,10 +6,13 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlin.math.ln
 
 
 private val LightColors = lightColorScheme(
@@ -88,7 +91,10 @@ fun AppTheme(
         colorScheme = colors,
         typography = AppTypography,
         content = {
-            SystemBarsColors()
+            SystemBarsColors(
+                navigationColor = MaterialTheme.colorScheme.background,
+                statusBarColor = MaterialTheme.colorScheme.background
+            )
             content()
         }
     )
@@ -96,16 +102,19 @@ fun AppTheme(
 
 @Composable
 fun SystemBarsColors(
-    navigationColor: Color = MaterialTheme.colorScheme.background,
-    systemBarColor: Color = MaterialTheme.colorScheme.background
+    navigationColor: Color? = null,
+    statusBarColor: Color? = null
 ) {
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = !isSystemInDarkTheme()
 
-    DisposableEffect(systemUiController, useDarkIcons) {
-        systemUiController.setNavigationBarColor(navigationColor)
-        systemUiController.setStatusBarColor(systemBarColor)
-        onDispose {}
+    LaunchedEffect(systemUiController, useDarkIcons, navigationColor, statusBarColor) {
+        if (navigationColor != null) {
+            systemUiController.setNavigationBarColor(navigationColor)
+        }
+        if (statusBarColor != null) {
+            systemUiController.setStatusBarColor(statusBarColor)
+        }
     }
 }
 
@@ -114,6 +123,15 @@ fun surfaceColorAtElevation(color: Color, elevation: Dp): Color {
     return if (color == MaterialTheme.colorScheme.surface) {
         MaterialTheme.colorScheme.surfaceColorAtElevation(elevation)
     } else {
-        color
+        color.colorAtElevation(
+            elevation = elevation,
+            colorTint = MaterialTheme.colorScheme.surfaceTint
+        )
     }
+}
+
+fun Color.colorAtElevation(elevation: Dp, colorTint: Color): Color {
+    if (elevation == 0.dp) return this
+    val alpha = ((4.5f * ln(elevation.value + 1)) + 2f) / 100f
+    return colorTint.copy(alpha = alpha).compositeOver(this)
 }

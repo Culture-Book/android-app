@@ -25,7 +25,6 @@ android {
             buildConfigField "String", "API_URL", "\"https://api-beta.culturebook.co.uk\""
         }
         pre_release_debug {
-            debuggable true
             minifyEnabled true
             buildConfigField "String", "API_URL", "\"https://api-beta.culturebook.co.uk\""
         }
@@ -50,7 +49,7 @@ dependencies {
     api "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
 
     // Firebase
-    api platform("com.google.firebase:firebase-bom:31.1.1")
+    api platform('com.google.firebase:firebase-bom:31.2.0')
     api "com.google.firebase:firebase-config-ktx"
     api "com.google.firebase:firebase-analytics-ktx"
     api "com.google.firebase:firebase-crashlytics"
@@ -68,6 +67,9 @@ dependencies {
     implementation "androidx.security:security-crypto:1.0.0"
     implementation "androidx.security:security-identity-credential:1.0.0-alpha03"
     implementation "androidx.security:security-app-authenticator:1.0.0-alpha02"
+
+    // WorkManager
+    api "androidx.work:work-runtime-ktx:2.8.0"
 
     //ViewModels
     api "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"

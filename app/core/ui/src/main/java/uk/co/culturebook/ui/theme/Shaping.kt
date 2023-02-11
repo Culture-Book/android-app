@@ -15,4 +15,5 @@ val xxxxlSize = 125.dp
 val smallRoundedShape = RoundedCornerShape(smallSize)
 val mediumRoundedShape = RoundedCornerShape(mediumSize)
 val mediumHeaderRoundedShape = RoundedCornerShape(topStart = mediumSize, topEnd = mediumSize)
+val mediumFooterRoundedShape = RoundedCornerShape(bottomStart = mediumSize, bottomEnd = mediumSize)
 val largeRoundedShape = RoundedCornerShape(largeSize)

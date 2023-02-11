@@ -23,7 +23,6 @@ android {
             minifyEnabled true
         }
         pre_release_debug {
-            debuggable true
             minifyEnabled true
         }
         release {
@@ -49,7 +48,7 @@ dependencies {
     api "androidx.compose.ui:ui:$compose_version"
     api "androidx.compose.ui:ui-tooling-preview:$compose_version"
     api "androidx.compose.material3:material3:1.0.1"
-    api 'com.google.maps.android:maps-compose:2.8.0'
+    api 'com.google.maps.android:maps-compose:2.10.0'
     api 'com.google.accompanist:accompanist-pager:0.29.1-alpha'
     api 'com.google.accompanist:accompanist-pager-indicators:0.29.1-alpha'
 

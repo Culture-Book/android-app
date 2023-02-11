@@ -45,7 +45,7 @@ fun AddInfoBody(
 
     if (showDateCalendar) {
         DateTimeDialog(
-            pickedDate = infoData.eventType.startDateTime,
+            pickedDate = infoData.eventType?.startDateTime,
             onDateChanged = {
                 onDateAdded(it)
                 showDateCalendar = false
@@ -102,19 +102,19 @@ fun AddInfoBody(
                     message = stringResource(R.string.event_info_message)
                 )
 
-                if (infoData.eventType.startDateTime != LocalDateTime.MIN) {
+                if (infoData.eventType?.startDateTime != LocalDateTime.MIN) {
                     OutlinedSurface(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = smallSize),
                         title = stringResource(
                             id = R.string.event_date,
-                            infoData.eventType.startDateTime.prettyPrint()
+                            infoData.eventType?.startDateTime?.prettyPrint() ?: ""
                         )
                     )
                 }
 
-                if (infoData.eventType.location.isNotEmpty()) {
+                if (infoData.eventType?.location.isNotEmpty()) {
                     LocationBody(
                         modifier = Modifier
                             .clip(mediumRoundedShape)
@@ -122,7 +122,7 @@ fun AddInfoBody(
                             .fillMaxWidth()
                             .padding(bottom = mediumSize),
                         isDisplayOnly = true,
-                        locationToShow = infoData.eventType.location
+                        locationToShow = infoData.eventType?.location
                     )
                 }
 

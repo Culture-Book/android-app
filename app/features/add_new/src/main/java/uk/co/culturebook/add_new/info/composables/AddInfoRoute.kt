@@ -66,15 +66,11 @@ fun AddInfoScreen(
 
     val addFilesLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents()) {
-            val mediaFiles = it.mapNotNull { uri ->
+            val mediaFiles = it.map { uri ->
                 val fileName = context.getFileName(uri) ?: "file"
-                val inputStream = context.contentResolver.openInputStream(uri)
                 val contentType = context.getMimeType(uri) ?: ""
                 val fileSize = context.getFileSize(uri)
-
-                inputStream?.let {
-                    MediaFile(fileName, uri, inputStream, fileSize, contentType)
-                }
+                MediaFile(fileName, uri, fileSize, contentType)
             }
             postEvent(AddInfoEvent.AddFile(mediaFiles))
         }

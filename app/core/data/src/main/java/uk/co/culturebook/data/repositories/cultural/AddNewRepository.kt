@@ -8,7 +8,7 @@ import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 
-class AddNewRepository(context: Context) {
+class AddNewRepository(private val context: Context) {
     private val apiInterface: ApiInterface = Singletons.getApiInterface(context)
 
     suspend fun getCultures(location: Location) = apiInterface.getNearbyCultures(location)
@@ -19,6 +19,10 @@ class AddNewRepository(context: Context) {
     suspend fun postElement(element: Element, files: List<MediaFile>) =
         apiInterface.postElement(
             element = MultipartBody.Part.createFormData("element", Json.encodeToString(element)),
-            files = files.map { MultipartBody.Part.createFormData("", "", it.toRequestBody()) }
+            files = files.mapNotNull { file ->
+                file.toRequestBody(context)?.let { inputStream ->
+                    MultipartBody.Part.createFormData("", "", inputStream)
+                }
+            }
         )
 }

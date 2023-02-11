@@ -4,8 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,6 +21,8 @@ import uk.co.culturebook.add_new.addNewGraph
 import uk.co.culturebook.auth.composables.ForgotRoute
 import uk.co.culturebook.auth.composables.LoginRoute
 import uk.co.culturebook.auth.composables.RegistrationRoute
+import uk.co.culturebook.composables.ManageWorkerState
+import uk.co.culturebook.composables.ShowBannerMessage
 import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.logD
@@ -34,8 +35,11 @@ import uk.co.culturebook.home.composables.homeGraph
 import uk.co.culturebook.nav.DeepLinks
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.nav.navigateTop
-import uk.co.culturebook.ui.theme.AppTheme
+import uk.co.culturebook.states.AppState
+import uk.co.culturebook.states.rememberAppState
+import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.WebViewComposable
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavController
@@ -53,24 +57,36 @@ class MainActivity : ComponentActivity() {
         initializeFirebase()
 
         setContent {
+            val appState = rememberAppState()
             val navController = rememberNavController().also {
                 navController = it
             }
 
-            AppEventBus(navController)
+            AppEventBus(navController, appState)
 
             //TODO Add a navigation bus and pass events to a bottom sheet wrapper
             AppTheme {
                 Scaffold { padding ->
-                    AppNavHost(navController, padding)
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                    ) {
+                        ShowBannerMessage(paddingValues = padding, appState = appState)
+                        AppNavHost(navController, padding)
+                    }
+
                 }
             }
         }
     }
 
     @Composable
-    fun AppEventBus(navController: NavController) {
+    fun AppEventBus(navController: NavController, appState: AppState) {
         val userSessionState by EventBus.userSessionFlow.collectAsState(UserSessionState.Idle)
+        val currentlyRunningWorkerId by EventBus.workerFlow.collectAsState()
+
+        ManageWorkerState(workId = currentlyRunningWorkerId, appState = appState)
 
         DisposableEffect(userSessionState) {
             if (userSessionState is UserSessionState.LoggedOut) {

@@ -102,6 +102,9 @@
     <string name="background_required">Information about the element is required.</string>
     <string name="event_location_required">The location of the event is required.</string>
     <string name="event_date_required">The date of the event is required.</string>
+    <string name="upload_in_progress">An element is uploading…</string>
+    <string name="upload_failed">An element failed to upload, please try again.</string>
+    <string name="upload_success">An element uploaded successfully.</string>
 
     <!--    Element Types-->
     <string name="food">Gastronomy</string>

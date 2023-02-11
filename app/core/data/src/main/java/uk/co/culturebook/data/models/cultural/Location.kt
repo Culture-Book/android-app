@@ -15,5 +15,5 @@ val Location.latLng get() = LatLng(latitude, longitude)
 fun LatLng.isEmpty() = latitude == 0.0 && longitude == 0.0
 fun LatLng.isNotEmpty() = !isEmpty()
 
-fun Location.isEmpty() = latitude == 0.0 && longitude == 0.0
-fun Location.isNotEmpty() = !isEmpty()
+fun Location?.isEmpty() = this?.latitude == 0.0 && longitude == 0.0
+fun Location?.isNotEmpty() = !isEmpty()

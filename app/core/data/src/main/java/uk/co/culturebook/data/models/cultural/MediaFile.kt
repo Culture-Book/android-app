@@ -1,18 +1,21 @@
 package uk.co.culturebook.data.models.cultural
 
+import android.content.Context
 import android.net.Uri
 import uk.co.culturebook.data.remote.retrofit.InputStreamRequestBody
-import java.io.InputStream
+import uk.co.culturebook.data.serializers.AndroidURISerializer
 
+@kotlinx.serialization.Serializable
 data class MediaFile(
     val fileName: String,
+    @kotlinx.serialization.Serializable(with = AndroidURISerializer::class)
     val uri: Uri,
-    val inputStream: InputStream,
     val fileSize: Long,
     val contentType: String
 )
 
-fun MediaFile.toRequestBody() = InputStreamRequestBody(this)
+fun MediaFile.toRequestBody(context: Context) = context.contentResolver.openInputStream(uri)
+    ?.use { InputStreamRequestBody(it) }
 
 fun MediaFile.isContentTypeValid() =
     contentType.contains("video/.*".toRegex()) ||

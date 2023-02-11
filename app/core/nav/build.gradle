@@ -22,7 +22,6 @@ android {
             minifyEnabled true
         }
         pre_release_debug {
-            debuggable true
             minifyEnabled true
         }
         release {

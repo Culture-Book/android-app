@@ -5,12 +5,12 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import okio.buffer
 import okio.source
-import uk.co.culturebook.data.models.cultural.MediaFile
 import java.io.IOException
+import java.io.InputStream
 
-class InputStreamRequestBody(private val mediaFile: MediaFile) : RequestBody() {
+class InputStreamRequestBody(private val inputStream: InputStream) : RequestBody() {
     override fun contentLength(): Long = try {
-        mediaFile.inputStream.available().toLong()
+        inputStream.available().toLong()
     } catch (e: IOException) {
         -1
     }
@@ -19,7 +19,7 @@ class InputStreamRequestBody(private val mediaFile: MediaFile) : RequestBody() {
 
     override fun writeTo(sink: BufferedSink) {
         try {
-            mediaFile.inputStream.use {
+            inputStream.use {
                 it.source().use { source ->
                     sink.writeAll(source.buffer())
                 }

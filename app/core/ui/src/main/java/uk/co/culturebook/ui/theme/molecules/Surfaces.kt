@@ -23,6 +23,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
+import coil.size.Size
 import uk.co.culturebook.ui.theme.*
 
 @Composable
@@ -97,6 +98,7 @@ fun ImageWithIcon(
 ) {
     val imageRequest = ImageRequest.Builder(LocalContext.current)
         .data(uri)
+        .size(Size.ORIGINAL)
         .scale(Scale.FIT)
         .crossfade(true)
         .build()

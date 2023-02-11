@@ -15,7 +15,6 @@ object AuthenticatorInterceptor : Interceptor {
             }
             response
         } catch (e: Exception) {
-            EventBus.logout()
             Response.Builder()
                 .request(chain.request())
                 .protocol(Protocol.HTTP_2)

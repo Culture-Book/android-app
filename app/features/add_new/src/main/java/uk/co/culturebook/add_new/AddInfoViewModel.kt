@@ -36,14 +36,16 @@ class AddInfoViewModel : ViewModel() {
 
     private fun registerEventDate(startDateTime: LocalDateTime) {
         viewModelScope.launch {
-            infoData.eventType = infoData.eventType.copy(startDateTime = startDateTime)
+            infoData.eventType = infoData.eventType?.copy(startDateTime = startDateTime)
+                ?: EventType(startDateTime, Location.Empty)
             _addInfoState.emit(AddInfoState.AddedDate(infoData = infoData))
         }
     }
 
     private fun registerEventLocation(location: Location) {
         viewModelScope.launch {
-            infoData.eventType = infoData.eventType.copy(location = location)
+            infoData.eventType = infoData.eventType?.copy(location = location)
+                ?: EventType(LocalDateTime.MIN, location)
             _addInfoState.emit(AddInfoState.AddedLocation(infoData))
         }
     }
@@ -95,12 +97,12 @@ class AddInfoViewModel : ViewModel() {
                 _addInfoState.emit(AddInfoState.Error(R.string.background_required))
                 return@launch
             }
-            if (infoData.eventType.location.isEmpty()) {
+            if (infoData.eventType?.location?.isEmpty() == true && infoData.elementType == ElementType.Event.name) {
                 _addInfoState.emit(AddInfoState.Error(R.string.event_location_required))
                 return@launch
             }
-            if (infoData.eventType.startDateTime == LocalDateTime.MIN) {
-                _addInfoState.emit(AddInfoState.Error(R.string.event_location_required))
+            if (infoData.eventType?.startDateTime == LocalDateTime.MIN && infoData.elementType == ElementType.Event.name) {
+                _addInfoState.emit(AddInfoState.Error(R.string.event_date_required))
                 return@launch
             }
             infoData.background = background
