@@ -187,6 +187,23 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = icon.getPainter()
     }
+
+    object Play : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.PlayArrow.getPainter()
+    }
+
+    object Pause : AppIcon {
+        private val icon = R.drawable.ic_pause
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Audio : AppIcon {
+        private val icon = R.drawable.ic_wave_form
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
 }
 
 @Composable

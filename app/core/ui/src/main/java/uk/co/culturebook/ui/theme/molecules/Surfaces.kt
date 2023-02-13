@@ -1,30 +1,23 @@
 package uk.co.culturebook.ui.theme.molecules
 
-import android.net.Uri
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.zIndex
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Scale
-import coil.size.Size
-import uk.co.culturebook.ui.theme.*
+import uk.co.culturebook.ui.theme.mediumRoundedShape
+import uk.co.culturebook.ui.theme.mediumSize
+import uk.co.culturebook.ui.theme.smallSize
+import uk.co.culturebook.ui.theme.xxsSize
+
 
 @Composable
 @Preview
@@ -87,97 +80,4 @@ fun OutlinedSurface(
             )
         }
     }
-}
-
-@Composable
-fun ImageWithIcon(
-    modifier: Modifier,
-    uri: Uri,
-    icon: @Composable (() -> Unit)? = null,
-    onButtonClicked: () -> Unit = {}
-) {
-    val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(uri)
-        .size(Size.ORIGINAL)
-        .scale(Scale.FIT)
-        .crossfade(true)
-        .build()
-    val painter = rememberAsyncImagePainter(model = imageRequest)
-    var showDialog by remember { mutableStateOf(false) }
-
-    if (showDialog) {
-        Dialog(onDismissRequest = { showDialog = false }) {
-            BoxWithConstraints {
-                when (painter.state) {
-                    is AsyncImagePainter.State.Loading -> LoadingComposable()
-                    AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Success -> {
-                        Image(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .align(Alignment.Center)
-                                .clip(mediumRoundedShape),
-                            contentScale = ContentScale.FillWidth,
-                            painter = painter,
-                            contentDescription = "large media image",
-                        )
-                    }
-                    is AsyncImagePainter.State.Error -> {
-                        Icon(
-                            modifier = Modifier.align(Alignment.Center),
-                            painter = AppIcon.BrokenImage.getPainter(),
-                            contentDescription = "broken image"
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    BoxWithConstraints(
-        modifier = modifier
-            .clip(mediumRoundedShape)
-            .border(xxsSize, MaterialTheme.colorScheme.outline, mediumRoundedShape)
-            .clickable { showDialog = true }
-    ) {
-        when (painter.state) {
-            is AsyncImagePainter.State.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            AsyncImagePainter.State.Empty -> {}
-            is AsyncImagePainter.State.Success,
-            is AsyncImagePainter.State.Error -> {
-                if (icon != null) {
-                    FilledTonalIconButton(
-                        modifier = Modifier
-                            .padding(smallSize)
-                            .align(Alignment.TopEnd)
-                            .zIndex(1f),
-                        onClick = onButtonClicked
-                    ) {
-                        icon()
-                    }
-                }
-            }
-        }
-
-        when (painter.state) {
-            is AsyncImagePainter.State.Loading -> LoadingComposable()
-            AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Success -> {
-                Image(
-                    painter = painter,
-                    contentDescription = "image",
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.Center
-                )
-            }
-            is AsyncImagePainter.State.Error -> {
-                Icon(
-                    modifier = Modifier.align(Alignment.Center),
-                    painter = AppIcon.BrokenImage.getPainter(),
-                    contentDescription = "broken image"
-                )
-            }
-        }
-    }
-
 }

@@ -55,6 +55,10 @@ dependencies {
     // Coil
     api "io.coil-kt:coil-compose:2.2.2"
 
+    // Media
+    implementation 'androidx.media3:media3-exoplayer:1.0.0-beta03'
+    implementation "androidx.media3:media3-ui:1.0.0-beta03"
+
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 
     debugApi "androidx.compose.ui:ui-tooling:$compose_version"

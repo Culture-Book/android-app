@@ -102,7 +102,7 @@ fun AddInfoBody(
                     message = stringResource(R.string.event_info_message)
                 )
 
-                if (infoData.eventType?.startDateTime != LocalDateTime.MIN) {
+                if (infoData.eventType?.startDateTime != LocalDateTime.MIN && infoData.eventType != null) {
                     OutlinedSurface(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -114,13 +114,12 @@ fun AddInfoBody(
                     )
                 }
 
-                if (infoData.eventType?.location.isNotEmpty()) {
+                if (infoData.eventType?.location.isNotEmpty() && infoData.eventType != null) {
                     LocationBody(
                         modifier = Modifier
                             .clip(mediumRoundedShape)
                             .height(xxxxlSize)
-                            .fillMaxWidth()
-                            .padding(bottom = mediumSize),
+                            .fillMaxWidth(),
                         isDisplayOnly = true,
                         locationToShow = infoData.eventType?.location
                     )
@@ -155,19 +154,49 @@ fun AddInfoBody(
 
             LazyRow {
                 items(infoData.files) {
-                    ImageWithIcon(
-                        modifier = Modifier
-                            .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                            .padding(end = mediumSize),
-                        uri = it.uri,
-                        icon = {
-                            Icon(
-                                painter = AppIcon.Bin.getPainter(),
-                                contentDescription = "Delete file"
-                            )
-                        },
-                        onButtonClicked = { onDeleteFile(it) }
-                    )
+                    if (it.contentType.contains("image")) {
+                        ImageComposable(
+                            modifier = Modifier
+                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                .padding(end = mediumSize),
+                            uri = it.uri,
+                            icon = {
+                                Icon(
+                                    painter = AppIcon.Bin.getPainter(),
+                                    contentDescription = "Delete file"
+                                )
+                            },
+                            onButtonClicked = { onDeleteFile(it) }
+                        )
+                    } else if (it.contentType.contains("video")) {
+                        VideoComposable(
+                            modifier = Modifier
+                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                .padding(end = mediumSize),
+                            uri = it.uri,
+                            icon = {
+                                Icon(
+                                    painter = AppIcon.Bin.getPainter(),
+                                    contentDescription = "Delete file"
+                                )
+                            },
+                            onButtonClicked = { onDeleteFile(it) }
+                        )
+                    } else if (it.contentType.contains("audio")) {
+                        AudioComposable(
+                            modifier = Modifier
+                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                .padding(end = mediumSize),
+                            uri = it.uri,
+                            icon = {
+                                Icon(
+                                    painter = AppIcon.Bin.getPainter(),
+                                    contentDescription = "Delete file"
+                                )
+                            },
+                            onButtonClicked = { onDeleteFile(it) }
+                        )
+                    }
                 }
             }
 

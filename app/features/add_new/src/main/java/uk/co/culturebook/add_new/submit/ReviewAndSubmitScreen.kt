@@ -71,14 +71,29 @@ fun SubmitScreenComposable(
                         }
                     )
 
-                    if (elementState.files.isNotEmpty()) {
-                        ImageWithIcon(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(xxxxlSize * 2)
-                                .padding(mediumSize),
-                            uri = elementState.files.first().uri
-                        )
+                    elementState.files.takeIf { it.isNotEmpty() }?.first()?.let {
+                        if (it.contentType.contains("image")) {
+                            ImageComposable(
+                                modifier = Modifier
+                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                    .padding(end = mediumSize),
+                                uri = it.uri,
+                            )
+                        } else if (it.contentType.contains("video")) {
+                            VideoComposable(
+                                modifier = Modifier
+                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                    .padding(end = mediumSize),
+                                uri = it.uri,
+                            )
+                        } else if (it.contentType.contains("audio")) {
+                            AudioComposable(
+                                modifier = Modifier
+                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                    .padding(end = mediumSize),
+                                uri = it.uri,
+                            )
+                        }
                     }
 
                     TitleAndSubtitle(title = stringResource(R.string.background))
@@ -131,12 +146,28 @@ fun SubmitScreenComposable(
 
                         LazyRow {
                             items(elementState.files) {
-                                ImageWithIcon(
-                                    modifier = Modifier
-                                        .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                        .padding(end = mediumSize),
-                                    uri = it.uri
-                                )
+                                if (it.contentType.contains("image")) {
+                                    ImageComposable(
+                                        modifier = Modifier
+                                            .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                            .padding(end = mediumSize),
+                                        uri = it.uri,
+                                    )
+                                } else if (it.contentType.contains("video")) {
+                                    VideoComposable(
+                                        modifier = Modifier
+                                            .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                            .padding(end = mediumSize),
+                                        uri = it.uri,
+                                    )
+                                } else if (it.contentType.contains("audio")) {
+                                    AudioComposable(
+                                        modifier = Modifier
+                                            .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                            .padding(end = mediumSize),
+                                        uri = it.uri,
+                                    )
+                                }
                             }
                         }
                     }
