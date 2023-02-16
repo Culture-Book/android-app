@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import uk.co.culturebook.add_new.data.ElementState
+import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.add_new.title_type.composables.icon
 import uk.co.culturebook.add_new.title_type.composables.label
 import uk.co.culturebook.data.models.cultural.ElementType
@@ -29,9 +29,9 @@ import kotlin.math.roundToInt
 @Composable
 fun SubmitScreenComposable(
     onBack: () -> Unit,
-    elementState: ElementState,
+    addNewState: AddNewState,
     state: SubmitState,
-    onSubmit: (ElementState) -> Unit
+    onSubmit: (AddNewState) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -58,11 +58,35 @@ fun SubmitScreenComposable(
                         .verticalScroll(scrollState),
                     horizontalAlignment = CenterHorizontally
                 ) {
+                    addNewState.files.takeIf { it.isNotEmpty() }?.first()?.let {
+                        if (it.contentType.contains("image")) {
+                            ImageComposable(
+                                modifier = Modifier
+                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f),
+                                uri = it.uri,
+                            )
+                        } else if (it.contentType.contains("video")) {
+                            VideoComposable(
+                                modifier = Modifier
+                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f),
+                                uri = it.uri,
+                            )
+                        } else if (it.contentType.contains("audio")) {
+                            AudioComposable(
+                                modifier = Modifier
+                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f),
+                                uri = it.uri,
+                            )
+                        }
+                    }
 
                     TitleAndSubtitle(
-                        title = elementState.name,
-                        titleContent = {
-                            elementState.type?.let {
+                        modifier = Modifier
+                            .padding(top = mediumSize)
+                            .fillMaxWidth(),
+                        title = addNewState.name,
+                        leadingTitleContent = {
+                            addNewState.type?.let {
                                 Icon(
                                     painter = it.icon,
                                     contentDescription = it.label
@@ -71,81 +95,54 @@ fun SubmitScreenComposable(
                         }
                     )
 
-                    elementState.files.takeIf { it.isNotEmpty() }?.first()?.let {
-                        if (it.contentType.contains("image")) {
-                            ImageComposable(
-                                modifier = Modifier
-                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                    .padding(end = mediumSize),
-                                uri = it.uri,
-                            )
-                        } else if (it.contentType.contains("video")) {
-                            VideoComposable(
-                                modifier = Modifier
-                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                    .padding(end = mediumSize),
-                                uri = it.uri,
-                            )
-                        } else if (it.contentType.contains("audio")) {
-                            AudioComposable(
-                                modifier = Modifier
-                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                    .padding(end = mediumSize),
-                                uri = it.uri,
-                            )
-                        }
-                    }
-
-                    TitleAndSubtitle(title = stringResource(R.string.background))
-
                     LargeDynamicRoundedTextField(
                         modifier = Modifier
                             .defaultMinSize(minHeight = xxxxlSize)
                             .padding(vertical = mediumSize)
                             .fillMaxWidth(),
-                        value = elementState.information,
+                        value = addNewState.information,
                         readOnly = true
                     )
 
-                    if (elementState.type == ElementType.Event) {
+                    if (addNewState.type == ElementType.Event) {
                         TitleAndSubtitle(
                             modifier = Modifier.padding(vertical = smallSize),
                             title = stringResource(R.string.event_info)
                         )
 
-                        if (elementState.eventType?.startDateTime != null) {
+                        if (addNewState.eventType?.startDateTime != null) {
                             OutlinedSurface(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = smallSize),
                                 title = stringResource(
                                     id = R.string.event_date,
-                                    elementState.eventType?.startDateTime?.prettyPrint() ?: ""
+                                    addNewState.eventType?.startDateTime?.prettyPrint() ?: ""
                                 )
                             )
                         }
 
-                        if (elementState.eventType?.location != null) {
+                        if (addNewState.eventType?.location != null) {
                             OutlinedSurface(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = smallSize),
                                 title = stringResource(
                                     id = R.string.event_location,
-                                    "${elementState.eventType?.location?.latitude?.roundToInt()} - ${elementState.eventType?.location?.longitude?.roundToInt()}"
+                                    "${addNewState.eventType?.location?.latitude?.roundToInt()} - ${addNewState.eventType?.location?.longitude?.roundToInt()}"
                                 )
                             )
                         }
                     }
 
-                    if (elementState.files.isNotEmpty()) {
+                    if (addNewState.files.isNotEmpty()) {
                         TitleAndSubtitle(
-                            modifier = Modifier.padding(vertical = mediumSize),
+                            modifier = Modifier.padding(bottom = mediumSize),
                             title = stringResource(R.string.media)
                         )
 
                         LazyRow {
-                            items(elementState.files) {
+                            items(addNewState.files) {
                                 if (it.contentType.contains("image")) {
                                     ImageComposable(
                                         modifier = Modifier
@@ -176,8 +173,15 @@ fun SubmitScreenComposable(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = mediumSize),
-                        onClick = { onSubmit(elementState) }) {
-                        Text(stringResource(R.string.submit))
+                        onClick = { onSubmit(addNewState) }
+                    ) {
+                        val text =
+                            if (addNewState.isContribution) {
+                                stringResource(R.string.submit_contribution)
+                            } else {
+                                stringResource(R.string.submit_element)
+                            }
+                        Text(text)
                     }
                 }
             }
@@ -185,17 +189,6 @@ fun SubmitScreenComposable(
 
 
 }
-
-@Composable
-fun ElementType.getString() = stringResource(
-    when (this) {
-        ElementType.Food -> R.string.food
-        ElementType.Music -> R.string.music
-        ElementType.Story -> R.string.story
-        ElementType.PoI -> R.string.poi
-        ElementType.Event -> R.string.event
-    }
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

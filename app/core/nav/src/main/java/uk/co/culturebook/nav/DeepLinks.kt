@@ -11,7 +11,6 @@ object DeepLinks {
             uriPattern =
                 "https://$deepLinkUri/forgot/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
             action = Intent.ACTION_VIEW
-
         },
         navDeepLink {
             uriPattern =

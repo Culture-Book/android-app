@@ -4,7 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.co.culturebook.add_new.data.ElementState
+import uk.co.culturebook.add_new.data.AddNewState
+import uk.co.culturebook.add_new.data.TypeData
 import uk.co.culturebook.add_new.info.composables.AddInfoRoute
 import uk.co.culturebook.add_new.location.composables.LocationRoute
 import uk.co.culturebook.add_new.submit.SubmitRoute
@@ -14,7 +15,7 @@ import uk.co.culturebook.nav.Route.AddNew.AddInfo.LinkElements.linkedElementsPar
 import uk.co.culturebook.nav.fromJsonString
 
 fun NavGraphBuilder.addNewGraph(navController: NavController) {
-    val elementState = ElementState() // TODO - Save Configuration
+    val addNewState = AddNewState()
 
     navigation(
         Route.AddNew.Location.route,
@@ -22,19 +23,23 @@ fun NavGraphBuilder.addNewGraph(navController: NavController) {
     ) {
         composable(Route.AddNew.Location.route) {
             LocationRoute(navController, onDone = { culture, location ->
-                elementState.culture = culture
-                elementState.location = location
+                addNewState.culture = culture
+                addNewState.location = location
             })
         }
 
         composable(Route.AddNew.TitleAndType.route) {
             TitleAndTypeRoute(
                 navController,
-                elementState.type,
-                elementState.name,
-                onElementAndTitleSelected = { title, type ->
-                    elementState.type = type
-                    elementState.name = title
+                typeData = TypeData().apply {
+                    name = addNewState.name
+                    type = addNewState.type
+                    parentElement = addNewState.parentElement
+                },
+                onElementAndTitleSelected = { typeData ->
+                    addNewState.type = typeData.type
+                    addNewState.name = typeData.name
+                    addNewState.parentElement = typeData.parentElement
                 }
             )
         }
@@ -43,24 +48,27 @@ fun NavGraphBuilder.addNewGraph(navController: NavController) {
             composable(Route.AddNew.AddInfo.Base.route) {
                 AddInfoRoute(
                     navController,
-                    type = elementState.type!!,
+                    type = addNewState.type!!,
                     onDone = { infoData ->
-                        elementState.information = infoData.background
-                        elementState.linkElements = infoData.linkedElements
-                        elementState.files = infoData.files
-                        elementState.eventType = infoData.eventType
+                        addNewState.information = infoData.background
+                        addNewState.linkElements = infoData.linkedElements
+                        addNewState.files = infoData.files
+                        addNewState.eventType = infoData.eventType
                     }
                 )
             }
             composable(Route.AddNew.AddInfo.LinkElements.route + "{$linkedElementsParam}") {
-                val elements =
-                    it.arguments?.getString(linkedElementsParam)?.fromJsonString<List<String>>()
+                it.arguments?.getString(linkedElementsParam)?.fromJsonString<List<String>>()
                 // TODO - add linking when nearby is done
             }
         }
 
         composable(Route.AddNew.Review.route) {
-            SubmitRoute(navController = navController, element = elementState)
+            SubmitRoute(
+                navController = navController,
+                addNewState = addNewState,
+                onFinished = addNewState::clear
+            )
         }
     }
 }

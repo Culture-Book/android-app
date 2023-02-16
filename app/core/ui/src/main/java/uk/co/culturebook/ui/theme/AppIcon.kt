@@ -110,13 +110,6 @@ sealed interface AppIcon {
         override fun getPainter() = icon.getPainter()
     }
 
-    object LocationSearching : AppIcon {
-        private val icon = R.drawable.location_searching
-
-        @Composable
-        override fun getPainter() = icon.getPainter()
-    }
-
     object Tick : AppIcon {
         @Composable
         override fun getPainter() = Icons.Default.Check.getPainter()
@@ -174,13 +167,6 @@ sealed interface AppIcon {
         override fun getPainter() = icon.getPainter()
     }
 
-    object Image : AppIcon {
-        private val icon = R.drawable.ic_image
-
-        @Composable
-        override fun getPainter() = icon.getPainter()
-    }
-
     object BrokenImage : AppIcon {
         private val icon = R.drawable.ic_broken_image
 
@@ -188,21 +174,16 @@ sealed interface AppIcon {
         override fun getPainter() = icon.getPainter()
     }
 
-    object Play : AppIcon {
-        @Composable
-        override fun getPainter() = Icons.Default.PlayArrow.getPainter()
-    }
-
-    object Pause : AppIcon {
-        private val icon = R.drawable.ic_pause
-        @Composable
-        override fun getPainter() = icon.getPainter()
-    }
-
     object Audio : AppIcon {
-        private val icon = R.drawable.ic_wave_form
+        private val icon = R.drawable.ic_music_note
+
         @Composable
         override fun getPainter() = icon.getPainter()
+    }
+
+    object Info : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.Info.getPainter()
     }
 }
 

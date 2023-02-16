@@ -43,6 +43,8 @@
     <string name="new_password_success">New password set successfully, please log in.</string>
     <string name="new_password_request_success">Password reset link requested.</string>
     <string name="submit">Submit</string>
+    <string name="submit_element">Submit element</string>
+    <string name="submit_contribution">Submit contribution</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
 
@@ -79,8 +81,9 @@
     <string name="select_title_message">Add the name that best describes this tradition.</string>
     <string name="name">Name</string>
     <string name="next">Next</string>
-    <string name="duplicate_element_title">Duplicate element</string>
-    <string name="duplicate_element_message">Duplicate element found.</string>
+    <string name="duplicate_element_title">Similar element : %s</string>
+    <string name="duplicate_contribution_title">A similar element and contribution already exist.</string>
+    <string name="duplicate_element_message">A similar element of the same type already exists. Would you like to add a contribution to that element instead?</string>
 
     <string name="add_info">Add information</string>
     <string name="background">Background</string>
@@ -92,7 +95,7 @@
     <string name="event_info_message">Please add information related to the event.</string>
     <string name="event_date">Event date: %s</string>
     <string name="event_location">Event location: %s</string>
-    <string name="media_message">Please add any media (video, audio, images) related to this project. The total size of files should not exceed 50MB</string>
+    <string name="media_message">Please add any media (video, audio, images) related to this element. The total size of files should not exceed 50MB</string>
     <string name="add_files">Add File</string>
     <string name="invalid_file">Invalid file type, or file is corrupt</string>
     <string name="files_Size">The total files size exceeds 50MB.</string>
@@ -102,9 +105,9 @@
     <string name="background_required">Information about the element is required.</string>
     <string name="event_location_required">The location of the event is required.</string>
     <string name="event_date_required">The date of the event is required.</string>
-    <string name="upload_in_progress">An element is uploading…</string>
-    <string name="upload_failed">An element failed to upload, please try again.</string>
-    <string name="upload_success">An element uploaded successfully.</string>
+    <string name="upload_in_progress">Uploading in progress…</string>
+    <string name="upload_failed">Upload failed, please try again.</string>
+    <string name="upload_success">Upload success.</string>
 
     <!--    Element Types-->
     <string name="food">Gastronomy</string>

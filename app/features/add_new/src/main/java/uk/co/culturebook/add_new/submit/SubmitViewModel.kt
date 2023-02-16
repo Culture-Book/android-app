@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import uk.co.culturebook.add_new.data.ElementState
+import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.cultural.AddNewRepository
 
@@ -16,11 +16,11 @@ class SubmitViewModel(
     val submitState = _submitState.asStateFlow()
 
 
-    fun submit(elementState: ElementState) {
+    fun submit(addNewState: AddNewState) {
         viewModelScope.launch {
             _submitState.emit(SubmitState.Loading)
             val state =
-                when (addNewRepository.postElement(elementState.toElement(), elementState.files)) {
+                when (addNewRepository.postElement(addNewState.toElement(), addNewState.files)) {
                     is ApiResponse.Success.Empty -> SubmitState.Success
                     is ApiResponse.Exception -> SubmitState.Error
                     is ApiResponse.Failure -> SubmitState.Error

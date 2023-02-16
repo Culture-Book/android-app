@@ -25,4 +25,20 @@ class AddNewRepository(private val context: Context) {
                 }
             }
         )
+
+    suspend fun getDuplicateContributions(name: String, type: ElementType) =
+        apiInterface.getDuplicateContribution(name, type.name)
+
+    suspend fun postContribution(contribution: Contribution, files: List<MediaFile>) =
+        apiInterface.postContribution(
+            contribution = MultipartBody.Part.createFormData(
+                "contribution",
+                Json.encodeToString(contribution)
+            ),
+            files = files.mapNotNull { file ->
+                file.toRequestBody(context)?.let { inputStream ->
+                    MultipartBody.Part.createFormData("", "", inputStream)
+                }
+            }
+        )
 }

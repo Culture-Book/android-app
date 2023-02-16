@@ -75,7 +75,6 @@ class MainActivity : ComponentActivity() {
                         ShowBannerMessage(paddingValues = padding, appState = appState)
                         AppNavHost(navController, padding)
                     }
-
                 }
             }
         }

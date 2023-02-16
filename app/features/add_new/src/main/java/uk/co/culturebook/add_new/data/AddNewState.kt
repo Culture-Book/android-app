@@ -1,15 +1,14 @@
 package uk.co.culturebook.add_new.data
 
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import uk.co.culturebook.data.models.cultural.*
 import java.util.*
 
 @Stable
-class ElementState {
+class AddNewState {
     var culture: Culture? by mutableStateOf(null)
+    var parentElement: UUID? by mutableStateOf(null)
+    val isContribution: Boolean by derivedStateOf { parentElement != null }
     var name: String by mutableStateOf("")
     var type: ElementType? by mutableStateOf(null)
     var location: Location? by mutableStateOf(null)
@@ -27,4 +26,26 @@ class ElementState {
         eventType = eventType,
         linkElements = linkElements
     )
+
+    fun toContribution() = Contribution(
+        elementId = parentElement!!,
+        name = name,
+        type = type!!,
+        location = location!!,
+        information = information,
+        eventType = eventType,
+        linkElements = linkElements,
+    )
+
+    fun clear() {
+        culture = null
+        parentElement = null
+        name = ""
+        type = null
+        location = null
+        information = ""
+        eventType = null
+        linkElements = emptyList()
+        files = emptyList()
+    }
 }

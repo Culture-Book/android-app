@@ -21,7 +21,10 @@ class TitleAndTypeViewModel(private val addNewRepository: AddNewRepository) : Vi
             when (event) {
                 is TitleAndTypeEvent.Submit -> {
                     when (val response =
-                        addNewRepository.getDuplicateElements(event.title, event.type)) {
+                        addNewRepository.getDuplicateElements(
+                            event.typeData.name,
+                            event.typeData.type ?: return@launch
+                        )) {
                         is ApiResponse.Success.Empty -> _titleAndTypeState.emit(
                             TitleAndTypeState.Error(R.string.generic_sorry)
                         )
@@ -34,10 +37,7 @@ class TitleAndTypeViewModel(private val addNewRepository: AddNewRepository) : Vi
                         is ApiResponse.Success -> {
                             if (response.data.isEmpty()) {
                                 _titleAndTypeState.emit(
-                                    TitleAndTypeState.Success(
-                                        event.title,
-                                        event.type
-                                    )
+                                    TitleAndTypeState.Success(event.typeData)
                                 )
                             } else {
                                 _titleAndTypeState.emit(TitleAndTypeState.Error.Duplicate(response.data.first()))
@@ -46,6 +46,34 @@ class TitleAndTypeViewModel(private val addNewRepository: AddNewRepository) : Vi
                     }
                 }
                 TitleAndTypeEvent.Idle -> _titleAndTypeState.emit(TitleAndTypeState.Idle)
+                is TitleAndTypeEvent.SubmitContribution ->
+                    when (val response = addNewRepository.getDuplicateContributions(
+                        event.typeData.name,
+                        event.typeData.type ?: return@launch
+                    )) {
+                        is ApiResponse.Success.Empty -> _titleAndTypeState.emit(
+                            TitleAndTypeState.Error(R.string.generic_sorry)
+                        )
+                        is ApiResponse.Exception -> _titleAndTypeState.emit(
+                            TitleAndTypeState.Error(R.string.generic_sorry)
+                        )
+                        is ApiResponse.Failure -> _titleAndTypeState.emit(
+                            TitleAndTypeState.Error(R.string.generic_sorry)
+                        )
+                        is ApiResponse.Success -> {
+                            if (response.data.isEmpty()) {
+                                _titleAndTypeState.emit(
+                                    TitleAndTypeState.Success(event.typeData)
+                                )
+                            } else {
+                                _titleAndTypeState.emit(
+                                    TitleAndTypeState.Error.DuplicateContribution(
+                                        response.data.first()
+                                    )
+                                )
+                            }
+                        }
+                    }
             }
         }
 

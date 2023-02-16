@@ -31,4 +31,18 @@ interface ApiInterface {
         @Part element: MultipartBody.Part,
         @Part files: List<MultipartBody.Part>
     ): ApiResponse<List<String>>
+
+    @GET("/add_new/v1/contribution/duplicate")
+    suspend fun getDuplicateContribution(
+        @Query("name") name: String,
+        @Query("type") type: String
+    ): ApiResponse<List<Contribution>>
+
+    @Streaming
+    @Multipart
+    @POST("/add_new/v1/contribution/submit")
+    suspend fun postContribution(
+        @Part contribution: MultipartBody.Part,
+        @Part files: List<MultipartBody.Part>
+    ): ApiResponse<List<String>>
 }
