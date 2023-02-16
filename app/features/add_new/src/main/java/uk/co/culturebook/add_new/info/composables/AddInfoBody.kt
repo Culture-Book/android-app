@@ -117,6 +117,7 @@ fun AddInfoBody(
                 if (infoData.eventType?.location.isNotEmpty() && infoData.eventType != null) {
                     LocationBody(
                         modifier = Modifier
+                            .padding(bottom = mediumSize)
                             .clip(mediumRoundedShape)
                             .height(xxxxlSize)
                             .fillMaxWidth(),

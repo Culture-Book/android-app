@@ -4,8 +4,9 @@ import android.app.Application
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,7 +21,6 @@ import uk.co.culturebook.home.states.ExploreState
 import uk.co.culturebook.home.viewModels.ExploreViewModel
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
@@ -35,47 +35,31 @@ fun ExploreRoute(navController: NavController) {
     Explore(navController, nearbyState, viewModel::postEvent)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Explore(
     navController: NavController,
     exploreState: ExploreState,
     postEvent: (ExploreEvent) -> Unit
 ) {
-    Scaffold(
-        bottomBar = {
-            AppBottomAppBar(
-                currentDestination = navController.currentDestination,
-                onItemClicked = { navController.navigate(it.route) })
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(Route.AddNew.Location.route) }) {
-                Icon(AppIcon.Add.getPainter(), contentDescription = "Add new element")
-            }
-        },
-        floatingActionButtonPosition = FabPosition.End
-    ) { paddingValues ->
-        when (exploreState) {
-            is ExploreState.Error.ToSUpdate ->
-                ToSDialog(
-                    modifier = Modifier.padding(paddingValues),
-                    onCancel = { EventBus.logout() },
-                    onAccept = { postEvent(ExploreEvent.UpdateToS) },
-                    onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
-                    onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) }
-                )
-            ExploreState.Idle, is ExploreState.Error -> LaunchedEffect(Unit) {
-                postEvent(ExploreEvent.GetUser)
-            }
-            ExploreState.Loading -> LoadingComposable(paddingValues)
-            ExploreState.Success -> Text("EXPLORE Success")
+    when (exploreState) {
+        is ExploreState.Error.ToSUpdate ->
+            ToSDialog(
+                onCancel = { EventBus.logout() },
+                onAccept = { postEvent(ExploreEvent.UpdateToS) },
+                onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
+                onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) }
+            )
+        ExploreState.Idle, is ExploreState.Error -> LaunchedEffect(exploreState) {
+            postEvent(ExploreEvent.GetUser)
         }
+        ExploreState.Loading -> LoadingComposable()
+        ExploreState.Success -> Text("EXPLORE Success")
     }
 }
 
 @Composable
 fun ToSDialog(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onCancel: () -> Unit,
     onAccept: () -> Unit,
     onTosClicked: (() -> Unit)? = null,

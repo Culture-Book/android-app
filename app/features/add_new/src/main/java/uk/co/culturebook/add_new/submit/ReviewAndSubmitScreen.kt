@@ -10,20 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import uk.co.culturebook.add_new.data.AddNewState
+import uk.co.culturebook.add_new.location.composables.choose_location.LocationBody
 import uk.co.culturebook.add_new.title_type.composables.icon
 import uk.co.culturebook.add_new.title_type.composables.label
 import uk.co.culturebook.data.models.cultural.ElementType
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.AppIcon
-import uk.co.culturebook.ui.theme.mediumSize
+import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.*
-import uk.co.culturebook.ui.theme.smallSize
-import uk.co.culturebook.ui.theme.xxxxlSize
 import uk.co.culturebook.ui.utils.ShowSnackbar
 import uk.co.culturebook.ui.utils.prettyPrint
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,14 +121,14 @@ fun SubmitScreenComposable(
                         }
 
                         if (addNewState.eventType?.location != null) {
-                            OutlinedSurface(
+                            LocationBody(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = smallSize),
-                                title = stringResource(
-                                    id = R.string.event_location,
-                                    "${addNewState.eventType?.location?.latitude?.roundToInt()} - ${addNewState.eventType?.location?.longitude?.roundToInt()}"
-                                )
+                                    .padding(bottom = mediumSize)
+                                    .clip(mediumRoundedShape)
+                                    .height(xxxxlSize)
+                                    .fillMaxWidth(),
+                                isDisplayOnly = true,
+                                locationToShow = addNewState.eventType?.location
                             )
                         }
                     }
@@ -186,9 +184,8 @@ fun SubmitScreenComposable(
                 }
             }
     }
-
-
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -42,8 +42,6 @@ fun LocationRoute(navController: NavController, onDone: (Culture, Location) -> U
     val context = LocalContext.current
     val state by viewModel.locationState.collectAsState()
 
-    SystemBarsColors(MaterialTheme.colorScheme.background)
-
     if (showPermissionPrompt) {
         PermissionWrapper(
             permissionState = permissionState,

@@ -113,7 +113,12 @@ fun HandleError(
                 )
             },
             text = {
-                Text(text = stringResource(id = R.string.duplicate_element_message))
+                Text(
+                    text = stringResource(
+                        id = R.string.duplicate_element_message,
+                        state.element.type.label
+                    )
+                )
             },
             onDismissRequest = {
                 postEvent(TitleAndTypeEvent.Idle)

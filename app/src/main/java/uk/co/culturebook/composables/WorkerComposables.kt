@@ -63,7 +63,7 @@ private fun AppState.getStringIdFromWorkerState() =
 
 @Composable
 fun ShowBannerMessage(
-    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
     appState: AppState
 ) {
     val messageId = appState.getStringIdFromWorkerState()
@@ -105,11 +105,10 @@ fun ShowBannerMessage(
     SystemBarsColors(statusBarColor = backgroundColor)
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .background(backgroundColor)
-            .padding(paddingValues)
             .clip(mediumFooterRoundedShape)
             .animateContentSize(),
         horizontalArrangement = Arrangement.Center
@@ -129,7 +128,6 @@ fun ShowBannerMessage(
 fun PreviewBanner() {
     AppTheme {
         ShowBannerMessage(
-            paddingValues = PaddingValues(mediumSize),
             appState = AppState().apply {
                 workerState = WorkerState.ShowUploadMessage(R.string.upload_in_progress)
             })
@@ -141,7 +139,6 @@ fun PreviewBanner() {
 fun PreviewSuccessBanner() {
     AppTheme {
         ShowBannerMessage(
-            paddingValues = PaddingValues(mediumSize),
             appState = AppState().apply {
                 workerState = WorkerState.ShowUploadComplete(R.string.upload_success)
             })
@@ -153,7 +150,6 @@ fun PreviewSuccessBanner() {
 fun PreviewFailedBanner() {
     AppTheme {
         ShowBannerMessage(
-            paddingValues = PaddingValues(mediumSize),
             appState = AppState().apply {
                 workerState = WorkerState.ShowUploadMessage(R.string.upload_failed)
             })
