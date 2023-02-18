@@ -16,15 +16,15 @@ android {
     signingConfigs {
         pre_release {
             storeFile file("./pre_release.keystore")
-            storePassword System.getenv("PRE_RELEASE_PASS")
-            keyAlias System.getenv("PRE_RELEASE_ALIAS")
-            keyPassword System.getenv("PRE_RELEASE_PASS")
+            storePassword System.getenv("PRE_RELEASE_PASS") ?: localProperties["PRE_RELEASE_PASS"]
+            keyAlias System.getenv("PRE_RELEASE_ALIAS") ?: localProperties["PRE_RELEASE_ALIAS"]
+            keyPassword System.getenv("PRE_RELEASE_PASS") ?: localProperties["PRE_RELEASE_PASS"]
         }
         release {
             storeFile file("./release.keystore")
-            storePassword System.getenv("RELEASE_PASS")
-            keyAlias System.getenv("RELEASE_ALIAS")
-            keyPassword System.getenv("RELEASE_PASS")
+            storePassword System.getenv("RELEASE_PASS") ?: localProperties["RELEASE_PASS"]
+            keyAlias System.getenv("RELEASE_ALIAS") ?: localProperties["RELEASE_ALIAS"]
+            keyPassword System.getenv("RELEASE_PASS") ?: localProperties["RELEASE_PASS"]
         }
     }
     namespace "$app_id"
