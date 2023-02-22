@@ -4,6 +4,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 
 val xxsSize = 1.dp
+val xsSize = 4.dp
 val smallSize = 8.dp
 val mediumSize = 16.dp
 val largeSize = 24.dp

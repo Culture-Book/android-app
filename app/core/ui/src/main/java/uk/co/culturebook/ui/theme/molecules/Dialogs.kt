@@ -4,13 +4,22 @@ import android.text.format.DateFormat
 import android.view.ContextThemeWrapper
 import android.widget.DatePicker
 import android.widget.TimePicker
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
 import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,13 +28,26 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.AppTheme
-import uk.co.culturebook.ui.theme.mediumHeaderRoundedShape
-import uk.co.culturebook.ui.theme.surfaceColorAtElevation
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
+import androidx.compose.material.FractionalThreshold
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
+import kotlin.math.roundToInt
+import androidx.compose.material.SwipeableDefaults
+import androidx.compose.ui.Alignment.Companion.Bottom
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.BottomStart
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.Start
+import androidx.compose.ui.Alignment.Companion.TopStart
+import androidx.compose.ui.draw.clip
+import uk.co.culturebook.ui.theme.*
 
 @Composable
 fun DateTimeDialog(
@@ -138,25 +160,93 @@ fun DateTimeDialog(
         })
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-@Preview(device = Devices.PIXEL_XL)
 fun ModalBottomSheet(
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit = {},
-    content: @Composable () -> Unit = { Text(modifier = Modifier.padding(16.dp), text = "hello") }
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    header: @Composable ColumnScope.() -> Unit = {
+        Divider(
+            modifier = Modifier
+                .padding(mediumSize)
+                .size(width = xlSize, height = xsSize)
+                .clip(mediumRoundedShape)
+                .align(CenterHorizontally)
+        )
+    },
+    footer: @Composable ColumnScope.() -> Unit = {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            TextButton(
+                modifier = Modifier
+                    .padding(mediumSize),
+                onClick = { onDismiss() }
+            ) {
+                Text(stringResource(R.string.close))
+            }
+
+            FilledTonalButton(
+                modifier = Modifier
+                    .padding(mediumSize),
+                onClick = { onConfirm() }
+            ) {
+                Text(stringResource(R.string.close))
+            }
+        }
+    },
+    content: @Composable () -> Unit,
 ) {
+    val swipeableState = rememberSwipeableState(0.5f)
+    var contentSize by remember { mutableStateOf(IntSize(0, 1)) }
+
+    val expandedTarget = with(LocalDensity.current) { (-contentSize.height.dp).toPx() }
+    val anchors = mapOf(
+        -expandedTarget to 0f,
+        0f to 0.5f
+    )
+
+    LaunchedEffect(swipeableState.targetValue, swipeableState.isAnimationRunning) {
+        if (swipeableState.targetValue == 0f && !swipeableState.isAnimationRunning) {
+            onDismiss()
+        }
+    }
+
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .swipeable(
+                    state = swipeableState,
+                    anchors = anchors,
+                    thresholds = { _, _ -> FractionalThreshold(0.5f) },
+                    orientation = Orientation.Vertical,
+                    velocityThreshold = SwipeableDefaults.VelocityThreshold * 2,
+                )
+                .offset { IntOffset(0, swipeableState.offset.value.roundToInt()) }
+                .fillMaxSize()
+        ) {
             Surface(
                 modifier = modifier
                     .fillMaxWidth()
+                    .onGloballyPositioned {
+                        contentSize = it.size
+                    }
                     .align(Alignment.BottomCenter),
                 shape = mediumHeaderRoundedShape
             ) {
-                content()
+                Column(modifier = Modifier.padding(horizontal = mediumSize)) {
+                    header()
+                    content()
+                    footer()
+                }
             }
         }
     }
@@ -167,5 +257,32 @@ fun ModalBottomSheet(
 private fun PreviewDateDialog() {
     AppTheme {
         DateTimeDialog()
+    }
+}
+
+@Composable
+@Preview
+private fun PreviewSheetDialog() {
+    AppTheme {
+        var show by remember { mutableStateOf(true) }
+        Column {
+            Text(modifier = Modifier.padding(16.dp), text = "hello")
+            Text(modifier = Modifier.padding(16.dp), text = "hello")
+            Text(modifier = Modifier.padding(16.dp), text = "hello")
+        }
+
+        if (show) {
+            ModalBottomSheet(onDismiss = { show = false }, onConfirm = {}) {
+                LazyColumn() {
+                    items(buildList {
+                        for (i in 1..100) {
+                            add("hello $i")
+                        }
+                    }) {
+                        Text(it)
+                    }
+                }
+            }
+        }
     }
 }
