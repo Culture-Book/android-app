@@ -1,12 +1,11 @@
-package uk.co.culturebook.home.composables
+package uk.co.culturebook.home.explore
 
 import android.app.Application
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -14,13 +13,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import uk.co.common.courseLocationOnly
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.repositories.authentication.UserRepository
-import uk.co.culturebook.home.events.ExploreEvent
-import uk.co.culturebook.home.states.ExploreState
-import uk.co.culturebook.home.viewModels.ExploreViewModel
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
+import uk.co.culturebook.ui.theme.molecules.BannerType
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
@@ -32,28 +30,52 @@ fun ExploreRoute(navController: NavController) {
     }
 
     val nearbyState by viewModel.exploreState.collectAsState()
-    Explore(navController, nearbyState, viewModel::postEvent)
+    Explore(navController, viewModel.filterState, nearbyState, viewModel::postEvent)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Explore(
     navController: NavController,
+    filterState: FilterState,
     exploreState: ExploreState,
     postEvent: (ExploreEvent) -> Unit
 ) {
-    when (exploreState) {
-        is ExploreState.Error.ToSUpdate ->
-            ToSDialog(
-                onCancel = { EventBus.logout() },
-                onAccept = { postEvent(ExploreEvent.UpdateToS) },
-                onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
-                onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) }
+    val showToSDialog by remember { derivedStateOf { exploreState is ExploreState.Error.ToSUpdate } }
+    var showFiltersDialog by remember { mutableStateOf(false) }
+
+    if (showToSDialog) {
+        ToSDialog(
+            onCancel = { EventBus.logout() },
+            onAccept = { postEvent(ExploreEvent.UpdateToS) },
+            onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
+            onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) }
+        )
+    }
+
+    if (showFiltersDialog) {
+        FilterSheet(
+            filterState = filterState,
+            onDismiss = { showFiltersDialog = false },
+            onConfirm = {
+                showFiltersDialog = false
+
+            }
+        )
+    }
+
+    Scaffold(
+        topBar = { SearchAppBar(onFiltersClicked = { showFiltersDialog = true }) }
+    ) { padding ->
+        when (exploreState) {
+            ExploreState.Loading -> LoadingComposable(padding)
+            else -> ExploreBody(
+                Modifier.padding(padding),
+                filterState,
+                exploreState,
+                postEvent
             )
-        ExploreState.Idle, is ExploreState.Error -> LaunchedEffect(exploreState) {
-            postEvent(ExploreEvent.GetUser)
         }
-        ExploreState.Loading -> LoadingComposable()
-        ExploreState.Success -> Text("EXPLORE Success")
     }
 }
 

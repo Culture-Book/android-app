@@ -8,14 +8,17 @@ import okio.source
 import java.io.IOException
 import java.io.InputStream
 
-class InputStreamRequestBody(private val inputStream: InputStream) : RequestBody() {
+class InputStreamRequestBody(
+    private val inputStream: InputStream,
+    private val contentType: String
+) : RequestBody() {
     override fun contentLength(): Long = try {
         inputStream.available().toLong()
     } catch (e: IOException) {
         -1
     }
 
-    override fun contentType() = "application/octet-stream".toMediaTypeOrNull()
+    override fun contentType() = contentType.toMediaTypeOrNull()
 
     override fun writeTo(sink: BufferedSink) {
         try {

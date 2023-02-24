@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -28,11 +29,9 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 import androidx.media3.ui.PlayerView
+import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
-import coil.size.Scale
-import coil.size.Size
 import uk.co.culturebook.ui.theme.*
 
 @Composable
@@ -58,8 +57,7 @@ private fun getExoPlayer(uri: Uri): ExoPlayer {
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 fun MediaPlayer(
     modifier: Modifier = Modifier,
-    uri: Uri,
-    contentType: String
+    uri: Uri
 ) {
     val exoPlayer = getExoPlayer(uri = uri)
 
@@ -87,42 +85,26 @@ fun ImageComposable(
     modifier: Modifier,
     uri: Uri,
     icon: @Composable (() -> Unit)? = null,
-    onButtonClicked: () -> Unit = {}
+    onButtonClicked: () -> Unit = {},
+    enablePreview: Boolean = true,
+    filterQuality: FilterQuality = FilterQuality.High,
 ) {
-    val imageRequest = ImageRequest.Builder(LocalContext.current)
-        .data(uri)
-        .size(Size.ORIGINAL)
-        .scale(Scale.FIT)
-        .crossfade(true)
-        .build()
-    val painter = rememberAsyncImagePainter(model = imageRequest)
+    var isLoading by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
         Dialog(onDismissRequest = { showDialog = false }) {
-            BoxWithConstraints {
-                when (painter.state) {
-                    is AsyncImagePainter.State.Loading -> LoadingComposable()
-                    AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Success -> {
-                        Image(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .align(Alignment.Center)
-                                .clip(mediumRoundedShape),
-                            contentScale = ContentScale.FillWidth,
-                            painter = painter,
-                            contentDescription = "large media image",
-                        )
-                    }
-                    is AsyncImagePainter.State.Error -> {
-                        Icon(
-                            modifier = Modifier.align(Alignment.Center),
-                            painter = AppIcon.BrokenImage.getPainter(),
-                            contentDescription = "broken image"
-                        )
-                    }
-                }
+            if (isLoading) {
+                CircularProgressIndicator()
             }
+
+            AsyncImage(
+                model = uri,
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.Center,
+                onState = { state -> isLoading = state is AsyncImagePainter.State.Loading },
+                filterQuality = filterQuality, contentDescription = "image"
+            )
         }
     }
 
@@ -130,47 +112,32 @@ fun ImageComposable(
         modifier = modifier
             .clip(mediumRoundedShape)
             .border(xxsSize, MaterialTheme.colorScheme.outline, mediumRoundedShape)
-            .clickable { showDialog = true }
+            .clickable(enablePreview) { showDialog = true }
     ) {
-        when (painter.state) {
-            is AsyncImagePainter.State.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-            AsyncImagePainter.State.Empty -> {}
-            is AsyncImagePainter.State.Success,
-            is AsyncImagePainter.State.Error -> {
-                if (icon != null) {
-                    FilledTonalIconButton(
-                        modifier = Modifier
-                            .padding(smallSize)
-                            .align(Alignment.TopEnd)
-                            .zIndex(1f),
-                        onClick = onButtonClicked
-                    ) {
-                        icon()
-                    }
-                }
+        if (icon != null && !isLoading) {
+            FilledTonalIconButton(
+                modifier = Modifier
+                    .padding(smallSize)
+                    .align(Alignment.TopEnd)
+                    .zIndex(1f),
+                onClick = onButtonClicked
+            ) {
+                icon()
             }
         }
 
-        when (painter.state) {
-            is AsyncImagePainter.State.Loading -> LoadingComposable()
-            AsyncImagePainter.State.Empty, is AsyncImagePainter.State.Success -> {
-                Image(
-                    painter = painter,
-                    contentDescription = "image",
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.Center
-                )
-            }
-            is AsyncImagePainter.State.Error -> {
-                Icon(
-                    modifier = Modifier.align(Alignment.Center),
-                    painter = AppIcon.BrokenImage.getPainter(),
-                    contentDescription = "broken image"
-                )
-            }
+        if (isLoading) {
+            LoadingComposable()
         }
+
+        AsyncImage(
+            modifier = Modifier.size(maxWidth, maxHeight),
+            model = uri,
+            contentScale = ContentScale.FillBounds,
+            onState = { state -> isLoading = state is AsyncImagePainter.State.Loading },
+            filterQuality = FilterQuality.Low,
+            contentDescription = "image"
+        )
     }
 }
 
@@ -179,7 +146,8 @@ fun VideoComposable(
     modifier: Modifier,
     uri: Uri,
     icon: @Composable (() -> Unit)? = null,
-    onButtonClicked: () -> Unit = {}
+    onButtonClicked: () -> Unit = {},
+    enablePreview: Boolean = true
 ) {
     val context = LocalContext.current
     val mediaMetadata = remember { MediaMetadataRetriever().apply { setDataSource(context, uri) } }
@@ -193,9 +161,7 @@ fun VideoComposable(
                     .height(xxxxlSize * 3f)
             ) {
                 if (imageBitmap != null) {
-                    MediaPlayer(
-                        uri = uri, contentType = "video"
-                    )
+                    MediaPlayer(uri = uri)
                 } else {
                     Icon(
                         modifier = Modifier.align(Alignment.Center),
@@ -211,7 +177,7 @@ fun VideoComposable(
         modifier = modifier
             .clip(mediumRoundedShape)
             .border(xxsSize, MaterialTheme.colorScheme.outline, mediumRoundedShape)
-            .clickable { showDialog = true }
+            .clickable(enablePreview) { showDialog = true }
     ) {
         if (icon != null) {
             FilledTonalIconButton(
@@ -260,7 +226,7 @@ fun AudioComposable(
                 modifier = Modifier
                     .height(xxxxlSize * 3)
             ) {
-                MediaPlayer(uri = uri, contentType = "audio")
+                MediaPlayer(uri = uri)
             }
         }
     }

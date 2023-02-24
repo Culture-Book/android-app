@@ -30,7 +30,7 @@ interface ApiInterface {
     suspend fun postElement(
         @Part element: MultipartBody.Part,
         @Part files: List<MultipartBody.Part>
-    ): ApiResponse<List<String>>
+    ): ApiResponse<Element>
 
     @GET("/add_new/v1/contribution/duplicate")
     suspend fun getDuplicateContribution(
@@ -44,5 +44,5 @@ interface ApiInterface {
     suspend fun postContribution(
         @Part contribution: MultipartBody.Part,
         @Part files: List<MultipartBody.Part>
-    ): ApiResponse<List<String>>
+    ): ApiResponse<Contribution>
 }

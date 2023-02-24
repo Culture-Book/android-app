@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import uk.co.culturebook.home.navigation.ExploreRoute
+import uk.co.culturebook.home.explore.ExploreRoute
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.states.AppState
 import uk.co.culturebook.ui.theme.*

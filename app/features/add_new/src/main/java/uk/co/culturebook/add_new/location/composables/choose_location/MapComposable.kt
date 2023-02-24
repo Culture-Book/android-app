@@ -1,6 +1,5 @@
 package uk.co.culturebook.add_new.location.composables.choose_location
 
-import android.Manifest
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.padding
@@ -8,25 +7,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.zIndex
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import uk.co.common.AskForLocationPermission
+import uk.co.common.courseLocationOnly
+import uk.co.common.fineLocationGranted
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mapUiSettings
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.xxlSize
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun GoogleMapComposable(
     modifier: Modifier = Modifier,
@@ -34,8 +32,13 @@ fun GoogleMapComposable(
     onMyLocationClicked: (Boolean) -> Unit,
     isDisplayOnly: Boolean = false
 ) {
-    val locationPermission = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    var askForPermission by remember { mutableStateOf(false) }
+    val isLocationPermissionGranted = fineLocationGranted || courseLocationOnly
     val mapProperties = googleMapProperties()
+
+    if (askForPermission && !isLocationPermissionGranted) {
+        AskForLocationPermission { askForPermission = false }
+    }
 
     BoxWithConstraints(modifier = modifier) {
         Icon(
@@ -61,9 +64,15 @@ fun GoogleMapComposable(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(mediumSize),
-                onClick = { onMyLocationClicked(locationPermission.status.isGranted) }) {
+                onClick = {
+                    if (!isLocationPermissionGranted) {
+                        askForPermission = true
+                    }
+                    onMyLocationClicked(isLocationPermissionGranted)
+                }
+            ) {
                 Icon(
-                    painter = if (locationPermission.status.isGranted) AppIcon.MyLocation.getPainter() else AppIcon.LocationOff.getPainter(),
+                    painter = if (isLocationPermissionGranted) AppIcon.MyLocation.getPainter() else AppIcon.LocationOff.getPainter(),
                     contentDescription = "My location icon"
                 )
             }

@@ -6,6 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.text.isDigitsOnly
+import uk.co.common.ElementTypesComposable
+import uk.co.common.label
 import uk.co.culturebook.add_new.data.TypeData
 import uk.co.culturebook.add_new.title_type.events.TitleAndTypeEvent
 import uk.co.culturebook.add_new.title_type.states.TitleAndTypeState
@@ -56,7 +58,7 @@ fun TitleAndTypeScreen(
                     ElementTypesComposable(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = mediumSize),
+                            .padding(vertical = mediumSize),
                         selectedType = typeData.type,
                         onTypeClicked = { typeData.type = it })
 

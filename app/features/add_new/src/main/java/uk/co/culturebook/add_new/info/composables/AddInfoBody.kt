@@ -73,6 +73,7 @@ fun AddInfoBody(
                 .verticalScroll(scrollState)
         ) {
             TitleAndSubtitle(
+                modifier = Modifier.padding(bottom = mediumSize),
                 title = stringResource(R.string.background),
                 message = stringResource(R.string.background_message)
             )
@@ -134,7 +135,7 @@ fun AddInfoBody(
             }
 
             TitleAndSubtitle(
-                modifier = Modifier.padding(top = mediumSize),
+                modifier = Modifier.padding(vertical = mediumSize),
                 title = stringResource(R.string.media),
                 message = stringResource(R.string.media_message),
                 titleContent = {

@@ -1,4 +1,4 @@
-package uk.co.culturebook.home.viewModels
+package uk.co.culturebook.home.explore
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,8 +9,6 @@ import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.authentication.UserRepository
-import uk.co.culturebook.home.events.ExploreEvent
-import uk.co.culturebook.home.states.ExploreState
 import uk.co.culturebook.ui.R
 
 class ExploreViewModel(
@@ -19,6 +17,11 @@ class ExploreViewModel(
 
     private val _exploreState = MutableStateFlow<ExploreState>(ExploreState.Idle)
     val exploreState = _exploreState.asStateFlow()
+    val filterState = FilterState()
+
+    init {
+        getUser()
+    }
 
     fun postEvent(event: ExploreEvent) {
         viewModelScope.launch {
@@ -37,7 +40,9 @@ class ExploreViewModel(
         viewModelScope.launch {
             _exploreState.emit(ExploreState.Loading)
             when (val user = userRepository.getUser()) {
-                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.Success)
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> {
+                    _exploreState.emit(ExploreState.UserFetched)
+                }
                 is ApiResponse.Failure -> {
                     when (user.message) {
                         "ToSUpdate", "PrivacyUpdate" -> postEvent(ExploreEvent.Error.ToSUpdate)

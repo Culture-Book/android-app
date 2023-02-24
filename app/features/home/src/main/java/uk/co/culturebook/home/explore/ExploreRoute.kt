@@ -1,4 +1,4 @@
-package uk.co.culturebook.home.navigation
+package uk.co.culturebook.home.explore
 
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon

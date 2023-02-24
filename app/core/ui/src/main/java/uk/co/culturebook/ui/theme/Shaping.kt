@@ -12,6 +12,7 @@ val xlSize = 48.dp
 val xxlSize = 64.dp
 val xxxlSize = 96.dp
 val xxxxlSize = 125.dp
+val fiveXlSize = 145.dp
 
 val smallRoundedShape = RoundedCornerShape(smallSize)
 val mediumRoundedShape = RoundedCornerShape(mediumSize)

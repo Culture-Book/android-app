@@ -5,7 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.co.culturebook.home.navigation.ExploreRoute
+import uk.co.culturebook.home.explore.ExploreRoute
 import uk.co.culturebook.nav.Route
 
 
@@ -24,9 +24,4 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
             SocialRoute(navController)
         }
     }
-}
-
-@Composable
-fun SearchTopAppBar() {
-
 }

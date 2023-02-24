@@ -185,6 +185,16 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = Icons.Default.Info.getPainter()
     }
+
+    object Filter : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_filter.getPainter()
+    }
+
+    object Search : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.Search.getPainter()
+    }
 }
 
 @Composable

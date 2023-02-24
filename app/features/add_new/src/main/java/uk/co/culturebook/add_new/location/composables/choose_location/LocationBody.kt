@@ -58,6 +58,7 @@ fun LocationBody(
     Column(modifier = modifier) {
         if (!title.isNullOrEmpty() && !subtitle.isNullOrEmpty()) {
             TitleAndSubtitle(
+                modifier = Modifier.padding(bottom = mediumSize),
                 title = title,
                 message = subtitle
             )

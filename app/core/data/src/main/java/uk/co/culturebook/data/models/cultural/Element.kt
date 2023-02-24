@@ -1,7 +1,9 @@
 package uk.co.culturebook.data.models.cultural
 
 import kotlinx.serialization.Serializable
+import uk.co.culturebook.data.serializers.URISerializer
 import uk.co.culturebook.data_access.serializers.UUIDSerializer
+import java.net.URI
 import java.util.*
 
 @Serializable
@@ -15,5 +17,6 @@ data class Element(
     val location: Location,
     val information: String,
     val eventType: EventType? = null,
-    val linkElements: List<@Serializable(with = UUIDSerializer::class) UUID> = emptyList()
+    val linkElements: List<@Serializable(with = UUIDSerializer::class) UUID> = emptyList(),
+    val media: List<Media> = emptyList()
 )

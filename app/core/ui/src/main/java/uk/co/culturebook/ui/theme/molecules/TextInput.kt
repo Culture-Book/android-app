@@ -197,7 +197,6 @@ fun LargeDynamicRoundedTextField(
         TextField(
             modifier = Modifier
                 .defaultMinSize(minHeight = xxxxlSize)
-                .padding(bottom = mediumSize)
                 .onFocusChanged {
                     if (it.isFocused) {
                         expand = true

@@ -1,4 +1,4 @@
-package uk.co.culturebook.home.events
+package uk.co.culturebook.home.explore
 
 sealed interface ExploreEvent {
     object Success : ExploreEvent

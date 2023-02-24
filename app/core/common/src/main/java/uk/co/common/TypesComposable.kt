@@ -1,4 +1,4 @@
-package uk.co.culturebook.add_new.title_type.composables
+package uk.co.common
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,11 +24,12 @@ fun ElementTypesComposable(
     modifier: Modifier = Modifier,
     types: List<ElementType> = allElementTypes,
     selectedType: ElementType? = null,
+    selectedTypes: List<ElementType> = emptyList(),
     onTypeClicked: (ElementType) -> Unit = {}
 ) {
     LazyVerticalGrid(modifier = modifier, columns = GridCells.Fixed(2)) {
         items(types) {
-            val isSelected = it == selectedType
+            val isSelected = it == selectedType || selectedTypes.contains(it)
             FilterChip(
                 modifier = Modifier.padding(end = smallSize, bottom = smallSize),
                 selected = isSelected,

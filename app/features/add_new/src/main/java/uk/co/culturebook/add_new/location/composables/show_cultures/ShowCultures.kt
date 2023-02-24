@@ -26,6 +26,7 @@ fun ShowCultures(
     Column(modifier = modifier) {
 
         TitleAndSubtitle(
+            modifier = Modifier.padding(bottom = mediumSize),
             title = stringResource(R.string.select_culture),
             message = stringResource(R.string.select_culture_message)
         )

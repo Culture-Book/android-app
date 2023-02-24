@@ -47,6 +47,7 @@
     <string name="submit_contribution">Submit contribution</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="done">Done</string>
 
     <!--  HOME  -->
     <string name="explore">Explore</string>
@@ -75,6 +76,7 @@
 
     <string name="select_type_and_title_title">What is it?</string>
     <string name="select_type_title">What is its element type?</string>
+    <string name="type_filter">Element type filter</string>
     <string name="select_type_message">Select the cultural element type this tradition falls under.</string>
 
     <string name="select_title">What is the name of this element?</string>
@@ -108,6 +110,14 @@
     <string name="upload_in_progress">Uploading in progress…</string>
     <string name="upload_failed">Upload failed, please try again.</string>
     <string name="upload_success">Upload success.</string>
+    <string name="search_filter">Search for…</string>
+
+    <string name="low_accuracy_title">Low location accuracy</string>
+    <string name="low_accuracy_message">Your location isn’t accurate, please allow accurate location for a better user experience.</string>
+
+    <string name="hide">Hide</string>
+    <string name="report">Report</string>
+    <string name="block">Block</string>
 
     <!--    Element Types-->
     <string name="food">Gastronomy</string>

@@ -15,15 +15,12 @@ data class MediaFile(
 )
 
 fun MediaFile.toRequestBody(context: Context) = context.contentResolver.openInputStream(uri)
-    ?.use { InputStreamRequestBody(it) }
+    ?.use { InputStreamRequestBody(it, contentType) }
 
 fun MediaFile.isContentTypeValid() =
     contentType.contains("video/.*".toRegex()) ||
             contentType.contains("image/.*".toRegex()) ||
             contentType.contains("audio/.*".toRegex())
-
-fun String.isContentTypeValid() =
-    contains("video/.*".toRegex()) || contains("image/.*".toRegex()) || contains("audio/.*".toRegex())
 
 fun List<MediaFile>.smallerThan50Mb() = totalSize() <= 50_000_000
 private fun List<MediaFile>.totalSize() = fold(0L) { acc, file -> acc + file.fileSize }
