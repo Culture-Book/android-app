@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import uk.co.common.courseLocationOnly
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.repositories.authentication.UserRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.molecules.BannerType
@@ -26,7 +27,9 @@ fun ExploreRoute(navController: NavController) {
     val viewModel = viewModel {
         val userRepository =
             UserRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
-        ExploreViewModel(userRepository = userRepository)
+        val elementsRepository =
+            ElementsRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
+        ExploreViewModel(userRepository = userRepository, elementsRepository = elementsRepository)
     }
 
     val nearbyState by viewModel.exploreState.collectAsState()
@@ -59,7 +62,6 @@ fun Explore(
             onDismiss = { showFiltersDialog = false },
             onConfirm = {
                 showFiltersDialog = false
-
             }
         )
     }

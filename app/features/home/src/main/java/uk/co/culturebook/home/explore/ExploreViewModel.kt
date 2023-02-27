@@ -9,10 +9,12 @@ import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.authentication.UserRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.ui.R
 
 class ExploreViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val elementsRepository: ElementsRepository
 ) : ViewModel() {
 
     private val _exploreState = MutableStateFlow<ExploreState>(ExploreState.Idle)
