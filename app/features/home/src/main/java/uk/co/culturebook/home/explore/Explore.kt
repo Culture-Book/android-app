@@ -13,13 +13,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import uk.co.common.courseLocationOnly
 import uk.co.culturebook.data.flows.EventBus
+import uk.co.culturebook.data.location.LocationFlow
+import uk.co.culturebook.data.location.LocationStatus
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
+import uk.co.culturebook.data.models.cultural.SearchCriteria
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.molecules.BannerType
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
@@ -46,6 +47,8 @@ fun Explore(
 ) {
     val showToSDialog by remember { derivedStateOf { exploreState is ExploreState.Error.ToSUpdate } }
     var showFiltersDialog by remember { mutableStateOf(false) }
+    var currentPage by remember { mutableStateOf(1) }
+    val locationStatus by LocationFlow.collectAsState()
 
     if (showToSDialog) {
         ToSDialog(
@@ -66,10 +69,25 @@ fun Explore(
         )
     }
 
+    LaunchedEffect(locationStatus) {
+        val location = (locationStatus as? LocationStatus.Success)?.location
+        if (location != null) {
+            postEvent(
+                ExploreEvent.GetElements(
+                    SearchCriteria(
+                        location = location,
+                        page = currentPage
+                    )
+                )
+            )
+        }
+    }
+
     Scaffold(
         topBar = { SearchAppBar(onFiltersClicked = { showFiltersDialog = true }) }
     ) { padding ->
         when (exploreState) {
+            ExploreState.UserFetched,
             ExploreState.Loading -> LoadingComposable(padding)
             else -> ExploreBody(
                 Modifier.padding(padding),

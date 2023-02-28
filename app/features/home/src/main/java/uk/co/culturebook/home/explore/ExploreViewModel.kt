@@ -8,8 +8,10 @@ import kotlinx.coroutines.launch
 import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
+import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
+import uk.co.culturebook.data.models.cultural.SearchCriteria
 import uk.co.culturebook.ui.R
 
 class ExploreViewModel(
@@ -32,6 +34,7 @@ class ExploreViewModel(
                 ExploreEvent.Success -> _exploreState.emit(ExploreState.Success)
                 ExploreEvent.GetUser -> getUser()
                 ExploreEvent.UpdateToS -> updateToS()
+                is ExploreEvent.GetElements -> getElements(event.searchCriteria)
                 ExploreEvent.Error.ToSUpdate -> _exploreState.emit(ExploreState.Error.ToSUpdate)
                 is ExploreEvent.Error.Generic -> _exploreState.emit(ExploreState.Error.Generic(event.stringId))
             }
@@ -68,6 +71,25 @@ class ExploreViewModel(
                 is ApiResponse.Exception -> {
                     postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
                     apiResponse.throwable.logE()
+                }
+            }
+        }
+    }
+
+    private fun getElements(searchCriteria: SearchCriteria) {
+        viewModelScope.launch {
+            when (val response = elementsRepository.getElements(searchCriteria)) {
+                is ApiResponse.Success.Empty -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
+                is ApiResponse.Exception -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
+                is ApiResponse.Failure -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
+                is ApiResponse.Success -> {
+                    _exploreState.emit(ExploreState.ElementsReceived(response.data))
+                    val elements = response.data.map { element ->
+                        val media = elementsRepository.getElementMedia(element.id)?.getDataOrNull()
+                            ?: emptyList()
+                        element.copy(media = media)
+                    }
+                    _exploreState.emit(ExploreState.ElementsWithMediaReceived(elements))
                 }
             }
         }
