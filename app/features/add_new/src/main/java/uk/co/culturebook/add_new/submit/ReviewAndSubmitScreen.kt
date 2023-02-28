@@ -12,8 +12,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import uk.co.common.icon
-import uk.co.common.label
+import uk.co.common.*
 import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.add_new.location.composables.choose_location.LocationBody
 import uk.co.culturebook.data.models.cultural.ElementType

@@ -10,18 +10,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.size.Scale
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import uk.co.culturebook.data.Constants
 import uk.co.culturebook.data.models.cultural.Element
 import uk.co.culturebook.data.models.cultural.isImage
 import uk.co.culturebook.data.models.cultural.isVideo
+import uk.co.culturebook.data.remote_config.RemoteConfig
 import uk.co.culturebook.data.utils.toUri
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.fiveXlSize
-import uk.co.culturebook.ui.theme.mediumRoundedShape
+import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
-import uk.co.culturebook.ui.theme.molecules.VideoComposable
-import uk.co.culturebook.ui.theme.xsSize
 import java.util.*
 
 @Composable
@@ -35,16 +39,18 @@ fun ShowElements(
         if (elements.isEmpty()) {
             item {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-
+                    Text(modifier = Modifier.align(Alignment.Center), text = "No elements found")
                 }
             }
-        }
-        items(elements) {
-            ElementComposable(
-                element = it,
-                onElementClicked = onElementClicked,
-                onOptionsClicked = onOptionsClicked
-            )
+        } else {
+            items(elements) {
+                ElementComposable(
+                    modifier = Modifier.padding(horizontal = mediumSize, vertical = smallSize),
+                    element = it,
+                    onElementClicked = onElementClicked,
+                    onOptionsClicked = onOptionsClicked
+                )
+            }
         }
     }
 }
@@ -58,74 +64,93 @@ fun ElementComposable(
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
     Card(
+        modifier = modifier,
         shape = mediumRoundedShape,
         onClick = { onElementClicked(element) }
     ) {
-        BoxWithConstraints(modifier = modifier) {
-            val media = element.media.first()
+        val media = element.media.firstOrNull()
+        val context = LocalContext.current
+        val imageLoader = rememberImageLoader()
 
-            if (media.isImage()) {
-                AsyncImage(
-                    modifier = Modifier
-                        .width(maxWidth)
-                        .heightIn(max = fiveXlSize),
-                    model = media.uri,
-                    contentScale = ContentScale.FillWidth,
-                    contentDescription = "image preview"
-                )
-            }
-            if (media.isVideo()) {
-                VideoComposable(
-                    modifier = Modifier
-                        .width(maxWidth)
-                        .heightIn(max = fiveXlSize),
-                    uri = media.uri.toUri(),
-                    enablePreview = false
-                )
-            }
+        if (media?.isImage() == true) {
+            val request = ImageRequest.Builder(context)
+                .data(media.uri)
+                .build()
 
-            Surface(modifier = Modifier.width(maxWidth), tonalElevation = xsSize) {
-                TitleAndSubtitle(
-                    title = element.name,
-                    message = element.information,
-                    maxMessageLines = 2,
-                    titleContent = {
-                        var expanded by remember { mutableStateOf(false) }
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .wrapContentSize(Alignment.TopStart)
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = fiveXlSize),
+                model = request,
+                contentScale = ContentScale.FillWidth,
+                contentDescription = "image preview"
+            )
+
+            LaunchedEffect(request) {
+                imageLoader.enqueue(request)
+            }
+        }
+        if (media?.isVideo() == true) {
+            val token = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key) }
+            val apiKey = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key) }
+
+            VideoComposable(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = fiveXlSize),
+                uri = media.uri.toUri(),
+                headers = mapOf(
+                    Constants.AuthorizationHeader to Constants.getBearerValue(token),
+                    Constants.ApiKeyHeader to apiKey
+                ),
+                enablePreview = false
+            )
+        }
+
+        Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {
+            TitleAndSubtitle(
+                modifier = Modifier.padding(mediumSize),
+                title = element.name,
+                message = element.information,
+                maxMessageLines = 2,
+                titleContent = {
+                    var expanded by remember { mutableStateOf(false) }
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize(Alignment.TopStart)
+                    ) {
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "options")
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
                         ) {
-                            IconButton(onClick = { expanded = true }) {
-                                Icon(Icons.Default.MoreVert, contentDescription = "options")
-                            }
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onOptionsClicked(ElementOptionsState.Hide(elementId = element.id!!))
-                                    },
-                                    text = { Text(stringResource(R.string.hide)) }
-                                )
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onOptionsClicked(ElementOptionsState.Report(elementId = element.id!!))
-                                    },
-                                    text = { Text(stringResource(R.string.report)) }
-                                )
-                                DropdownMenuItem(
-                                    onClick = {
-                                        onOptionsClicked(ElementOptionsState.Block(elementId = element.id!!))
-                                    },
-                                    text = { Text(stringResource(R.string.block)) }
-                                )
-                            }
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    onOptionsClicked(ElementOptionsState.Hide(elementId = element.id!!))
+                                },
+                                text = { Text(stringResource(R.string.hide)) }
+                            )
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    onOptionsClicked(ElementOptionsState.Report(elementId = element.id!!))
+                                },
+                                text = { Text(stringResource(R.string.report)) }
+                            )
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    onOptionsClicked(ElementOptionsState.Block(elementId = element.id!!))
+                                },
+                                text = { Text(stringResource(R.string.block)) }
+                            )
                         }
                     }
-                )
-            }
+                }
+            )
         }
     }
 }

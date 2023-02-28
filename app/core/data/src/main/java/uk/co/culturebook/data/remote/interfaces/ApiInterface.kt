@@ -4,7 +4,7 @@ import okhttp3.MultipartBody
 import retrofit2.http.*
 import uk.co.culturebook.data.models.authentication.User
 import uk.co.culturebook.data.models.cultural.*
-import uk.co.culturebook.data.models.cultural.SearchCriteria
+import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import java.util.*
 
 interface ApiInterface {

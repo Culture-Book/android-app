@@ -15,6 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import com.google.maps.android.compose.rememberCameraPositionState
+import uk.co.common.AudioComposable
+import uk.co.common.ImageComposable
+import uk.co.common.VideoComposable
 import uk.co.culturebook.add_new.data.InfoData
 import uk.co.culturebook.add_new.location.composables.choose_location.LocationBody
 import uk.co.culturebook.data.models.cultural.ElementType

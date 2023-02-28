@@ -2,11 +2,12 @@ package uk.co.culturebook.data.repositories.cultural
 
 import android.content.Context
 import uk.co.culturebook.data.Singletons
-import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.models.cultural.SearchCriteria
+import uk.co.culturebook.data.remote.interfaces.ApiInterface
+import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import java.util.*
 
-class ElementsRepository(private val context: Context) {
+class ElementsRepository(context: Context) {
     private val apiInterface: ApiInterface = Singletons.getApiInterface(context)
 
     suspend fun getElements(searchCriteria: SearchCriteria) =

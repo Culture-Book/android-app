@@ -168,7 +168,7 @@ sealed interface AppIcon {
     }
 
     object BrokenImage : AppIcon {
-        private val icon = R.drawable.ic_broken_image
+        val icon = R.drawable.ic_broken_image
 
         @Composable
         override fun getPainter() = icon.getPainter()

@@ -7,20 +7,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import uk.co.common.ElementTypesComposable
 import uk.co.culturebook.data.models.cultural.ElementType
+import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.ModalBottomSheet
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
 
 @Composable
-fun FilterSheet(filterState: FilterState, onDismiss: () -> Unit, onConfirm: (FilterState) -> Unit) {
-    val localState = remember { filterState.copy() }
+fun FilterSheet(searchCriteriaState: SearchCriteriaState, onDismiss: () -> Unit, onConfirm: (SearchCriteriaState) -> Unit) {
+    val localState = remember { searchCriteriaState.copy() }
 
     fun toggleSelection(elementType: ElementType) {
-        if (localState.elementTypes.contains(elementType)) {
-            localState.elementTypes -= elementType
+        if (localState.types.contains(elementType)) {
+            localState.types -= elementType
         } else {
-            localState.elementTypes += elementType
+            localState.types += elementType
         }
     }
 
@@ -30,7 +31,7 @@ fun FilterSheet(filterState: FilterState, onDismiss: () -> Unit, onConfirm: (Fil
             title = stringResource(R.string.type_filter)
         )
         ElementTypesComposable(
-            selectedTypes = localState.elementTypes,
+            selectedTypes = localState.types,
             onTypeClicked = { toggleSelection(it) }
         )
     }

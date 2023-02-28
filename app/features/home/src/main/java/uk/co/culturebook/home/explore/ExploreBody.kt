@@ -1,6 +1,7 @@
 package uk.co.culturebook.home.explore
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
@@ -8,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import uk.co.common.AskForLocationPermission
 import uk.co.common.ShowElements
-import uk.co.common.courseLocationOnly
+import uk.co.common.coarseLocationOnly
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
@@ -17,7 +18,6 @@ import uk.co.culturebook.ui.theme.molecules.Banner
 @Composable
 fun ExploreBody(
     modifier: Modifier,
-    filterState: FilterState,
     exploreState: ExploreState,
     postEvent: (ExploreEvent) -> Unit
 ) {
@@ -26,6 +26,7 @@ fun ExploreBody(
         when (exploreState) {
             is ExploreState.ElementsReceived -> {
                 ShowElements(
+                    modifier = modifier.fillMaxSize(),
                     elements = exploreState.elements,
                     onElementClicked = {},
                     onOptionsClicked = {}
@@ -33,6 +34,7 @@ fun ExploreBody(
             }
             is ExploreState.ElementsWithMediaReceived -> {
                 ShowElements(
+                    modifier = modifier.fillMaxSize(),
                     elements = exploreState.elements,
                     onElementClicked = {},
                     onOptionsClicked = {}
@@ -45,7 +47,7 @@ fun ExploreBody(
 
 @Composable
 fun ShowBanners() {
-    val isCourseLocation = courseLocationOnly
+    val isCourseLocation = coarseLocationOnly
     var showLocationBanner by remember { mutableStateOf(true) }
     var askForLocationPermission by remember { mutableStateOf(false) }
 

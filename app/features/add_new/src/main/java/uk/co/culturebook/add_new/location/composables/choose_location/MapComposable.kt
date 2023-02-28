@@ -17,7 +17,8 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import uk.co.common.AskForLocationPermission
-import uk.co.common.courseLocationOnly
+import uk.co.common.RegisterLocationChanges
+import uk.co.common.coarseLocationOnly
 import uk.co.common.fineLocationGranted
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
@@ -33,12 +34,14 @@ fun GoogleMapComposable(
     isDisplayOnly: Boolean = false
 ) {
     var askForPermission by remember { mutableStateOf(false) }
-    val isLocationPermissionGranted = fineLocationGranted || courseLocationOnly
+    val isLocationPermissionGranted = fineLocationGranted || coarseLocationOnly
     val mapProperties = googleMapProperties()
 
     if (askForPermission && !isLocationPermissionGranted) {
         AskForLocationPermission { askForPermission = false }
     }
+
+    RegisterLocationChanges()
 
     BoxWithConstraints(modifier = modifier) {
         Icon(

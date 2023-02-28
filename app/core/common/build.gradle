@@ -48,5 +48,10 @@ dependencies {
     api project(":app:core:ui")
     api project(":app:core:data")
     api project(":app:core:nav")
+
+    // Media
+    implementation 'androidx.media3:media3-exoplayer:1.0.0-rc01'
+    implementation "androidx.media3:media3-ui:1.0.0-rc01"
+
     implementation "com.google.accompanist:accompanist-permissions:0.28.0"
 }

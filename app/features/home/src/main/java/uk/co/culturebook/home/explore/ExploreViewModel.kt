@@ -11,7 +11,7 @@ import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
-import uk.co.culturebook.data.models.cultural.SearchCriteria
+import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.ui.R
 
 class ExploreViewModel(
@@ -21,7 +21,7 @@ class ExploreViewModel(
 
     private val _exploreState = MutableStateFlow<ExploreState>(ExploreState.Idle)
     val exploreState = _exploreState.asStateFlow()
-    val filterState = FilterState()
+    val searchCriteriaState = SearchCriteriaState()
 
     init {
         getUser()
@@ -34,7 +34,7 @@ class ExploreViewModel(
                 ExploreEvent.Success -> _exploreState.emit(ExploreState.Success)
                 ExploreEvent.GetUser -> getUser()
                 ExploreEvent.UpdateToS -> updateToS()
-                is ExploreEvent.GetElements -> getElements(event.searchCriteria)
+                is ExploreEvent.GetElements -> getElements(event.searchCriteriaState)
                 ExploreEvent.Error.ToSUpdate -> _exploreState.emit(ExploreState.Error.ToSUpdate)
                 is ExploreEvent.Error.Generic -> _exploreState.emit(ExploreState.Error.Generic(event.stringId))
             }
@@ -76,9 +76,10 @@ class ExploreViewModel(
         }
     }
 
-    private fun getElements(searchCriteria: SearchCriteria) {
+    private fun getElements(searchCriteriaState: SearchCriteriaState) {
         viewModelScope.launch {
-            when (val response = elementsRepository.getElements(searchCriteria)) {
+            val response = elementsRepository.getElements(searchCriteriaState.toSearchCriteria())
+            when (response) {
                 is ApiResponse.Success.Empty -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
                 is ApiResponse.Exception -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
                 is ApiResponse.Failure -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))

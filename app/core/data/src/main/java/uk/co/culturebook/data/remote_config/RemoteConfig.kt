@@ -34,7 +34,11 @@ sealed interface RemoteConfig {
         override val key: String = "privacy_url"
     }
 
-    object GoogleKey : RemoteConfig {
-        override val key: String = "google_key"
+    object MediaApiKey : RemoteConfig {
+        override val key: String = "media_api_key"
+    }
+
+    object MediaToken : RemoteConfig {
+        override val key: String = "media_token"
     }
 }

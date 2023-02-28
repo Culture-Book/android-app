@@ -17,7 +17,7 @@ import uk.co.culturebook.ui.theme.AppIcon
 val fineLocationGranted @Composable get() = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION).status.isGranted
 
 @OptIn(ExperimentalPermissionsApi::class)
-val courseLocationOnly @Composable get() = rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION).status.isGranted && !fineLocationGranted
+val coarseLocationOnly @Composable get() = rememberPermissionState(android.Manifest.permission.ACCESS_COARSE_LOCATION).status.isGranted && !fineLocationGranted
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -30,7 +30,6 @@ fun AskForLocationPermission(forceAsk: Boolean = false, onDismiss: () -> Unit = 
     val courseAccess = coursePermission.status.isGranted
 
     var showPermissionPrompt by remember { mutableStateOf(!fineAccess && !courseAccess) }
-    val context = LocalContext.current
 
     if (showPermissionPrompt || forceAsk) {
         PermissionRequester(
@@ -47,11 +46,19 @@ fun AskForLocationPermission(forceAsk: Boolean = false, onDismiss: () -> Unit = 
             }
         )
     }
+}
 
-    DisposableEffect(fineAccess, courseAccess) {
+@Composable
+fun RegisterLocationChanges() {
+    val accessGranted = fineLocationGranted || coarseLocationOnly
+    val context = LocalContext.current
 
-        if (fineAccess || courseAccess) {
+    DisposableEffect(accessGranted) {
+
+        if (accessGranted) {
             registerForLocationUpdates(context)
+        } else {
+            unregisterLocationUpdates(context)
         }
 
         onDispose {

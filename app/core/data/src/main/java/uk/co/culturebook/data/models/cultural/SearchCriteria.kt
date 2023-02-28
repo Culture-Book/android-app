@@ -13,6 +13,6 @@ data class SearchCriteria(
     @Serializable(with = UUIDSerializer::class)
     val contributionId: UUID? = null,
     val types: List<@Serializable ElementType> = emptyList(),
-    val page: Int = 1,
-    val radius: Double = 3.0,
+    val page: Int = 0,
+    val radius: Double = 0.0
 )

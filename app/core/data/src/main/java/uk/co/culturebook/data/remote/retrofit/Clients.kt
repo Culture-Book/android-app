@@ -25,13 +25,19 @@ private val nonAuthClient by lazy {
         .cookieJar(JavaNetCookieJar(cookieHandler))
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)
+        .build()
 }
 
 private fun authenticatedClient(context: Context) =
     nonAuthClient
+        .newBuilder()
         .addInterceptor(AuthenticatorInterceptor)
         .authenticator(JWTAuthenticator(context))
         .build()
+
+val imageLoaderClient by lazy {
+    nonAuthClient.newBuilder().addNetworkInterceptor(MediaInterceptor()).build()
+}
 
 @OptIn(ExperimentalSerializationApi::class)
 fun getAuthenticatedRetrofitClient(context: Context): ApiInterface =
@@ -46,7 +52,7 @@ fun getAuthenticatedRetrofitClient(context: Context): ApiInterface =
 @OptIn(ExperimentalSerializationApi::class)
 fun getAuthenticationRetrofitClient(): AuthInterface =
     Retrofit.Builder()
-        .client(nonAuthClient.build())
+        .client(nonAuthClient)
         .baseUrl(BuildConfig.API_URL)
         .addConverterFactory(Json.asConverterFactory(contentType))
         .addCallAdapterFactory(ResponseCallFactory.create())

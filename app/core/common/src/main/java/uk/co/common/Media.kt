@@ -1,4 +1,4 @@
-package uk.co.culturebook.ui.theme.molecules
+package uk.co.common
 
 import android.media.MediaMetadataRetriever
 import android.net.Uri
@@ -29,10 +29,38 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
 import androidx.media3.ui.PlayerView
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
+import uk.co.culturebook.data.remote.retrofit.imageLoaderClient
 import uk.co.culturebook.ui.theme.*
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
+
+@Composable
+fun rememberImageLoader(): ImageLoader {
+    val context = LocalContext.current
+    val loader = remember {
+        ImageLoader.Builder(context)
+            .okHttpClient(imageLoaderClient)
+            .crossfade(true)
+            .error(AppIcon.BrokenImage.icon)
+            .memoryCache {
+                MemoryCache.Builder(context)
+                    .maxSizePercent(0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.02)
+                    .build()
+            }
+            .build()
+    }
+    return loader
+}
 
 @Composable
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -145,12 +173,19 @@ fun ImageComposable(
 fun VideoComposable(
     modifier: Modifier,
     uri: Uri,
+    headers: Map<String,String> = mapOf(),
     icon: @Composable (() -> Unit)? = null,
     onButtonClicked: () -> Unit = {},
     enablePreview: Boolean = true
 ) {
     val context = LocalContext.current
-    val mediaMetadata = remember { MediaMetadataRetriever().apply { setDataSource(context, uri) } }
+    val mediaMetadata = remember { MediaMetadataRetriever().apply {
+        if (headers.isEmpty()) {
+            setDataSource(uri.toString(), headers)
+        } else {
+            setDataSource(context, uri)
+        }
+    } }
     val imageBitmap = remember { mediaMetadata.frameAtTime?.asImageBitmap() }
     var showDialog by remember { mutableStateOf(false) }
 
