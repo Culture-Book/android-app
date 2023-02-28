@@ -8,14 +8,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import uk.co.common.courseLocationOnly
+import uk.co.common.fineLocationGranted
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.location.LocationFlow
 import uk.co.culturebook.data.location.LocationStatus
+import uk.co.culturebook.data.location.registerForLocationUpdates
+import uk.co.culturebook.data.location.unregisterLocationUpdates
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.models.cultural.SearchCriteria
@@ -25,12 +30,25 @@ import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
 fun ExploreRoute(navController: NavController) {
+    val context = LocalContext.current
+    val locationGranted = fineLocationGranted or courseLocationOnly
     val viewModel = viewModel {
         val userRepository =
             UserRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
         val elementsRepository =
             ElementsRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
         ExploreViewModel(userRepository = userRepository, elementsRepository = elementsRepository)
+    }
+
+    DisposableEffect(locationGranted) {
+        if (locationGranted) {
+            registerForLocationUpdates(context)
+        } else {
+            unregisterLocationUpdates(context)
+        }
+        onDispose {
+            unregisterLocationUpdates(context)
+        }
     }
 
     val nearbyState by viewModel.exploreState.collectAsState()
@@ -69,9 +87,9 @@ fun Explore(
         )
     }
 
-    LaunchedEffect(locationStatus) {
+    LaunchedEffect(locationStatus, exploreState) {
         val location = (locationStatus as? LocationStatus.Success)?.location
-        if (location != null) {
+        if (location != null && exploreState is ExploreState.UserFetched) {
             postEvent(
                 ExploreEvent.GetElements(
                     SearchCriteria(

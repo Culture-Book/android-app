@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#FFB868</color>
+    <color name="onPrimary">#482900</color>
+    <color name="primaryContainer">#673D00</color>
+    <color name="onPrimaryContainer">#FFDDBB</color>
+    <color name="secondary">#E0C1A3</color>
+    <color name="onSecondary">#402D17</color>
+    <color name="secondaryContainer">#58432C</color>
+    <color name="onSecondaryContainer">#FDDDBD</color>
+    <color name="tertiary">#BDCC9C</color>
+    <color name="onTertiary">#293412</color>
+    <color name="tertiaryContainer">#3F4B26</color>
+    <color name="onTertiaryContainer">#D9E9B6</color>
+    <color name="error">#FFB4AB</color>
+    <color name="errorContainer">#93000A</color>
+    <color name="onError">#690005</color>
+    <color name="onErrorContainer">#FFDAD6</color>
+    <color name="background">#1F1B16</color>
+    <color name="onBackground">#EBE1D9</color>
+    <color name="surface">#1F1B16</color>
+    <color name="onSurface">#EBE1D9</color>
+    <color name="surfaceVariant">#50453A</color>
+    <color name="onSurfaceVariant">#D4C4B5</color>
+    <color name="outline">#9D8E81</color>
+    <color name="inverseOnSurface">#1F1B16</color>
+    <color name="inverseSurface">#EBE1D9</color>
+    <color name="inversePrimary">#885200</color>
+    <color name="shadow">#000000</color>
+    <color name="surfaceTint">#FFB868</color>
+    <color name="surfaceTintColor">#FFB868</color>
+</resources>

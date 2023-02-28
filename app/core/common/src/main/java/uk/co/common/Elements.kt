@@ -32,6 +32,13 @@ fun ShowElements(
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
+        if (elements.isEmpty()) {
+            item {
+                BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+
+                }
+            }
+        }
         items(elements) {
             ElementComposable(
                 element = it,

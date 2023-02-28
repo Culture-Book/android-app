@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import uk.co.common.AskForLocationPermission
+import uk.co.common.ShowElements
 import uk.co.common.courseLocationOnly
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
@@ -22,6 +23,23 @@ fun ExploreBody(
 ) {
     Column(modifier) {
         ShowBanners()
+        when (exploreState) {
+            is ExploreState.ElementsReceived -> {
+                ShowElements(
+                    elements = exploreState.elements,
+                    onElementClicked = {},
+                    onOptionsClicked = {}
+                )
+            }
+            is ExploreState.ElementsWithMediaReceived -> {
+                ShowElements(
+                    elements = exploreState.elements,
+                    onElementClicked = {},
+                    onOptionsClicked = {}
+                )
+            }
+            else -> {}
+        }
     }
 }
 
