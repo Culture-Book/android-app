@@ -69,26 +69,18 @@ fun ElementComposable(
         onClick = { onElementClicked(element) }
     ) {
         val media = element.media.firstOrNull()
-        val context = LocalContext.current
         val imageLoader = rememberImageLoader()
 
         if (media?.isImage() == true) {
-            val request = ImageRequest.Builder(context)
-                .data(media.uri)
-                .build()
-
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = fiveXlSize),
-                model = request,
+                imageLoader = imageLoader,
+                model = media.uri,
                 contentScale = ContentScale.FillWidth,
                 contentDescription = "image preview"
             )
-
-            LaunchedEffect(request) {
-                imageLoader.enqueue(request)
-            }
         }
         if (media?.isVideo() == true) {
             val token = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key) }
