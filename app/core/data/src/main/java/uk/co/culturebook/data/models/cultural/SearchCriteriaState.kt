@@ -4,8 +4,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import kotlinx.serialization.Serializable
-import uk.co.culturebook.data_access.serializers.UUIDSerializer
 import java.util.*
 
 @Stable

@@ -173,19 +173,21 @@ fun ImageComposable(
 fun VideoComposable(
     modifier: Modifier,
     uri: Uri,
-    headers: Map<String,String> = mapOf(),
+    headers: Map<String, String> = mapOf(),
     icon: @Composable (() -> Unit)? = null,
     onButtonClicked: () -> Unit = {},
     enablePreview: Boolean = true
 ) {
     val context = LocalContext.current
-    val mediaMetadata = remember { MediaMetadataRetriever().apply {
-        if (headers.isEmpty()) {
-            setDataSource(uri.toString(), headers)
-        } else {
-            setDataSource(context, uri)
+    val mediaMetadata = remember {
+        MediaMetadataRetriever().apply {
+            if (headers.isEmpty()) {
+                setDataSource(uri.toString(), headers)
+            } else {
+                setDataSource(context, uri)
+            }
         }
-    } }
+    }
     val imageBitmap = remember { mediaMetadata.frameAtTime?.asImageBitmap() }
     var showDialog by remember { mutableStateOf(false) }
 

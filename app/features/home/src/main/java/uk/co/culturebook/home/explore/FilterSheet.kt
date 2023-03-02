@@ -14,7 +14,11 @@ import uk.co.culturebook.ui.theme.molecules.ModalBottomSheet
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
 
 @Composable
-fun FilterSheet(searchCriteriaState: SearchCriteriaState, onDismiss: () -> Unit, onConfirm: (SearchCriteriaState) -> Unit) {
+fun FilterSheet(
+    searchCriteriaState: SearchCriteriaState,
+    onDismiss: () -> Unit,
+    onConfirm: (SearchCriteriaState) -> Unit
+) {
     val localState = remember { searchCriteriaState.copy() }
 
     fun toggleSelection(elementType: ElementType) {

@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.smallSize
 
 enum class TitleType {
@@ -24,12 +23,12 @@ fun TitleAndSubtitle(
     titleContent: (@Composable () -> Unit)? = null,
     leadingTitleContent: (@Composable () -> Unit)? = null
 ) {
-    val titleStyle = when(titleType) {
+    val titleStyle = when (titleType) {
         TitleType.Large -> MaterialTheme.typography.titleLarge
         TitleType.Medium -> MaterialTheme.typography.titleMedium
         TitleType.Small -> MaterialTheme.typography.titleSmall
     }
-    val subtitleStyle = when(titleType) {
+    val subtitleStyle = when (titleType) {
         TitleType.Large -> MaterialTheme.typography.bodyMedium
         TitleType.Medium -> MaterialTheme.typography.bodyMedium
         TitleType.Small -> MaterialTheme.typography.bodySmall

@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.largeRoundedShape
-import uk.co.culturebook.ui.theme.smallSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

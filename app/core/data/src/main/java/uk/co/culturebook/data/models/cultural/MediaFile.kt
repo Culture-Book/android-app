@@ -14,8 +14,7 @@ data class MediaFile(
     val contentType: String
 )
 
-fun MediaFile.toRequestBody(context: Context) = context.contentResolver.openInputStream(uri)
-    ?.use { InputStreamRequestBody(it, contentType) }
+fun MediaFile.toRequestBody(context: Context) = InputStreamRequestBody(context, this)
 
 fun MediaFile.isContentTypeValid() =
     contentType.contains("video/.*".toRegex()) ||

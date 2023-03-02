@@ -17,10 +17,10 @@ import uk.co.common.RegisterLocationChanges
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.location.LocationFlow
 import uk.co.culturebook.data.location.LocationStatus
-import uk.co.culturebook.data.repositories.authentication.UserRepository
-import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.models.cultural.isValid
+import uk.co.culturebook.data.repositories.authentication.UserRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable

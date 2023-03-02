@@ -42,7 +42,9 @@ fun Banner(
         contentColor = bannerContentColor
     ) {
         Row(
-            modifier = Modifier.padding(mediumSize).fillMaxWidth(),
+            modifier = Modifier
+                .padding(mediumSize)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {

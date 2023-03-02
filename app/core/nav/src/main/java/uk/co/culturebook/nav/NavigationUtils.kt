@@ -11,7 +11,9 @@ import kotlinx.serialization.json.Json
  *  Empty the back stack and then navigate. Because apparently it was too hard to implement a simple while loop. Seriously fuck my life!
  *  */
 fun NavController.navigateTop(route: Route) {
-    while (backQueue.size > 0) { backQueue.removeLast() }
+    while (backQueue.size > 0) {
+        backQueue.removeLast()
+    }
     navigate(route.route)
 }
 

@@ -20,7 +20,7 @@ sealed interface ApiResponse<T : Any> {
     }
 }
 
-fun <T: Any> ApiResponse<T>.getDataOrNull() = when (this) {
+fun <T : Any> ApiResponse<T>.getDataOrNull() = when (this) {
     is ApiResponse.Success -> data
     else -> null
 }

@@ -10,11 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.size.Scale
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import uk.co.culturebook.data.Constants

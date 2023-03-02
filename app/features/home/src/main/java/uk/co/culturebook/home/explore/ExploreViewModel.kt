@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.logE
+import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
-import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.ui.R
 
 class ExploreViewModel(

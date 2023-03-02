@@ -15,6 +15,6 @@ data class Media(
     val contentType: String
 )
 
-fun Media.isVideo() =     contentType.contains("video/.*".toRegex())
-fun Media.isImage() =     contentType.contains("image/.*".toRegex())
-fun Media.isAudio() =     contentType.contains("audio/.*".toRegex())
+fun Media.isVideo() = contentType.contains("video/.*".toRegex())
+fun Media.isImage() = contentType.contains("image/.*".toRegex())
+fun Media.isAudio() = contentType.contains("audio/.*".toRegex())

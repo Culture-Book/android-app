@@ -1,5 +1,7 @@
 package uk.co.culturebook.add_new.info.composables
 
+import android.content.Context
+import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -65,7 +67,15 @@ fun AddInfoScreen(
     val coroutine = rememberCoroutineScope()
 
     val addFilesLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetMultipleContents()) {
+        rememberLauncherForActivityResult(contract = object :
+            ActivityResultContracts.GetMultipleContents() {
+            override fun createIntent(context: Context, input: String): Intent {
+                val intent = super.createIntent(context, input).apply {
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                }
+                return intent
+            }
+        }) {
             val mediaFiles = it.map { uri ->
                 val fileName = context.getFileName(uri) ?: "file"
                 val contentType = context.getMimeType(uri) ?: ""
