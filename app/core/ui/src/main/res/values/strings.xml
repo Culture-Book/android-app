@@ -119,6 +119,8 @@
     <string name="report">Report</string>
     <string name="block">Block</string>
 
+    <string name="page_num">Page %d</string>
+
     <!--    Element Types-->
     <string name="food">Gastronomy</string>
     <string name="music">Music</string>

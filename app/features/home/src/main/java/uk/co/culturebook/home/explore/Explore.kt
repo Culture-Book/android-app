@@ -111,6 +111,7 @@ fun Explore(
             else -> ExploreBody(
                 Modifier.padding(padding),
                 exploreState,
+                searchCriteriaState,
                 postEvent
             )
         }

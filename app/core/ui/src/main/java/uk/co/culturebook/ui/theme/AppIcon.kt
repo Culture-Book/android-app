@@ -160,6 +160,16 @@ sealed interface AppIcon {
         override fun getPainter() = Icons.Default.ArrowDropDown.getPainter()
     }
 
+    object ChevronLeft : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.KeyboardArrowLeft.getPainter()
+    }
+
+    object ChevronRight : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.KeyboardArrowRight.getPainter()
+    }
+
     object ChevronUp : AppIcon {
         private val icon = R.drawable.ic_drop_up
 

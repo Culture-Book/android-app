@@ -1,5 +1,6 @@
 package uk.co.common
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,9 +10,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import uk.co.culturebook.data.Constants
@@ -22,6 +25,7 @@ import uk.co.culturebook.data.remote_config.RemoteConfig
 import uk.co.culturebook.data.utils.toUri
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
 import java.util.*
 
@@ -69,31 +73,48 @@ fun ElementComposable(
         val imageLoader = rememberImageLoader()
 
         if (media?.isImage() == true) {
-            AsyncImage(
+            var showLoading by remember { mutableStateOf(false) }
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = fiveXlSize),
-                imageLoader = imageLoader,
-                model = media.uri,
-                contentScale = ContentScale.FillWidth,
-                contentDescription = "image preview"
-            )
+                    .heightIn(max = fiveXlSize)
+            ) {
+                if (showLoading) {
+                    LoadingComposable()
+                }
+                AsyncImage(
+                    imageLoader = imageLoader,
+                    model = media.uri.toUri(),
+                    contentScale = ContentScale.FillWidth,
+                    contentDescription = "image preview",
+                    onState = {
+                        showLoading = it is AsyncImagePainter.State.Loading
+                    }
+                )
+            }
         }
         if (media?.isVideo() == true) {
             val token = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key) }
             val apiKey = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key) }
-
-            VideoComposable(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = fiveXlSize),
-                uri = media.uri.toUri(),
-                headers = mapOf(
+            val thumbnail = rememberVideoThumbnail(
+                uri = media.uri.toUri(), headers = mapOf(
                     Constants.AuthorizationHeader to Constants.getBearerValue(token),
                     Constants.ApiKeyHeader to apiKey
-                ),
-                enablePreview = false
+                )
             )
+
+            if (thumbnail != null) {
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = fiveXlSize),
+                    painter = BitmapPainter(thumbnail),
+                    contentScale = ContentScale.FillWidth,
+                    contentDescription = "thumbnail"
+                )
+            } else {
+                LoadingComposable()
+            }
         }
 
         Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {

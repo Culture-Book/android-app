@@ -10,10 +10,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -33,16 +35,23 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.disk.DiskCache
+import coil.imageLoader
 import coil.memory.MemoryCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import uk.co.culturebook.data.logD
+import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.remote.retrofit.imageLoaderClient
+import uk.co.culturebook.data.utils.isValidContent
+import uk.co.culturebook.data.utils.isValidHttp
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
 fun rememberImageLoader(): ImageLoader {
     val context = LocalContext.current
-    val loader = remember {
-        ImageLoader.Builder(context)
+    return remember {
+        context.imageLoader.newBuilder()
             .okHttpClient(imageLoaderClient)
             .crossfade(true)
             .error(AppIcon.BrokenImage.icon)
@@ -59,7 +68,6 @@ fun rememberImageLoader(): ImageLoader {
             }
             .build()
     }
-    return loader
 }
 
 @Composable
@@ -170,6 +178,40 @@ fun ImageComposable(
 }
 
 @Composable
+/**
+ * Gets a video thumbnail from a uri, the way this works is the following:
+ * We create a MediaMetadataRetriever which fetches the video, depending on whether it's http or content,
+ * then we launch a coroutine that sets the data source and fetches the first frame.
+ * Once a frame is found, we need to cancel the retrieving coroutine and stop it from fetching more data.
+ * **/
+fun rememberVideoThumbnail(uri: Uri, headers: Map<String, String> = mapOf()): ImageBitmap? {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val retriever = remember { MediaMetadataRetriever() }
+    var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch(Dispatchers.IO) {
+            retriever.use {
+                try {
+                    if (uri.isValidHttp()) {
+                        retriever.setDataSource(uri.toString(), headers)
+                        imageBitmap = retriever.frameAtTime?.asImageBitmap()
+                    } else if (uri.isValidContent()) {
+                        retriever.setDataSource(context, uri)
+                        imageBitmap = retriever.frameAtTime?.asImageBitmap()
+                    }
+                } catch (e: IllegalStateException) {
+                    "metadataReceiver was released.".logD("VideoThumbnail")
+                }
+            }
+        }
+    }
+
+    return imageBitmap
+}
+
+@Composable
 fun VideoComposable(
     modifier: Modifier,
     uri: Uri,
@@ -178,17 +220,7 @@ fun VideoComposable(
     onButtonClicked: () -> Unit = {},
     enablePreview: Boolean = true
 ) {
-    val context = LocalContext.current
-    val mediaMetadata = remember {
-        MediaMetadataRetriever().apply {
-            if (headers.isEmpty()) {
-                setDataSource(uri.toString(), headers)
-            } else {
-                setDataSource(context, uri)
-            }
-        }
-    }
-    val imageBitmap = remember { mediaMetadata.frameAtTime?.asImageBitmap() }
+    val imageBitmap = rememberVideoThumbnail(uri = uri, headers = headers)
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
@@ -200,11 +232,7 @@ fun VideoComposable(
                 if (imageBitmap != null) {
                     MediaPlayer(uri = uri)
                 } else {
-                    Icon(
-                        modifier = Modifier.align(Alignment.Center),
-                        painter = AppIcon.BrokenImage.getPainter(),
-                        contentDescription = "broken image"
-                    )
+                    LoadingComposable()
                 }
             }
         }
