@@ -27,6 +27,14 @@ fun ExploreBody(
 ) {
     var maxPage by remember { mutableStateOf(searchCriteria.page) }
 
+    LaunchedEffect(exploreState) {
+        maxPage = when(exploreState) {
+            is ExploreState.ElementsReceived -> if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
+            is ExploreState.ElementsWithMediaReceived -> if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
+            else -> 1
+        }
+    }
+
     Column(modifier) {
         ShowBanners()
 
@@ -40,21 +48,11 @@ fun ExploreBody(
 
         when (exploreState) {
             is ExploreState.ElementsReceived -> {
-                LaunchedEffect(exploreState) {
-//                    Optimise this
-                    maxPage =
-                        if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
-                }
                 ShowElements(elements = exploreState.elements,
                     onElementClicked = {},
                     onOptionsClicked = {})
             }
             is ExploreState.ElementsWithMediaReceived -> {
-                LaunchedEffect(exploreState) {
-                    // Optimise this
-                    maxPage =
-                        if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
-                }
                 ShowElements(elements = exploreState.elements,
                     onElementClicked = {},
                     onOptionsClicked = {})

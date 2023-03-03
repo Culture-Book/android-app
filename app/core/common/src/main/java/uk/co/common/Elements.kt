@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -74,7 +75,7 @@ fun ElementComposable(
 
         if (media?.isImage() == true) {
             var showLoading by remember { mutableStateOf(false) }
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = fiveXlSize)
@@ -83,9 +84,11 @@ fun ElementComposable(
                     LoadingComposable()
                 }
                 AsyncImage(
+                    modifier = Modifier.size(maxWidth, maxHeight),
                     imageLoader = imageLoader,
                     model = media.uri.toUri(),
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = ContentScale.FillBounds,
+                    filterQuality = FilterQuality.Low,
                     contentDescription = "image preview",
                     onState = {
                         showLoading = it is AsyncImagePainter.State.Loading

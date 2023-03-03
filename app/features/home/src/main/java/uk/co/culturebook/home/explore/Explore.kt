@@ -103,7 +103,11 @@ fun Explore(
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarState) },
-        topBar = { SearchAppBar(onFiltersClicked = { showFiltersDialog = true }) }
+        topBar = {
+            SearchAppBar(
+                onFiltersClicked = { showFiltersDialog = true },
+                onSearchClicked = { searchCriteriaState.searchString = it })
+        }
     ) { padding ->
         when (exploreState) {
             ExploreState.UserFetched,
