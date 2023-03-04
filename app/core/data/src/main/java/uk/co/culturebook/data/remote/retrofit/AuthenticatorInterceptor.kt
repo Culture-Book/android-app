@@ -6,10 +6,16 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 import uk.co.culturebook.data.flows.EventBus
 
-object AuthenticatorInterceptor : Interceptor {
+@JvmInline
+value class AuthenticatorInterceptor(private val token: () -> String) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return try {
-            val response = chain.proceed(chain.request())
+            val originalRequest = chain.request()
+            val requestWithAuthHeader = originalRequest.newBuilder()
+                .header("Authorization", "Bearer ${token()}")
+                .build()
+
+            val response = chain.proceed(requestWithAuthHeader)
             if (response.code == 401 || response.code == 403) {
                 EventBus.logout()
             }

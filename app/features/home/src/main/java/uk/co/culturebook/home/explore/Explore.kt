@@ -46,6 +46,12 @@ fun ExploreRoute(navController: NavController) {
         }
     }
 
+    LaunchedEffect(nearbyState) {
+        if (nearbyState is ExploreState.GetElements) {
+            viewModel.postEvent(ExploreEvent.GetElementsWithSearch(searchCriteriaState))
+        }
+    }
+
     LaunchedEffect(
         searchCriteriaState.location,
         searchCriteriaState.searchString,
@@ -55,11 +61,11 @@ fun ExploreRoute(navController: NavController) {
         searchCriteriaState.searchType
     ) {
         if (searchCriteriaState.isValidElementSearch()) {
-            viewModel.postEvent(ExploreEvent.GetElements(searchCriteriaState))
+            viewModel.postEvent(ExploreEvent.GetElementsWithSearch(searchCriteriaState))
         } else if (searchCriteriaState.isValidContributionSearch()) {
-            viewModel.postEvent(ExploreEvent.GetContributions(searchCriteriaState))
+            viewModel.postEvent(ExploreEvent.GetContributionsWithSearch(searchCriteriaState))
         } else if (searchCriteriaState.isValidCultureSearch()) {
-            viewModel.postEvent(ExploreEvent.GetCultures(searchCriteriaState))
+            viewModel.postEvent(ExploreEvent.GetCulturesWithSearch(searchCriteriaState))
         }
     }
 
@@ -126,7 +132,7 @@ fun Explore(
                 Modifier.padding(padding),
                 exploreState,
                 searchCriteriaState,
-                postEvent
+                postEvent,
             )
         }
     }

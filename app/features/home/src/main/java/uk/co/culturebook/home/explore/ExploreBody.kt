@@ -14,6 +14,7 @@ import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.Banner
 import uk.co.culturebook.ui.theme.molecules.BannerType
+import java.util.*
 
 @Composable
 fun ExploreBody(
@@ -40,7 +41,13 @@ fun ExploreBody(
                 ShowElements(
                     elements = exploreState.elements,
                     onElementClicked = {},
-                    onOptionsClicked = {},
+                    onOptionsClicked = {
+                        when (it) {
+                            is ElementOptionsState.Block -> postEvent(ExploreEvent.BlockElement(it.id))
+                            is ElementOptionsState.Hide -> postEvent(ExploreEvent.BlockElement(it.id))
+                            is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockElement(it.id))
+                        }
+                    },
                     onShowNearby = { searchCriteria.searchString = "" }
                 ) {
                     PageInformation(
@@ -56,7 +63,13 @@ fun ExploreBody(
                 ShowContributions(
                     contributions = exploreState.contributions,
                     onClicked = {},
-                    onOptionsClicked = {},
+                    onOptionsClicked = {
+                        when (it) {
+                            is ElementOptionsState.Block -> postEvent(ExploreEvent.BlockContribution(it.id))
+                            is ElementOptionsState.Hide -> postEvent(ExploreEvent.BlockContribution(it.id))
+                            is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockContribution(it.id))
+                        }
+                    },
                     onShowNearby = { searchCriteria.searchString = "" }
                 ) {
                     PageInformation(
@@ -72,7 +85,13 @@ fun ExploreBody(
                 ShowCultures(
                     cultures = exploreState.cultures,
                     onClicked = {},
-                    onOptionsClicked = {},
+                    onOptionsClicked = {
+                        when (it) {
+                            is ElementOptionsState.Block -> postEvent(ExploreEvent.BlockCulture(it.id))
+                            is ElementOptionsState.Hide -> postEvent(ExploreEvent.BlockCulture(it.id))
+                            is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockCulture(it.id))
+                        }
+                    },
                     onShowNearby = { searchCriteria.searchString = "" }
                 ) {
                     PageInformation(

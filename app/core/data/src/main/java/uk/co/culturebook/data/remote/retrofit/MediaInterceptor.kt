@@ -9,8 +9,8 @@ import uk.co.culturebook.data.remote_config.RemoteConfig
 
 class MediaInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key)
-        val apiKey = Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key)
+        val token = Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key).trim()
+        val apiKey = Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key).trim()
         val request = chain.request().newBuilder()
             .header(Constants.AuthorizationHeader, Constants.getBearerValue(token))
             .header(Constants.ApiKeyHeader, apiKey)

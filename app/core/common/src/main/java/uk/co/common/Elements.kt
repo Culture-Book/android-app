@@ -212,8 +212,8 @@ fun ElementComposable(
             }
         }
         if (media?.isVideo() == true) {
-            val token = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key) }
-            val apiKey = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key) }
+            val token = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key).trim() }
+            val apiKey = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key).trim() }
             val thumbnail = rememberVideoThumbnail(
                 uri = media.uri.toUri(), headers = mapOf(
                     Constants.AuthorizationHeader to Constants.getBearerValue(token),
@@ -257,21 +257,21 @@ fun ElementComposable(
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Hide(elementId = element.id!!))
+                                    onOptionsClicked(ElementOptionsState.Hide(id = element.id!!))
                                 },
                                 text = { Text(stringResource(R.string.hide)) }
                             )
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Report(elementId = element.id!!))
+                                    onOptionsClicked(ElementOptionsState.Report(id = element.id!!))
                                 },
                                 text = { Text(stringResource(R.string.report)) }
                             )
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Block(elementId = element.id!!))
+                                    onOptionsClicked(ElementOptionsState.Block(id = element.id!!))
                                 },
                                 text = { Text(stringResource(R.string.block)) }
                             )
@@ -368,21 +368,21 @@ fun ContributionComposable(
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Hide(elementId = contribution.id!!))
+                                    onOptionsClicked(ElementOptionsState.Hide(id = contribution.id!!))
                                 },
                                 text = { Text(stringResource(R.string.hide)) }
                             )
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Report(elementId = contribution.id!!))
+                                    onOptionsClicked(ElementOptionsState.Report(id = contribution.id!!))
                                 },
                                 text = { Text(stringResource(R.string.report)) }
                             )
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Block(elementId = contribution.id!!))
+                                    onOptionsClicked(ElementOptionsState.Block(id = contribution.id!!))
                                 },
                                 text = { Text(stringResource(R.string.block)) }
                             )
@@ -427,21 +427,21 @@ fun CultureComposable(
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Hide(elementId = culture.id!!))
+                                    onOptionsClicked(ElementOptionsState.Hide(id = culture.id!!))
                                 },
                                 text = { Text(stringResource(R.string.hide)) }
                             )
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Report(elementId = culture.id!!))
+                                    onOptionsClicked(ElementOptionsState.Report(id = culture.id!!))
                                 },
                                 text = { Text(stringResource(R.string.report)) }
                             )
                             DropdownMenuItem(
                                 onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Block(elementId = culture.id!!))
+                                    onOptionsClicked(ElementOptionsState.Block(id = culture.id!!))
                                 },
                                 text = { Text(stringResource(R.string.block)) }
                             )
@@ -454,7 +454,7 @@ fun CultureComposable(
 }
 
 sealed interface ElementOptionsState {
-    data class Hide(val elementId: UUID) : ElementOptionsState
-    data class Report(val elementId: UUID) : ElementOptionsState
-    data class Block(val elementId: UUID) : ElementOptionsState
+    data class Hide(val id: UUID) : ElementOptionsState
+    data class Report(val id: UUID) : ElementOptionsState
+    data class Block(val id: UUID) : ElementOptionsState
 }

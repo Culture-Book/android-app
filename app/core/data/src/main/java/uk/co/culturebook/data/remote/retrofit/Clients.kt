@@ -10,8 +10,10 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import uk.co.culturebook.data.BuildConfig
+import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.remote.interfaces.AuthInterface
+import uk.co.culturebook.data.sharedPreferences
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 
@@ -31,12 +33,17 @@ private val nonAuthClient by lazy {
 private fun authenticatedClient(context: Context) =
     nonAuthClient
         .newBuilder()
-        .addInterceptor(AuthenticatorInterceptor)
-        .authenticator(JWTAuthenticator(context))
+        .addInterceptor(AuthenticatorInterceptor {
+            context.sharedPreferences.getString(
+                PrefKey.AccessToken.key,
+                ""
+            ) ?: ""
+        })
+        .authenticator(RefreshJWT(context))
         .build()
 
 val imageLoaderClient by lazy {
-    nonAuthClient.newBuilder().addNetworkInterceptor(MediaInterceptor()).build()
+    nonAuthClient.newBuilder().addInterceptor(MediaInterceptor()).build()
 }
 
 @OptIn(ExperimentalSerializationApi::class)

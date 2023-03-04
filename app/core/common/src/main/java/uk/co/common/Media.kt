@@ -200,7 +200,9 @@ fun rememberVideoThumbnail(uri: Uri, headers: Map<String, String> = mapOf()): Im
                         imageBitmap = retriever.frameAtTime?.asImageBitmap()
                     }
                 } catch (e: IllegalStateException) {
-                    "metadataReceiver was released.".logD("VideoThumbnail")
+                    e.message?.logD("VideoThumbnail")
+                } catch (r: RuntimeException) {
+                    r.message?.logD("VideoThumbnail")
                 }
             }
         }

@@ -13,6 +13,7 @@ import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.NearbyRepository
 import uk.co.culturebook.ui.R
+import java.util.UUID
 
 class ExploreViewModel(
     private val userRepository: UserRepository,
@@ -31,13 +32,17 @@ class ExploreViewModel(
         viewModelScope.launch {
             when (event) {
                 ExploreEvent.Idle -> _exploreState.emit(ExploreState.Idle)
+                ExploreEvent.GetElements -> _exploreState.emit(ExploreState.GetElements)
                 ExploreEvent.GetUser -> getUser()
                 ExploreEvent.UpdateToS -> updateToS()
-                is ExploreEvent.GetElements -> getElements(event.searchCriteriaState)
+                is ExploreEvent.GetElementsWithSearch -> getElements(event.searchCriteriaState)
                 ExploreEvent.Error.ToSUpdate -> _exploreState.emit(ExploreState.Error.ToSUpdate)
                 is ExploreEvent.Error.Generic -> _exploreState.emit(ExploreState.Error.Generic(event.stringId))
-                is ExploreEvent.GetContributions -> getContributions(event.searchCriteriaState)
-                is ExploreEvent.GetCultures -> getCultures(event.searchCriteriaState)
+                is ExploreEvent.GetContributionsWithSearch -> getContributions(event.searchCriteriaState)
+                is ExploreEvent.GetCulturesWithSearch -> getCultures(event.searchCriteriaState)
+                is ExploreEvent.BlockContribution -> blockContribution(event.uuid)
+                is ExploreEvent.BlockCulture -> blockCulture(event.uuid)
+                is ExploreEvent.BlockElement -> blockElement(event.uuid)
             }
         }
     }
@@ -120,6 +125,33 @@ class ExploreViewModel(
                     _exploreState.emit(ExploreState.Success.CulturesReceived(response.data))
                 }
                 else -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun blockElement(uuid: UUID?) {
+        viewModelScope.launch {
+            when (nearbyRepository.blockElement(uuid)) {
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetElements)
+                else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun blockContribution(uuid: UUID?) {
+        viewModelScope.launch {
+            when (nearbyRepository.blockContribution(uuid)) {
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetElements)
+                else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun blockCulture(uuid: UUID?) {
+        viewModelScope.launch {
+            when (nearbyRepository.blockCulture(uuid)) {
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetElements)
+                else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
         }
     }

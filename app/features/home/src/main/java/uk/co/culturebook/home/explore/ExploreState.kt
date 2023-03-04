@@ -11,7 +11,7 @@ sealed interface ExploreState {
         data class ContributionsReceived(val contributions: List<Contribution>) : Success
         data class CulturesReceived(val cultures: List<Culture>) : Success
     }
-
+    object GetElements : ExploreState
     object Idle : ExploreState
     object Loading : ExploreState
     sealed interface Error : ExploreState {
