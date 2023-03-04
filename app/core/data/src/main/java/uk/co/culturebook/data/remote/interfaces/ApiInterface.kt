@@ -47,19 +47,24 @@ interface ApiInterface {
         @Part files: List<MultipartBody.Part>
     ): ApiResponse<Contribution>
 
-    @POST("elements/v1/elements")
+    @POST("nearby/v1/elements")
     suspend fun getElements(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Element>>
 
-    @GET("elements/v1/elements/media")
+    @POST("nearby/v1/elements")
+    suspend fun getCultures(
+        @Body searchCriteria: SearchCriteria
+    ): ApiResponse<List<Culture>>
+
+    @GET("nearby/v1/elements/media")
     suspend fun getElementsMedia(@Query("element_id") elementId: UUID): ApiResponse<List<Media>>
 
-    @POST("elements/v1/contributions")
+    @POST("nearby/v1/contributions")
     suspend fun getContributions(
         @Body searchCriteria: SearchCriteria
-    ): ApiResponse<List<Element>>
+    ): ApiResponse<List<Contribution>>
 
-    @GET("elements/v1/contributions/media")
+    @GET("nearby/v1/contributions/media")
     suspend fun getContributionsMedia(@Query("contribution_id") contributionId: UUID): ApiResponse<List<Media>>
 }

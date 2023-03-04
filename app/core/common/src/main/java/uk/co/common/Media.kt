@@ -10,7 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,7 +39,6 @@ import coil.memory.MemoryCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uk.co.culturebook.data.logD
-import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.remote.retrofit.imageLoaderClient
 import uk.co.culturebook.data.utils.isValidContent
 import uk.co.culturebook.data.utils.isValidHttp
@@ -178,12 +176,12 @@ fun ImageComposable(
 }
 
 @Composable
-/**
- * Gets a video thumbnail from a uri, the way this works is the following:
- * We create a MediaMetadataRetriever which fetches the video, depending on whether it's http or content,
- * then we launch a coroutine that sets the data source and fetches the first frame.
- * Once a frame is found, we need to cancel the retrieving coroutine and stop it from fetching more data.
- * **/
+        /**
+         * Gets a video thumbnail from a uri, the way this works is the following:
+         * We create a MediaMetadataRetriever which fetches the video, depending on whether it's http or content,
+         * then we launch a coroutine that sets the data source and fetches the first frame.
+         * Once a frame is found, we need to cancel the retrieving coroutine and stop it from fetching more data.
+         * **/
 fun rememberVideoThumbnail(uri: Uri, headers: Map<String, String> = mapOf()): ImageBitmap? {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

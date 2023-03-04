@@ -22,11 +22,4 @@ sealed interface ExploreRoute {
         override val route: String = "account"
         override val labelId = R.string.account
     }
-
-    object Social : ExploreRoute {
-        override val selectedIcon: AppIcon = AppIcon.Social
-        override val unselectedIcon: AppIcon = AppIcon.SocialOutline
-        override val route: String = "social"
-        override val labelId = R.string.social
-    }
 }

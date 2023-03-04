@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import uk.co.culturebook.data.models.cultural.SearchType
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.largeRoundedShape
@@ -18,20 +19,21 @@ import uk.co.culturebook.ui.theme.largeRoundedShape
 @Preview
 fun SearchAppBar(
     modifier: Modifier = Modifier,
+    searchString: String = "",
+    searchType: SearchType = SearchType.Element,
+    onSearchType: (SearchType) -> Unit = {},
     onFiltersClicked: () -> Unit = {},
     onSearchClicked: (String) -> Unit = {}
 ) {
-    var searchString by remember { mutableStateOf("") }
-
+    var _searchString by remember { mutableStateOf(searchString) }
     TopAppBar(
-        modifier = modifier,
         windowInsets = WindowInsets.statusBars,
         title = {
-            SearchField(value = searchString) { searchString = it }
+            SearchField(value = _searchString) { _searchString = it }
         },
         actions = {
-            if (searchString.isNotBlank()) {
-                IconButton(onClick = { onSearchClicked(searchString) }) {
+            if (_searchString.isNotBlank()) {
+                IconButton(onClick = { onSearchClicked(_searchString) }) {
                     Icon(
                         painter = AppIcon.Tick.getPainter(),
                         contentDescription = "search icon"

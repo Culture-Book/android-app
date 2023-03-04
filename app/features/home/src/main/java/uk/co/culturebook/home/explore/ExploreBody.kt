@@ -1,22 +1,19 @@
 package uk.co.culturebook.home.explore
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import uk.co.common.AskForLocationPermission
-import uk.co.common.ShowElements
-import uk.co.common.coarseLocationOnly
+import uk.co.common.*
 import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.Banner
+import uk.co.culturebook.ui.theme.molecules.BannerType
 
 @Composable
 fun ExploreBody(
@@ -28,9 +25,9 @@ fun ExploreBody(
     var maxPage by remember { mutableStateOf(searchCriteria.page) }
 
     LaunchedEffect(exploreState) {
-        maxPage = when(exploreState) {
-            is ExploreState.ElementsReceived -> if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
-            is ExploreState.ElementsWithMediaReceived -> if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
+        maxPage = when (exploreState) {
+            is ExploreState.Success.ElementsReceived ->
+                if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
             else -> 1
         }
     }
@@ -38,24 +35,54 @@ fun ExploreBody(
     Column(modifier) {
         ShowBanners()
 
-        PageInformation(
-            modifier = Modifier.fillMaxWidth(),
-            onNextPage = { searchCriteria.page = it },
-            onPreviousPage = { searchCriteria.page = it },
-            currentPage = searchCriteria.page,
-            maxPage = maxPage
-        )
-
         when (exploreState) {
-            is ExploreState.ElementsReceived -> {
-                ShowElements(elements = exploreState.elements,
+            is ExploreState.Success.ElementsReceived -> {
+                ShowElements(
+                    elements = exploreState.elements,
                     onElementClicked = {},
-                    onOptionsClicked = {})
+                    onOptionsClicked = {},
+                    onShowNearby = { searchCriteria.searchString = "" }
+                ) {
+                    PageInformation(
+                        modifier = Modifier.fillMaxWidth(),
+                        onNextPage = { searchCriteria.page = it },
+                        onPreviousPage = { searchCriteria.page = it },
+                        currentPage = searchCriteria.page,
+                        maxPage = maxPage
+                    )
+                }
             }
-            is ExploreState.ElementsWithMediaReceived -> {
-                ShowElements(elements = exploreState.elements,
-                    onElementClicked = {},
-                    onOptionsClicked = {})
+            is ExploreState.Success.ContributionsReceived -> {
+                ShowContributions(
+                    contributions = exploreState.contributions,
+                    onClicked = {},
+                    onOptionsClicked = {},
+                    onShowNearby = { searchCriteria.searchString = "" }
+                ) {
+                    PageInformation(
+                        modifier = Modifier.fillMaxWidth(),
+                        onNextPage = { searchCriteria.page = it },
+                        onPreviousPage = { searchCriteria.page = it },
+                        currentPage = searchCriteria.page,
+                        maxPage = maxPage
+                    )
+                }
+            }
+            is ExploreState.Success.CulturesReceived -> {
+                ShowCultures(
+                    cultures = exploreState.cultures,
+                    onClicked = {},
+                    onOptionsClicked = {},
+                    onShowNearby = { searchCriteria.searchString = "" }
+                ) {
+                    PageInformation(
+                        modifier = Modifier.fillMaxWidth(),
+                        onNextPage = { searchCriteria.page = it },
+                        onPreviousPage = { searchCriteria.page = it },
+                        currentPage = searchCriteria.page,
+                        maxPage = maxPage
+                    )
+                }
             }
             else -> {}
         }
@@ -64,16 +91,34 @@ fun ExploreBody(
 
 @Composable
 fun ShowBanners() {
-    val isCourseLocation = coarseLocationOnly
     var showLocationBanner by remember { mutableStateOf(true) }
     var askForLocationPermission by remember { mutableStateOf(false) }
 
-    if (showLocationBanner && isCourseLocation) {
+    if (showLocationBanner && coarseLocationOnly) {
         if (askForLocationPermission) {
             AskForLocationPermission(forceAsk = true) { askForLocationPermission = false }
         }
         Banner(title = stringResource(R.string.low_accuracy_title),
             message = stringResource(R.string.low_accuracy_message),
+            onDismiss = { showLocationBanner = false },
+            leadingIcon = {
+                Icon(
+                    modifier = Modifier.padding(end = mediumSize),
+                    painter = AppIcon.LocationOff.getPainter(),
+                    contentDescription = "low accuracy"
+                )
+            },
+            onClick = { askForLocationPermission = true })
+    }
+
+    if (showLocationBanner && !(coarseLocationOnly or fineLocationGranted)) {
+        if (askForLocationPermission) {
+            AskForLocationPermission(forceAsk = true) { askForLocationPermission = false }
+        }
+        Banner(
+            bannerType = BannerType.Warning,
+            title = stringResource(R.string.no_location_title),
+            message = stringResource(R.string.no_location_message),
             onDismiss = { showLocationBanner = false },
             leadingIcon = {
                 Icon(
@@ -99,26 +144,20 @@ fun PageInformation(
 
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (minPage < currentPage) {
-            FilledTonalIconButton(onClick = {
-                val prevPage = (currentPage - 1).coerceAtLeast(minPage)
-                onPreviousPage(prevPage)
-            }) {
+            FilledTonalIconButton(
+                onClick = {
+                    val prevPage = (currentPage - 1).coerceAtLeast(minPage)
+                    onPreviousPage(prevPage)
+                }) {
                 Icon(
                     painter = AppIcon.ChevronLeft.getPainter(), contentDescription = "previous page"
                 )
             }
         }
-
-        Text(
-            modifier = Modifier
-                .padding(mediumSize),
-            text = stringResource(id = R.string.page_num, currentPage),
-            color = MaterialTheme.colorScheme.onSurface
-        )
 
         if (maxPage > currentPage) {
             FilledTonalIconButton(onClick = {

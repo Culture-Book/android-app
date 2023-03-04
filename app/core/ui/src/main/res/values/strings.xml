@@ -115,6 +115,10 @@
     <string name="low_accuracy_title">Low location accuracy</string>
     <string name="low_accuracy_message">Your location isn’t accurate, please allow accurate location for a better user experience.</string>
 
+    <string name="no_location_title">Cannot find location</string>
+    <string name="no_location_message">Cannot find your location, please allow access to location or use the search function.</string>
+    <string name="show_nearby">Show nearby</string>
+
     <string name="hide">Hide</string>
     <string name="report">Report</string>
     <string name="block">Block</string>
@@ -122,6 +126,10 @@
     <string name="page_num">Page %d</string>
 
     <!--    Element Types-->
+    <string name="elements">Elements</string>
+    <string name="contributions">Contributions</string>
+    <string name="cultures">Cultures</string>
+
     <string name="food">Gastronomy</string>
     <string name="music">Music</string>
     <string name="story">Story</string>

@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import uk.co.culturebook.home.explore.ExploreRoute
-import uk.co.culturebook.nav.Route
 import uk.co.culturebook.states.AppState
 import uk.co.culturebook.ui.theme.*
 
@@ -29,14 +28,7 @@ fun App(appState: AppState, navController: NavHostController) {
                     currentDestination = currentDestination,
                     onItemClicked = { navController.navigate(it.route) }
                 )
-            },
-            floatingActionButton = {
-                AppFabs(
-                    navController = navController,
-                    currentDestination = currentDestination
-                )
-            },
-            floatingActionButtonPosition = getFabPosition(currentDestination)
+            }
         ) { padding ->
             Column(
                 modifier = Modifier.padding(padding)
@@ -54,7 +46,6 @@ fun AppBottomAppBar(
     modifier: Modifier = Modifier,
     currentDestination: String = "social",
     destinations: List<ExploreRoute> = listOf(
-        ExploreRoute.Social,
         ExploreRoute.Explore,
         ExploreRoute.Account
     ),
@@ -92,19 +83,4 @@ fun AppBottomAppBar(
 
         }
     }
-}
-
-@Composable
-fun AppFabs(navController: NavHostController, currentDestination: String) {
-    if (currentDestination == ExploreRoute.Explore.route) {
-        FloatingActionButton(onClick = { navController.navigate(Route.AddNew.Location.route) }) {
-            Icon(AppIcon.Add.getPainter(), contentDescription = "Add new element")
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-fun getFabPosition(currentDestination: String) = when (currentDestination) {
-    ExploreRoute.Explore.route -> FabPosition.End
-    else -> FabPosition.End
 }

@@ -17,12 +17,12 @@ import uk.co.common.RegisterLocationChanges
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.location.LocationFlow
 import uk.co.culturebook.data.location.LocationStatus
-import uk.co.culturebook.data.models.cultural.SearchCriteriaState
-import uk.co.culturebook.data.models.cultural.isValid
+import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.authentication.UserRepository
-import uk.co.culturebook.data.repositories.cultural.ElementsRepository
+import uk.co.culturebook.data.repositories.cultural.NearbyRepository
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
+import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.utils.ShowSnackbar
 
@@ -31,9 +31,9 @@ fun ExploreRoute(navController: NavController) {
     val viewModel = viewModel {
         val userRepository =
             UserRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
-        val elementsRepository =
-            ElementsRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
-        ExploreViewModel(userRepository = userRepository, elementsRepository = elementsRepository)
+        val nearbyRepository =
+            NearbyRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
+        ExploreViewModel(userRepository = userRepository, nearbyRepository = nearbyRepository)
     }
     val searchCriteriaState = viewModel.searchCriteriaState
     val nearbyState by viewModel.exploreState.collectAsState()
@@ -51,10 +51,15 @@ fun ExploreRoute(navController: NavController) {
         searchCriteriaState.searchString,
         searchCriteriaState.page,
         searchCriteriaState.radius,
-        searchCriteriaState.types
+        searchCriteriaState.types,
+        searchCriteriaState.searchType
     ) {
-        if (searchCriteriaState.isValid()) {
+        if (searchCriteriaState.isValidElementSearch()) {
             viewModel.postEvent(ExploreEvent.GetElements(searchCriteriaState))
+        } else if (searchCriteriaState.isValidContributionSearch()) {
+            viewModel.postEvent(ExploreEvent.GetContributions(searchCriteriaState))
+        } else if (searchCriteriaState.isValidCultureSearch()) {
+            viewModel.postEvent(ExploreEvent.GetCultures(searchCriteriaState))
         }
     }
 
@@ -105,12 +110,17 @@ fun Explore(
         snackbarHost = { SnackbarHost(hostState = snackbarState) },
         topBar = {
             SearchAppBar(
+                searchString = searchCriteriaState.searchString ?: "",
                 onFiltersClicked = { showFiltersDialog = true },
                 onSearchClicked = { searchCriteriaState.searchString = it })
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { navController.navigate(Route.AddNew.Location.route) }) {
+                Icon(AppIcon.Add.getPainter(), contentDescription = "Add new element")
+            }
         }
     ) { padding ->
         when (exploreState) {
-            ExploreState.UserFetched,
             ExploreState.Loading -> LoadingComposable(padding)
             else -> ExploreBody(
                 Modifier.padding(padding),
@@ -164,8 +174,6 @@ fun ToSDialog(
                     textDecoration = if (onPrivacyClicked != null) TextDecoration.Underline else TextDecoration.None
                 )
             }
-
-
         }
     )
 }

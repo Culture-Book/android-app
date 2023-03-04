@@ -205,6 +205,11 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = Icons.Default.Search.getPainter()
     }
+
+    object Castle : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_castle.getPainter()
+    }
 }
 
 @Composable

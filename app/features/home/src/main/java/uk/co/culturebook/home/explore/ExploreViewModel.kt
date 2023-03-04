@@ -11,12 +11,12 @@ import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
-import uk.co.culturebook.data.repositories.cultural.ElementsRepository
+import uk.co.culturebook.data.repositories.cultural.NearbyRepository
 import uk.co.culturebook.ui.R
 
 class ExploreViewModel(
     private val userRepository: UserRepository,
-    private val elementsRepository: ElementsRepository
+    private val nearbyRepository: NearbyRepository
 ) : ViewModel() {
 
     private val _exploreState = MutableStateFlow<ExploreState>(ExploreState.Idle)
@@ -31,12 +31,13 @@ class ExploreViewModel(
         viewModelScope.launch {
             when (event) {
                 ExploreEvent.Idle -> _exploreState.emit(ExploreState.Idle)
-                ExploreEvent.Success -> _exploreState.emit(ExploreState.Success)
                 ExploreEvent.GetUser -> getUser()
                 ExploreEvent.UpdateToS -> updateToS()
                 is ExploreEvent.GetElements -> getElements(event.searchCriteriaState)
                 ExploreEvent.Error.ToSUpdate -> _exploreState.emit(ExploreState.Error.ToSUpdate)
                 is ExploreEvent.Error.Generic -> _exploreState.emit(ExploreState.Error.Generic(event.stringId))
+                is ExploreEvent.GetContributions -> getContributions(event.searchCriteriaState)
+                is ExploreEvent.GetCultures -> getCultures(event.searchCriteriaState)
             }
         }
     }
@@ -46,7 +47,7 @@ class ExploreViewModel(
             _exploreState.emit(ExploreState.Loading)
             when (val user = userRepository.getUser()) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> {
-                    _exploreState.emit(ExploreState.UserFetched)
+                    _exploreState.emit(ExploreState.Success.UserFetched)
                 }
                 is ApiResponse.Failure -> {
                     when (user.message) {
@@ -63,7 +64,7 @@ class ExploreViewModel(
         viewModelScope.launch {
             _exploreState.emit(ExploreState.Loading)
             when (val apiResponse = userRepository.updateTos()) {
-                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.Success)
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetUser)
                 is ApiResponse.Failure -> {
                     postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
                     apiResponse.message.logD()
@@ -78,20 +79,47 @@ class ExploreViewModel(
 
     private fun getElements(searchCriteriaState: SearchCriteriaState) {
         viewModelScope.launch {
-            val response = elementsRepository.getElements(searchCriteriaState.toSearchCriteria())
+            val response = nearbyRepository.getElements(searchCriteriaState.toSearchCriteria())
             when (response) {
-                is ApiResponse.Success.Empty -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
-                is ApiResponse.Exception -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
-                is ApiResponse.Failure -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
                 is ApiResponse.Success -> {
-                    _exploreState.emit(ExploreState.ElementsReceived(response.data))
                     val elements = response.data.map { element ->
-                        val media = elementsRepository.getElementMedia(element.id)?.getDataOrNull()
+                        val media = nearbyRepository.getElementMedia(element.id)?.getDataOrNull()
                             ?: emptyList()
                         element.copy(media = media)
                     }
-                    _exploreState.emit(ExploreState.ElementsWithMediaReceived(elements))
+                    _exploreState.emit(ExploreState.Success.ElementsReceived(elements))
                 }
+                else -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun getContributions(searchCriteriaState: SearchCriteriaState) {
+        viewModelScope.launch {
+            val response = nearbyRepository.getContributions(searchCriteriaState.toSearchCriteria())
+            when (response) {
+                is ApiResponse.Success -> {
+                    val contributions = response.data.map { contribution ->
+                        val media =
+                            nearbyRepository.getContributionMedia(contribution.id)?.getDataOrNull()
+                                ?: emptyList()
+                        contribution.copy(media = media)
+                    }
+                    _exploreState.emit(ExploreState.Success.ContributionsReceived(contributions))
+                }
+                else -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun getCultures(searchCriteriaState: SearchCriteriaState) {
+        viewModelScope.launch {
+            val response = nearbyRepository.getCultures(searchCriteriaState.toSearchCriteria())
+            when (response) {
+                is ApiResponse.Success -> {
+                    _exploreState.emit(ExploreState.Success.CulturesReceived(response.data))
+                }
+                else -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
             }
         }
     }

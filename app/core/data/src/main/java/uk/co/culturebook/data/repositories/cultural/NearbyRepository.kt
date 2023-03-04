@@ -6,7 +6,7 @@ import uk.co.culturebook.data.models.cultural.SearchCriteria
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import java.util.*
 
-class ElementsRepository(context: Context) {
+class NearbyRepository(context: Context) {
     private val apiInterface: ApiInterface = Singletons.getApiInterface(context)
 
     suspend fun getElements(searchCriteria: SearchCriteria) =
@@ -18,7 +18,10 @@ class ElementsRepository(context: Context) {
     suspend fun getContributions(searchCriteria: SearchCriteria) =
         apiInterface.getContributions(searchCriteria)
 
-    suspend fun getContributionMedia(contributionId: UUID) =
-        apiInterface.getContributionsMedia(contributionId)
+    suspend fun getContributionMedia(contributionId: UUID?) =
+        contributionId?.let { apiInterface.getContributionsMedia(it) }
+
+    suspend fun getCultures(searchCriteria: SearchCriteria) =
+        apiInterface.getCultures(searchCriteria)
 
 }

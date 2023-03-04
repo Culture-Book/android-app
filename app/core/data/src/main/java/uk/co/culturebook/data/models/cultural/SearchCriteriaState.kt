@@ -6,12 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import java.util.*
 
+@kotlinx.serialization.Serializable
+enum class SearchType {
+    Culture, Element, Contribution
+}
+
 @Stable
 class SearchCriteriaState {
     var location: Location? by mutableStateOf(null)
     var searchString: String? by mutableStateOf(null)
     var elementId: UUID? by mutableStateOf(null)
     var contributionId: UUID? by mutableStateOf(null)
+    var searchType: SearchType by mutableStateOf(SearchType.Element)
     var types: List<ElementType> by mutableStateOf(allElementTypes)
     var page: Int by mutableStateOf(1)
     var radius: Double by mutableStateOf(10.0)
@@ -23,7 +29,8 @@ class SearchCriteriaState {
         _contributionId: UUID? = contributionId,
         _types: List<ElementType> = types,
         _page: Int = page,
-        _radius: Double = radius
+        _radius: Double = radius,
+        _searchType: SearchType = searchType
     ) = SearchCriteriaState().apply {
         location = _location
         searchString = _searchString
@@ -32,6 +39,7 @@ class SearchCriteriaState {
         types = _types
         page = _page
         radius = _radius
+        searchType = _searchType
     }
 
     fun apply(searchCriteriaState: SearchCriteriaState) {
@@ -42,6 +50,7 @@ class SearchCriteriaState {
         types = searchCriteriaState.types
         page = searchCriteriaState.page
         radius = searchCriteriaState.radius
+        searchType = searchCriteriaState.searchType
     }
 
     fun toSearchCriteria() = SearchCriteria(
@@ -55,5 +64,11 @@ class SearchCriteriaState {
     )
 }
 
-fun SearchCriteriaState.isValid() =
-    (location != null || !searchString.isNullOrEmpty()) && page > 0 && radius > 0.0
+fun SearchCriteriaState.isValid() = page > 0 && radius > 0.0
+
+fun SearchCriteriaState.isValidElementSearch() = isValid() && searchType == SearchType.Element
+fun SearchCriteriaState.isValidContributionSearch() =
+    isValid() && searchType == SearchType.Contribution
+
+fun SearchCriteriaState.isValidCultureSearch() =
+    page > 0 && radius > 0.0 && searchType == SearchType.Culture

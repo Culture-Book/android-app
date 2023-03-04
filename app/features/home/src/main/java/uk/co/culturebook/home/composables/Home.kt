@@ -19,8 +19,5 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
         composable(ExploreRoute.Account.route) {
             AccountRoute(navController)
         }
-        composable(ExploreRoute.Social.route) {
-            SocialRoute(navController)
-        }
     }
 }
