@@ -172,11 +172,10 @@ fun ModalBottomSheet(
                 .align(CenterHorizontally)
         )
     },
-    footer: @Composable ColumnScope.() -> Unit = {
+    footer: @Composable () -> Unit = {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(CenterHorizontally),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -243,8 +242,17 @@ fun ModalBottomSheet(
             ) {
                 Column(modifier = Modifier.padding(horizontal = mediumSize)) {
                     header()
-                    content()
-                    footer()
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxHeight(0.9f)
+                    ) {
+                        item {
+                            content()
+                        }
+                        item {
+                            footer()
+                        }
+                    }
                 }
             }
         }

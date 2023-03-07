@@ -1,11 +1,12 @@
 package uk.co.common
 
+import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -24,8 +25,14 @@ import androidx.compose.ui.zIndex
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import androidx.media3.datasource.DataSource
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.cache.CacheDataSource
+import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
+import androidx.media3.datasource.cache.NoOpCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
@@ -68,19 +75,42 @@ fun rememberImageLoader(): ImageLoader {
     }
 }
 
+@OptIn(androidx.media3.common.util.UnstableApi::class)
+private fun Context.getVideoMediaSource(uri: Uri, headers: Map<String, String> = mapOf()) =
+    if (uri.isValidHttp()) {
+        val simpleCache = SimpleCache(
+            cacheDir,
+            NoOpCacheEvictor(),
+            StandaloneDatabaseProvider(this)
+        )
+        val httpDataFactory = DefaultHttpDataSource.Factory()
+            .setReadTimeoutMs(60000)
+            .setConnectTimeoutMs(60000)
+            .setDefaultRequestProperties(headers)
+
+        val dataSourceFactory = CacheDataSource.Factory()
+            .setCache(simpleCache)
+            .setUpstreamDataSourceFactory(httpDataFactory)
+            .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+
+        ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(MediaItem.fromUri(uri))
+    } else {
+        val defaultDataSourceFactory = DefaultDataSource.Factory(this)
+        val dataSourceFactory = DefaultDataSource.Factory(this, defaultDataSourceFactory)
+        ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(MediaItem.fromUri(uri))
+    }
+
 @Composable
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-private fun getExoPlayer(uri: Uri): ExoPlayer {
+@OptIn(UnstableApi::class)
+private fun getExoPlayer(uri: Uri, headers: Map<String, String> = mapOf()): ExoPlayer {
     val context = LocalContext.current
     return remember {
         ExoPlayer.Builder(context)
             .build()
             .apply {
-                val defaultDataSourceFactory = DefaultDataSource.Factory(context)
-                val dataSourceFactory: DataSource.Factory =
-                    DefaultDataSource.Factory(context, defaultDataSourceFactory)
-                val source = ProgressiveMediaSource.Factory(dataSourceFactory)
-                    .createMediaSource(MediaItem.fromUri(uri))
+                val source = context.getVideoMediaSource(uri, headers)
                 setMediaSource(source)
                 prepare()
             }
@@ -88,12 +118,13 @@ private fun getExoPlayer(uri: Uri): ExoPlayer {
 }
 
 @Composable
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+@OptIn(UnstableApi::class)
 fun MediaPlayer(
     modifier: Modifier = Modifier,
-    uri: Uri
+    uri: Uri,
+    headers: Map<String, String> = mapOf()
 ) {
-    val exoPlayer = getExoPlayer(uri = uri)
+    val exoPlayer = getExoPlayer(uri = uri, headers)
 
     exoPlayer.playWhenReady = true
     exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
@@ -125,17 +156,19 @@ fun ImageComposable(
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    val imageLoader = rememberImageLoader()
 
     if (showDialog) {
         Dialog(onDismissRequest = { showDialog = false }) {
             if (isLoading) {
-                CircularProgressIndicator()
+                LoadingComposable()
             }
 
             AsyncImage(
                 model = uri,
                 contentScale = ContentScale.Fit,
                 alignment = Alignment.Center,
+                imageLoader = imageLoader,
                 onState = { state -> isLoading = state is AsyncImagePainter.State.Loading },
                 filterQuality = filterQuality, contentDescription = "image"
             )
@@ -145,7 +178,6 @@ fun ImageComposable(
     BoxWithConstraints(
         modifier = modifier
             .clip(mediumRoundedShape)
-            .border(xxsSize, MaterialTheme.colorScheme.outline, mediumRoundedShape)
             .clickable(enablePreview) { showDialog = true }
     ) {
         if (icon != null && !isLoading) {
@@ -167,6 +199,7 @@ fun ImageComposable(
         AsyncImage(
             modifier = Modifier.size(maxWidth, maxHeight),
             model = uri,
+            imageLoader = imageLoader,
             contentScale = ContentScale.FillBounds,
             onState = { state -> isLoading = state is AsyncImagePainter.State.Loading },
             filterQuality = FilterQuality.Low,
@@ -230,7 +263,7 @@ fun VideoComposable(
                     .height(xxxxlSize * 3f)
             ) {
                 if (imageBitmap != null) {
-                    MediaPlayer(uri = uri)
+                    MediaPlayer(uri = uri, headers = headers)
                 } else {
                     LoadingComposable()
                 }
@@ -241,7 +274,6 @@ fun VideoComposable(
     BoxWithConstraints(
         modifier = modifier
             .clip(mediumRoundedShape)
-            .border(xxsSize, MaterialTheme.colorScheme.outline, mediumRoundedShape)
             .clickable(enablePreview) { showDialog = true }
     ) {
         if (icon != null) {
@@ -281,7 +313,8 @@ fun AudioComposable(
     modifier: Modifier,
     uri: Uri,
     icon: @Composable (() -> Unit)? = null,
-    onButtonClicked: () -> Unit = {}
+    onButtonClicked: () -> Unit = {},
+    headers: Map<String, String> = mapOf()
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -291,7 +324,7 @@ fun AudioComposable(
                 modifier = Modifier
                     .height(xxxxlSize * 3)
             ) {
-                MediaPlayer(uri = uri)
+                MediaPlayer(uri = uri, headers = headers)
             }
         }
     }
@@ -299,7 +332,6 @@ fun AudioComposable(
     BoxWithConstraints(
         modifier = modifier
             .clip(mediumRoundedShape)
-            .border(xxsSize, MaterialTheme.colorScheme.outline, mediumRoundedShape)
             .clickable { showDialog = true }
     ) {
         if (icon != null) {

@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/app/features" />
             <option value="$PROJECT_DIR$/app/features/add_new" />
             <option value="$PROJECT_DIR$/app/features/auth" />
+            <option value="$PROJECT_DIR$/app/features/details" />
             <option value="$PROJECT_DIR$/app/features/home" />
           </set>
         </option>

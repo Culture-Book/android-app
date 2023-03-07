@@ -14,6 +14,8 @@ val xxxlSize = 96.dp
 val xxxxlSize = 125.dp
 val fiveXlSize = 145.dp
 
+const val MinScreenWidth = 350
+
 val smallRoundedShape = RoundedCornerShape(smallSize)
 val mediumRoundedShape = RoundedCornerShape(mediumSize)
 val mediumHeaderRoundedShape = RoundedCornerShape(topStart = mediumSize, topEnd = mediumSize)

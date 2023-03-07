@@ -21,3 +21,4 @@ include ":app:core:nav"
 include ":app:features:home"
 include ':app:features:add_new'
 include ':app:core:common'
+include ':app:features:details'

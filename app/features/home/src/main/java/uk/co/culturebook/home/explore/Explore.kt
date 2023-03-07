@@ -43,12 +43,20 @@ fun ExploreRoute(navController: NavController) {
         val location = (locationStatus as? LocationStatus.Success)?.location
         if (location != null) {
             searchCriteriaState.location = location
+            viewModel.postEvent(ExploreEvent.GetElements)
         }
     }
 
     LaunchedEffect(nearbyState) {
-        if (nearbyState is ExploreState.GetElements) {
-            viewModel.postEvent(ExploreEvent.GetElementsWithSearch(searchCriteriaState))
+        when (nearbyState) {
+            is ExploreState.Navigate -> {
+                navController.navigate((nearbyState as ExploreState.Navigate).route)
+                viewModel.postEvent(ExploreEvent.Idle)
+            }
+            is ExploreState.Idle -> {
+                viewModel.postEvent(ExploreEvent.GetUser)
+            }
+            else -> {}
         }
     }
 
@@ -60,12 +68,10 @@ fun ExploreRoute(navController: NavController) {
         searchCriteriaState.types,
         searchCriteriaState.searchType
     ) {
-        if (searchCriteriaState.isValidElementSearch()) {
-            viewModel.postEvent(ExploreEvent.GetElementsWithSearch(searchCriteriaState))
-        } else if (searchCriteriaState.isValidContributionSearch()) {
-            viewModel.postEvent(ExploreEvent.GetContributionsWithSearch(searchCriteriaState))
-        } else if (searchCriteriaState.isValidCultureSearch()) {
-            viewModel.postEvent(ExploreEvent.GetCulturesWithSearch(searchCriteriaState))
+        when (searchCriteriaState.searchType) {
+            SearchType.Culture -> viewModel.postEvent(ExploreEvent.GetCultures)
+            SearchType.Element -> viewModel.postEvent(ExploreEvent.GetElements)
+            SearchType.Contribution -> viewModel.postEvent(ExploreEvent.GetContributions)
         }
     }
 

@@ -11,12 +11,16 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
+import uk.co.culturebook.ui.utils.borderIf
 
 
 fun String.isNotValidEmail() =
@@ -185,10 +189,29 @@ fun LargeDynamicRoundedTextField(
     modifier: Modifier = Modifier,
     value: String = "",
     onValueChange: (String) -> Unit = {},
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
 ) {
     var expand by remember { mutableStateOf(false) }
+    var currentMaxHeight by remember { mutableStateOf(0.dp) }
+    val localDensity = LocalDensity.current
 
+    val colors = if (readOnly) {
+        TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            textColor = MaterialTheme.colorScheme.onSurface,
+            focusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    } else {
+        TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    }
     BoxWithConstraints(
         modifier = modifier
             .animateContentSize()
@@ -202,21 +225,22 @@ fun LargeDynamicRoundedTextField(
                         expand = true
                     }
                 }
+                .onGloballyPositioned {
+                    val currentHeight = with(localDensity) { it.size.height.toDp() }
+                    currentMaxHeight =
+                        if (currentHeight > currentMaxHeight) currentHeight else currentMaxHeight
+                }
+                .borderIf { readOnly }
                 .height(height)
                 .fillMaxWidth(),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
+            colors = colors,
             value = value,
             shape = mediumRoundedShape,
             onValueChange = onValueChange,
             readOnly = readOnly
         )
 
-        if (maxHeight != minHeight) {
+        if (currentMaxHeight - 0.5.dp > xxxxlSize) {
             IconButton(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)

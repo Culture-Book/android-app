@@ -102,6 +102,7 @@ dependencies {
     implementation project(":app:core:nav")
     implementation project(":app:features:auth")
     implementation project(":app:features:home")
+    implementation project(":app:features:details")
     implementation project(":app:features:add_new")
 
     implementation 'androidx.core:core-splashscreen:1.0.0'

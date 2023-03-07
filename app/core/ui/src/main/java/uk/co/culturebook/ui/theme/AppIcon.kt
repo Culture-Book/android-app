@@ -210,6 +210,16 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = R.drawable.ic_castle.getPainter()
     }
+
+    object FavouriteOutline : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_star_outline.getPainter()
+    }
+
+    object FavouriteFilled : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Filled.Star.getPainter()
+    }
 }
 
 @Composable

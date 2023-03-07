@@ -1,4 +1,4 @@
-package uk.co.culturebook.add_new.location.composables.choose_location
+package uk.co.common.choose_location
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button

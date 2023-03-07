@@ -52,7 +52,7 @@ interface ApiInterface {
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Element>>
 
-    @POST("nearby/v1/elements")
+    @POST("nearby/v1/cultures")
     suspend fun getCultures(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Culture>>
@@ -76,4 +76,13 @@ interface ApiInterface {
 
     @POST("nearby/v1/block/culture")
     suspend fun blockCulture(@Body blockedElement: BlockedElement): ApiResponse<Void>
+
+    @POST("nearby/v1/favourite/element")
+    suspend fun favouriteElement(@Body favouriteElement: FavouriteElement): ApiResponse<Void>
+
+    @POST("nearby/v1/favourite/contribution")
+    suspend fun favouriteContribution(@Body favouriteElement: FavouriteElement): ApiResponse<Void>
+
+    @POST("nearby/v1/favourite/culture")
+    suspend fun favouriteCulture(@Body favouriteElement: FavouriteElement): ApiResponse<Void>
 }

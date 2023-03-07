@@ -48,7 +48,6 @@ class MainActivity : ComponentActivity() {
 
             AppEventBus(navController, appState)
 
-            //TODO Add a navigation bus and pass events to a bottom sheet wrapper
             App(appState, navController)
         }
     }

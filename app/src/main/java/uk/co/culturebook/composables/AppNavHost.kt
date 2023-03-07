@@ -12,6 +12,7 @@ import uk.co.culturebook.auth.composables.ForgotRoute
 import uk.co.culturebook.auth.composables.LoginRoute
 import uk.co.culturebook.auth.composables.RegistrationRoute
 import uk.co.culturebook.data.remote_config.RemoteConfig
+import uk.co.culturebook.details.DetailsScreenRoute
 import uk.co.culturebook.home.composables.homeGraph
 import uk.co.culturebook.nav.DeepLinks
 import uk.co.culturebook.nav.Route
@@ -52,6 +53,9 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
             val userId = backStackEntry.arguments?.getString(Route.Forgot.userIdArgument) ?: ""
             val token = backStackEntry.arguments?.getString(Route.Forgot.tokenArgument) ?: ""
             ForgotRoute(navController, userId, token)
+        }
+        composable(Route.Details.route + "{${Route.Details.elementParam}}") {
+            DetailsScreenRoute(navController)
         }
     }
 }

@@ -12,8 +12,10 @@ import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.nav.Route
+import uk.co.culturebook.nav.toJsonString
 import uk.co.culturebook.ui.R
-import java.util.UUID
+import java.util.*
 
 class ExploreViewModel(
     private val userRepository: UserRepository,
@@ -24,25 +26,29 @@ class ExploreViewModel(
     val exploreState = _exploreState.asStateFlow()
     val searchCriteriaState = SearchCriteriaState()
 
-    init {
-        getUser()
-    }
-
     fun postEvent(event: ExploreEvent) {
         viewModelScope.launch {
             when (event) {
                 ExploreEvent.Idle -> _exploreState.emit(ExploreState.Idle)
-                ExploreEvent.GetElements -> _exploreState.emit(ExploreState.GetElements)
+                ExploreEvent.GetElements -> getElements(searchCriteriaState)
+                ExploreEvent.GetContributions -> getContributions(searchCriteriaState)
+                ExploreEvent.GetCultures -> getCultures(searchCriteriaState)
                 ExploreEvent.GetUser -> getUser()
                 ExploreEvent.UpdateToS -> updateToS()
-                is ExploreEvent.GetElementsWithSearch -> getElements(event.searchCriteriaState)
                 ExploreEvent.Error.ToSUpdate -> _exploreState.emit(ExploreState.Error.ToSUpdate)
                 is ExploreEvent.Error.Generic -> _exploreState.emit(ExploreState.Error.Generic(event.stringId))
-                is ExploreEvent.GetContributionsWithSearch -> getContributions(event.searchCriteriaState)
-                is ExploreEvent.GetCulturesWithSearch -> getCultures(event.searchCriteriaState)
                 is ExploreEvent.BlockContribution -> blockContribution(event.uuid)
                 is ExploreEvent.BlockCulture -> blockCulture(event.uuid)
                 is ExploreEvent.BlockElement -> blockElement(event.uuid)
+                is ExploreEvent.FavouriteContribution -> favouriteContribution(event.uuid)
+                is ExploreEvent.FavouriteCulture -> favouriteCulture(event.uuid)
+                is ExploreEvent.FavouriteElement -> favouriteElement(event.uuid)
+                is ExploreEvent.GoToContributionDetails -> _exploreState.emit(
+                    ExploreState.Navigate("${Route.Details.route}${event.contribution.toJsonString()}")
+                )
+                is ExploreEvent.GoToElementDetails -> _exploreState.emit(
+                    ExploreState.Navigate("${Route.Details.route}${event.element.toJsonString()}")
+                )
             }
         }
     }
@@ -141,7 +147,7 @@ class ExploreViewModel(
     private fun blockContribution(uuid: UUID?) {
         viewModelScope.launch {
             when (nearbyRepository.blockContribution(uuid)) {
-                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetElements)
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetContributions)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
         }
@@ -150,7 +156,34 @@ class ExploreViewModel(
     private fun blockCulture(uuid: UUID?) {
         viewModelScope.launch {
             when (nearbyRepository.blockCulture(uuid)) {
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetCultures)
+                else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun favouriteElement(uuid: UUID?) {
+        viewModelScope.launch {
+            when (nearbyRepository.favouriteElement(uuid)) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetElements)
+                else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun favouriteContribution(uuid: UUID?) {
+        viewModelScope.launch {
+            when (nearbyRepository.favouriteContribution(uuid)) {
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetContributions)
+                else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
+            }
+        }
+    }
+
+    private fun favouriteCulture(uuid: UUID?) {
+        viewModelScope.launch {
+            when (nearbyRepository.favouriteCulture(uuid)) {
+                is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetCultures)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
         }

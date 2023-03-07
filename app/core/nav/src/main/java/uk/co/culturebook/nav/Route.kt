@@ -34,6 +34,11 @@ sealed interface Route {
         override val route = "home"
     }
 
+    object Details : Route {
+        const val elementParam = "element_param"
+        override val route = "details?$elementParam"
+    }
+
     object AddNew : Route {
         override val route = "add_new"
 
@@ -56,7 +61,6 @@ sealed interface Route {
                 const val linkedElementsParam = "elements"
                 override val route = "link_elements?$linkedElementsParam="
             }
-
         }
 
         object Review : Route {

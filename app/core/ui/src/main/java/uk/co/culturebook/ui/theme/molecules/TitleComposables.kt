@@ -20,6 +20,7 @@ fun TitleAndSubtitle(
     message: String? = null,
     titleType: TitleType = TitleType.Large,
     maxMessageLines: Int = Int.MAX_VALUE,
+    maxTitleLines: Int = Int.MAX_VALUE,
     titleContent: (@Composable () -> Unit)? = null,
     leadingTitleContent: (@Composable () -> Unit)? = null
 ) {
@@ -36,25 +37,41 @@ fun TitleAndSubtitle(
 
     Column(modifier = modifier) {
         if (leadingTitleContent != null) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                leadingTitleContent()
-                Text(
-                    modifier = Modifier.padding(start = smallSize),
-                    text = title,
-                    style = titleStyle
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    leadingTitleContent()
+                    Text(
+                        modifier = Modifier
+                            .padding(start = smallSize)
+                            .fillMaxWidth(0.7f),
+                        text = title,
+                        style = titleStyle,
+                        maxLines = maxTitleLines,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 titleContent?.invoke()
             }
         } else {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = title,
-                    style = titleStyle
+                    style = titleStyle,
+                    maxLines = maxTitleLines,
+                    overflow = TextOverflow.Ellipsis
                 )
+                Spacer(modifier = Modifier.weight(1.0f))
                 titleContent?.invoke()
             }
         }

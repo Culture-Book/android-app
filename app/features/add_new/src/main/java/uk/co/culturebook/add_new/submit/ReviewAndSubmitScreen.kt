@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import uk.co.common.*
+import uk.co.common.choose_location.LocationBody
 import uk.co.culturebook.add_new.data.AddNewState
-import uk.co.culturebook.add_new.location.composables.choose_location.LocationBody
 import uk.co.culturebook.data.models.cultural.ElementType
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
@@ -116,7 +116,7 @@ fun SubmitScreenComposable(
                 }
             }
 
-            if (addNewState.files.isNotEmpty()) {
+            if (addNewState.files.size > 1) {
                 TitleAndSubtitle(
                     modifier = Modifier.padding(bottom = mediumSize),
                     title = stringResource(R.string.media)

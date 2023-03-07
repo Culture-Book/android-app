@@ -8,7 +8,8 @@ import java.util.*
 data class Culture(
     @Serializable(with = UUIDSerializer::class) val id: UUID? = null,
     val name: String,
-    val location: Location
+    val location: Location,
+    val favourite: Boolean = false
 )
 
 val Culture.Companion.Empty

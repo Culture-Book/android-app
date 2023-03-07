@@ -11,9 +11,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.maps.android.compose.rememberCameraPositionState
 import uk.co.common.AskForLocationPermission
+import uk.co.common.choose_location.LocationBody
 import uk.co.culturebook.add_new.location.LocationViewModel
 import uk.co.culturebook.add_new.location.composables.add_new_culture.AddNewCulture
-import uk.co.culturebook.add_new.location.composables.choose_location.LocationBody
 import uk.co.culturebook.add_new.location.composables.show_cultures.ShowCultures
 import uk.co.culturebook.add_new.location.events.LocationEvent
 import uk.co.culturebook.add_new.location.states.LocationState

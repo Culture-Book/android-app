@@ -33,8 +33,8 @@ fun ShowElements(
     modifier: Modifier = Modifier,
     elements: List<Element>,
     onElementClicked: (Element) -> Unit,
-    onShowNearby: () -> Unit,
     onOptionsClicked: (ElementOptionsState) -> Unit,
+    onFavouriteClicked: (UUID) -> Unit,
     lastComposable: @Composable () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
@@ -55,9 +55,6 @@ fun ShowElements(
                         modifier = Modifier.padding(mediumSize),
                         text = "No elements found"
                     )
-                    Button(onClick = onShowNearby) {
-                        Text(text = stringResource(id = R.string.show_nearby))
-                    }
                 }
             }
         } else {
@@ -66,7 +63,8 @@ fun ShowElements(
                     modifier = Modifier.padding(horizontal = mediumSize, vertical = smallSize),
                     element = it,
                     onElementClicked = onElementClicked,
-                    onOptionsClicked = onOptionsClicked
+                    onOptionsClicked = onOptionsClicked,
+                    onFavouriteClicked = onFavouriteClicked
                 )
             }
         }
@@ -82,7 +80,7 @@ fun ShowContributions(
     contributions: List<Contribution>,
     onClicked: (Contribution) -> Unit,
     onOptionsClicked: (ElementOptionsState) -> Unit,
-    onShowNearby: () -> Unit,
+    onFavouriteClicked: (UUID) -> Unit,
     lastComposable: @Composable () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
@@ -103,9 +101,6 @@ fun ShowContributions(
                         modifier = Modifier.padding(mediumSize),
                         text = "No contributions found"
                     )
-                    Button(onClick = onShowNearby) {
-                        Text(text = stringResource(id = R.string.show_nearby))
-                    }
                 }
             }
         } else {
@@ -114,7 +109,8 @@ fun ShowContributions(
                     modifier = Modifier.padding(horizontal = mediumSize, vertical = smallSize),
                     contribution = it,
                     onClicked = onClicked,
-                    onOptionsClicked = onOptionsClicked
+                    onOptionsClicked = onOptionsClicked,
+                    onFavouriteClicked = onFavouriteClicked
                 )
             }
         }
@@ -130,7 +126,7 @@ fun ShowCultures(
     cultures: List<Culture>,
     onClicked: (Culture) -> Unit,
     onOptionsClicked: (ElementOptionsState) -> Unit,
-    onShowNearby: () -> Unit,
+    onFavouriteClicked: (UUID) -> Unit,
     lastComposable: @Composable () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
@@ -151,9 +147,6 @@ fun ShowCultures(
                         modifier = Modifier.padding(mediumSize),
                         text = "No cultures found"
                     )
-                    Button(onClick = onShowNearby) {
-                        Text(text = stringResource(id = R.string.show_nearby))
-                    }
                 }
             }
         } else {
@@ -162,7 +155,8 @@ fun ShowCultures(
                     modifier = Modifier.padding(horizontal = mediumSize, vertical = smallSize),
                     culture = it,
                     onClicked = onClicked,
-                    onOptionsClicked = onOptionsClicked
+                    onOptionsClicked = onOptionsClicked,
+                    onFavouriteClicked = onFavouriteClicked
                 )
             }
         }
@@ -178,6 +172,7 @@ fun ElementComposable(
     modifier: Modifier = Modifier,
     element: Element,
     onElementClicked: (Element) -> Unit,
+    onFavouriteClicked: (UUID) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
     Card(
@@ -212,8 +207,10 @@ fun ElementComposable(
             }
         }
         if (media?.isVideo() == true) {
-            val token = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key).trim() }
-            val apiKey = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key).trim() }
+            val token =
+                remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key).trim() }
+            val apiKey =
+                remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key).trim() }
             val thumbnail = rememberVideoThumbnail(
                 uri = media.uri.toUri(), headers = mapOf(
                     Constants.AuthorizationHeader to Constants.getBearerValue(token),
@@ -241,14 +238,30 @@ fun ElementComposable(
                 title = element.name,
                 message = element.information,
                 maxMessageLines = 2,
+                maxTitleLines = 1,
+                leadingTitleContent = {
+                    Icon(element.type.icon, "type icon")
+                },
                 titleContent = {
                     var expanded by remember { mutableStateOf(false) }
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.TopStart)
-                    ) {
-                        IconButton(onClick = { expanded = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "options")
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            IconButton(onClick = { onFavouriteClicked(element.id!!) }) {
+                                if (element.favourite) {
+                                    Icon(
+                                        AppIcon.FavouriteFilled.getPainter(),
+                                        contentDescription = "fav"
+                                    )
+                                } else {
+                                    Icon(
+                                        AppIcon.FavouriteOutline.getPainter(),
+                                        contentDescription = "fav"
+                                    )
+                                }
+                            }
+                            IconButton(onClick = { expanded = true }) {
+                                Icon(Icons.Default.MoreVert, contentDescription = "options")
+                            }
                         }
                         DropdownMenu(
                             expanded = expanded,
@@ -289,6 +302,7 @@ fun ContributionComposable(
     modifier: Modifier = Modifier,
     contribution: Contribution,
     onClicked: (Contribution) -> Unit,
+    onFavouriteClicked: (UUID) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
     Card(
@@ -352,14 +366,30 @@ fun ContributionComposable(
                 title = contribution.name,
                 message = contribution.information,
                 maxMessageLines = 2,
+                maxTitleLines = 1,
+                leadingTitleContent = {
+                    Icon(contribution.type.icon, "type icon")
+                },
                 titleContent = {
                     var expanded by remember { mutableStateOf(false) }
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.TopStart)
-                    ) {
-                        IconButton(onClick = { expanded = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "options")
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            IconButton(onClick = { onFavouriteClicked(contribution.id!!) }) {
+                                if (contribution.favourite) {
+                                    Icon(
+                                        AppIcon.FavouriteFilled.getPainter(),
+                                        contentDescription = "fav"
+                                    )
+                                } else {
+                                    Icon(
+                                        AppIcon.FavouriteOutline.getPainter(),
+                                        contentDescription = "fav"
+                                    )
+                                }
+                            }
+                            IconButton(onClick = { expanded = true }) {
+                                Icon(Icons.Default.MoreVert, contentDescription = "options")
+                            }
                         }
                         DropdownMenu(
                             expanded = expanded,
@@ -400,6 +430,7 @@ fun CultureComposable(
     modifier: Modifier = Modifier,
     culture: Culture,
     onClicked: (Culture) -> Unit,
+    onFavouriteClicked: (UUID) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
     Card(
@@ -411,40 +442,56 @@ fun CultureComposable(
             TitleAndSubtitle(
                 modifier = Modifier.padding(mediumSize),
                 title = culture.name,
+                maxTitleLines = 1,
                 titleContent = {
                     var expanded by remember { mutableStateOf(false) }
-                    Box(
-                        modifier = Modifier
-                            .wrapContentSize(Alignment.TopStart)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
+                        IconButton(onClick = { onFavouriteClicked(culture.id!!) }) {
+                            if (culture.favourite) {
+                                Icon(
+                                    AppIcon.FavouriteFilled.getPainter(),
+                                    contentDescription = "fav"
+                                )
+                            } else {
+                                Icon(
+                                    AppIcon.FavouriteOutline.getPainter(),
+                                    contentDescription = "fav"
+                                )
+                            }
+                        }
+
                         IconButton(onClick = { expanded = true }) {
                             Icon(Icons.Default.MoreVert, contentDescription = "options")
-                        }
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Hide(id = culture.id!!))
-                                },
-                                text = { Text(stringResource(R.string.hide)) }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Report(id = culture.id!!))
-                                },
-                                text = { Text(stringResource(R.string.report)) }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Block(id = culture.id!!))
-                                },
-                                text = { Text(stringResource(R.string.block)) }
-                            )
+
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                DropdownMenuItem(
+                                    onClick = {
+                                        expanded = false
+                                        onOptionsClicked(ElementOptionsState.Hide(id = culture.id!!))
+                                    },
+                                    text = { Text(stringResource(R.string.hide)) }
+                                )
+                                DropdownMenuItem(
+                                    onClick = {
+                                        expanded = false
+                                        onOptionsClicked(ElementOptionsState.Report(id = culture.id!!))
+                                    },
+                                    text = { Text(stringResource(R.string.report)) }
+                                )
+                                DropdownMenuItem(
+                                    onClick = {
+                                        expanded = false
+                                        onOptionsClicked(ElementOptionsState.Block(id = culture.id!!))
+                                    },
+                                    text = { Text(stringResource(R.string.block)) }
+                                )
+                            }
                         }
                     }
                 }

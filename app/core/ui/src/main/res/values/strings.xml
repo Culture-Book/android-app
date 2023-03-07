@@ -11,6 +11,7 @@
     <string name="password_invalid">Invalid password, make sure it is at least 8 characters in length and contains 1 number</string>
     <string name="email_invalid">Invalid email, make sure it is of the form email@domain.com</string>
     <string name="display_name">Display name</string>
+    <string name="description">Description</string>
 
     <string name="tos">Terms and Conditions</string>
     <string name="read_tos">Read the terms and conditions</string>
@@ -128,6 +129,7 @@
     <!--    Element Types-->
     <string name="elements">Elements</string>
     <string name="contributions">Contributions</string>
+    <string name="directions">Directions</string>
     <string name="cultures">Cultures</string>
 
     <string name="food">Gastronomy</string>

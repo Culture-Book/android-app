@@ -1,10 +1,13 @@
 package uk.co.culturebook.add_new.title_type.composables
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import uk.co.common.ElementTypesComposable
 import uk.co.common.label
@@ -16,6 +19,7 @@ import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
+import uk.co.culturebook.ui.theme.xxxlSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +29,7 @@ fun TitleAndTypeScreen(
     _typeData: TypeData,
     postEvent: (TitleAndTypeEvent) -> Unit
 ) {
+    val config = LocalConfiguration.current
     val typeData by remember { mutableStateOf(_typeData) }
     val snackbarHostState = remember { SnackbarHostState() }
     val isError by remember { derivedStateOf { typeData.name.isDigitsOnly() } }
@@ -44,47 +49,58 @@ fun TitleAndTypeScreen(
             TitleAndTypeState.Idle,
             is TitleAndTypeState.Error,
             is TitleAndTypeState.Success -> {
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .padding(padding)
                         .padding(horizontal = mediumSize)
                 ) {
 
-                    TitleAndSubtitle(
-                        title = stringResource(R.string.select_type_title),
-                        message = stringResource(R.string.select_type_message)
-                    )
+                    item {
+                        TitleAndSubtitle(
+                            title = stringResource(R.string.select_type_title),
+                            message = stringResource(R.string.select_type_message)
+                        )
+                    }
 
-                    ElementTypesComposable(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = mediumSize),
-                        selectedType = typeData.type,
-                        onTypeClicked = { typeData.type = it })
+                    item {
+                        ElementTypesComposable(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = xxxlSize, max = config.screenHeightDp.dp * 2)
+                                .padding(vertical = mediumSize),
+                            selectedType = typeData.type,
+                            onTypeClicked = { typeData.type = it })
+                    }
 
-                    TitleAndSubtitle(
-                        title = stringResource(R.string.select_title),
-                        message = stringResource(R.string.select_title_message)
-                    )
+                    item {
+                        TitleAndSubtitle(
+                            title = stringResource(R.string.select_title),
+                            message = stringResource(R.string.select_title_message)
+                        )
+                    }
 
-                    TitleComposable(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = mediumSize),
-                        title = typeData.name,
-                        onTitleChange = { typeData.name = it },
-                        isError = isError
-                    )
+                    item {
+                        TitleComposable(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = mediumSize),
+                            title = typeData.name,
+                            onTitleChange = { typeData.name = it },
+                            isError = isError
+                        )
+                    }
 
-                    Button(
-                        modifier = Modifier.fillMaxWidth(),
-                        enabled = !isError && typeData.type != null,
-                        onClick = {
-                            if (typeData.type != null) {
-                                postEvent(TitleAndTypeEvent.Submit(typeData))
-                            }
-                        }) {
-                        Text(stringResource(R.string.next))
+                    item {
+                        Button(
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = !isError && typeData.type != null,
+                            onClick = {
+                                if (typeData.type != null) {
+                                    postEvent(TitleAndTypeEvent.Submit(typeData))
+                                }
+                            }) {
+                            Text(stringResource(R.string.next))
+                        }
                     }
                 }
             }

@@ -14,7 +14,6 @@ import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.Banner
 import uk.co.culturebook.ui.theme.molecules.BannerType
-import java.util.*
 
 @Composable
 fun ExploreBody(
@@ -28,7 +27,7 @@ fun ExploreBody(
     LaunchedEffect(exploreState) {
         maxPage = when (exploreState) {
             is ExploreState.Success.ElementsReceived ->
-                if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
+                if (exploreState.elements.size <= 3) searchCriteria.page else maxPage + 1
             else -> 1
         }
     }
@@ -40,7 +39,7 @@ fun ExploreBody(
             is ExploreState.Success.ElementsReceived -> {
                 ShowElements(
                     elements = exploreState.elements,
-                    onElementClicked = {},
+                    onElementClicked = { postEvent(ExploreEvent.GoToElementDetails(it)) },
                     onOptionsClicked = {
                         when (it) {
                             is ElementOptionsState.Block -> postEvent(ExploreEvent.BlockElement(it.id))
@@ -48,7 +47,7 @@ fun ExploreBody(
                             is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockElement(it.id))
                         }
                     },
-                    onShowNearby = { searchCriteria.searchString = "" }
+                    onFavouriteClicked = { postEvent(ExploreEvent.FavouriteElement(it)) }
                 ) {
                     PageInformation(
                         modifier = Modifier.fillMaxWidth(),
@@ -62,15 +61,29 @@ fun ExploreBody(
             is ExploreState.Success.ContributionsReceived -> {
                 ShowContributions(
                     contributions = exploreState.contributions,
-                    onClicked = {},
+                    onClicked = {
+                        postEvent(ExploreEvent.GoToContributionDetails(it))
+                    },
                     onOptionsClicked = {
                         when (it) {
-                            is ElementOptionsState.Block -> postEvent(ExploreEvent.BlockContribution(it.id))
-                            is ElementOptionsState.Hide -> postEvent(ExploreEvent.BlockContribution(it.id))
-                            is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockContribution(it.id))
+                            is ElementOptionsState.Block -> postEvent(
+                                ExploreEvent.BlockContribution(
+                                    it.id
+                                )
+                            )
+                            is ElementOptionsState.Hide -> postEvent(
+                                ExploreEvent.BlockContribution(
+                                    it.id
+                                )
+                            )
+                            is ElementOptionsState.Report -> postEvent(
+                                ExploreEvent.BlockContribution(
+                                    it.id
+                                )
+                            )
                         }
                     },
-                    onShowNearby = { searchCriteria.searchString = "" }
+                    onFavouriteClicked = { postEvent(ExploreEvent.FavouriteContribution(it)) }
                 ) {
                     PageInformation(
                         modifier = Modifier.fillMaxWidth(),
@@ -92,7 +105,7 @@ fun ExploreBody(
                             is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockCulture(it.id))
                         }
                     },
-                    onShowNearby = { searchCriteria.searchString = "" }
+                    onFavouriteClicked = { postEvent(ExploreEvent.FavouriteCulture(it)) }
                 ) {
                     PageInformation(
                         modifier = Modifier.fillMaxWidth(),
