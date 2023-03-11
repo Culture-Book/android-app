@@ -68,6 +68,12 @@ interface ApiInterface {
     @GET("nearby/v1/contributions/media")
     suspend fun getContributionsMedia(@Query("contribution_id") contributionId: UUID): ApiResponse<List<Media>>
 
+    @GET("nearby/v1/element")
+    suspend fun getElement(@Query("element_id") elementId: UUID): ApiResponse<Element>
+
+    @GET("nearby/v1/contribution")
+    suspend fun getContribution(@Query("contribution_id") contributionId: UUID): ApiResponse<Contribution>
+
     @POST("nearby/v1/block/element")
     suspend fun blockElement(@Body blockedElement: BlockedElement): ApiResponse<Void>
 

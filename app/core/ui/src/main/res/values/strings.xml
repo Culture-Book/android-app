@@ -119,6 +119,7 @@
     <string name="no_location_title">Cannot find location</string>
     <string name="no_location_message">Cannot find your location, please allow access to location or use the search function.</string>
     <string name="show_nearby">Show nearby</string>
+    <string name="details">Details</string>
 
     <string name="hide">Hide</string>
     <string name="report">Report</string>

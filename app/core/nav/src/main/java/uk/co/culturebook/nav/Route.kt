@@ -35,7 +35,7 @@ sealed interface Route {
     }
 
     object Details : Route {
-        const val elementParam = "element_param"
+        const val elementParam = "object_param"
         override val route = "details?$elementParam"
     }
 

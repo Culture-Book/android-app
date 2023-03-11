@@ -28,6 +28,7 @@ import uk.co.common.choose_location.LocationBody
 import uk.co.culturebook.data.Constants
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.remote_config.RemoteConfig
+import uk.co.culturebook.data.repositories.cultural.NearbyRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.data.utils.toUri
 import uk.co.culturebook.nav.Route.Details.elementParam
@@ -35,184 +36,224 @@ import uk.co.culturebook.nav.fromJsonString
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LargeDynamicRoundedTextField
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.theme.molecules.OutlinedSurface
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
+import uk.co.culturebook.ui.utils.ShowSnackbar
 import uk.co.culturebook.ui.utils.prettyPrint
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreenRoute(navController: NavController) {
     val viewModel = viewModel {
         val app = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
         val updateRepository = UpdateRepository(app)
-        DetailsViewModel(updateRepository)
+        val nearbyRepository = NearbyRepository(app)
+        DetailsViewModel(nearbyRepository, updateRepository)
     }
-    val element = navController.currentBackStackEntry?.arguments?.getString(elementParam)
-        ?.fromJsonString<Element>() ?: return
+    val snackbarState = remember { SnackbarHostState() }
+    val state by viewModel.detailStateFlow.collectAsState()
+    var element by remember {
+        mutableStateOf(
+            navController.currentBackStackEntry?.arguments?.getString(elementParam)
+                ?.fromJsonString<Element>()
+        )
+    }
 
-    ElementDetailScreen(
-        onBack = { navController.navigateUp() },
-        element = element,
-        onFavouriteClicked = {
-            viewModel.postEvent(DetailEvent.FavouriteElement(it))
-        },
-        onOptionsClicked = {
-            when (it) {
-                is ElementOptionsState.Block -> viewModel.postEvent(DetailEvent.BlockElement(it.id))
-                is ElementOptionsState.Hide -> viewModel.postEvent(DetailEvent.BlockElement(it.id))
-                is ElementOptionsState.Report -> viewModel.postEvent(DetailEvent.BlockElement(it.id))
+    LaunchedEffect(state) {
+        when (state) {
+            is DetailState.ElementReceived -> element =
+                (state as DetailState.ElementReceived).element
+            is DetailState.Blocked -> {
+                navController.navigateUp()
             }
-        })
+            else -> {}
+        }
+    }
+
+    if (state is DetailState.Error)
+        ShowSnackbar(stringId = (state as DetailState.Error).error, snackbarState = snackbarState)
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarState) },
+        topBar = {
+            DetailsAppbar(
+                navigateBack = { navController.navigateUp() },
+                isFavourite = element?.favourite ?: false,
+                onFavouriteClicked = {
+                    element?.let {
+                        viewModel.postEvent(DetailEvent.FavouriteElement(it))
+                    }
+                },
+                onBlock = {
+                    element?.let {
+                        viewModel.postEvent(DetailEvent.BlockElement(it.id))
+                    }
+                },
+                onHide = {
+                    element?.let {
+                        viewModel.postEvent(DetailEvent.BlockElement(it.id))
+                    }
+                },
+                onReport = {
+                    element?.let {
+                        viewModel.postEvent(DetailEvent.BlockElement(it.id))
+                    }
+                }
+            )
+        },
+    ) { padding ->
+        when {
+            state is DetailState.Loading -> LoadingComposable(padding)
+            element != null -> ElementDetailScreen(Modifier.padding(padding), element!!)
+        }
+    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElementDetailScreen(
-    onBack: () -> Unit,
-    onFavouriteClicked: (Element) -> Unit,
-    onOptionsClicked: (ElementOptionsState) -> Unit,
+    modifier: Modifier,
     element: Element,
 ) {
     val scrollState = rememberScrollState()
 
     val token = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaToken.key).trim() }
-    val apiKey = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key).trim() }
+    val apiKey =
+        remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key).trim() }
 
-    Scaffold(
-        topBar = { DetailsAppbar(element, onBack, onFavouriteClicked, onOptionsClicked) },
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(horizontal = mediumSize)
-                .fillMaxSize()
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            val media = element.media.firstOrNull()
+    Column(
+        modifier = modifier
+            .padding(horizontal = mediumSize)
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val media = element.media.firstOrNull()
 
-            if (media?.isImage() == true) {
-                ImageComposable(
-                    modifier = Modifier
-                        .height(xxxxlSize * 1.5f)
-                        .fillMaxWidth(),
-                    uri = media.uri.toUri(),
+        if (media?.isImage() == true) {
+            ImageComposable(
+                modifier = Modifier
+                    .height(xxxxlSize * 1.5f)
+                    .fillMaxWidth(),
+                uri = media.uri.toUri(),
+            )
+        } else if (media?.isVideo() == true) {
+            VideoComposable(
+                modifier = Modifier
+                    .height(xxxxlSize)
+                    .fillMaxWidth(),
+                uri = media.uri.toUri(),
+                headers = mapOf(
+                    Constants.AuthorizationHeader to Constants.getBearerValue(token),
+                    Constants.ApiKeyHeader to apiKey
                 )
-            } else if (media?.isVideo() == true) {
-                VideoComposable(
+            )
+        } else if (media?.isAudio() == true) {
+            AudioComposable(
+                modifier = Modifier
+                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f),
+                uri = media.uri.toUri(),
+            )
+        }
+
+        TitleAndSubtitle(
+            modifier = Modifier
+                .padding(top = mediumSize)
+                .fillMaxWidth(),
+            title = stringResource(R.string.description)
+        )
+
+        LargeDynamicRoundedTextField(
+            modifier = Modifier
+                .defaultMinSize(minHeight = xxxxlSize)
+                .padding(vertical = mediumSize)
+                .fillMaxWidth(),
+            value = element.information,
+            readOnly = true
+        )
+
+        if (element.type == ElementType.Event) {
+            TitleAndSubtitle(
+                modifier = Modifier.padding(vertical = smallSize),
+                title = stringResource(R.string.event_info)
+            )
+
+            if (element.eventType?.startDateTime != null) {
+                OutlinedSurface(
                     modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = smallSize),
+                    title = stringResource(
+                        id = R.string.event_date,
+                        element.eventType?.startDateTime?.prettyPrint() ?: ""
+                    )
+                )
+            }
+
+            if (element.eventType?.location != null) {
+                LocationBody(
+                    modifier = Modifier
+                        .padding(bottom = mediumSize)
+                        .clip(mediumRoundedShape)
                         .height(xxxxlSize)
                         .fillMaxWidth(),
-                    uri = media.uri.toUri(),
-                    headers = mapOf(
-                        Constants.AuthorizationHeader to Constants.getBearerValue(token),
-                        Constants.ApiKeyHeader to apiKey
-                    )
-                )
-            } else if (media?.isAudio() == true) {
-                AudioComposable(
-                    modifier = Modifier
-                        .size(height = xxxxlSize, width = xxxxlSize * 1.5f),
-                    uri = media.uri.toUri(),
+                    isDisplayOnly = true,
+                    locationToShow = element.eventType?.location
                 )
             }
+        }
 
+        Row(modifier = Modifier.fillMaxWidth()) {
+            FilledTonalButton(
+                modifier = Modifier
+                    .fillMaxWidth(.5f)
+                    .padding(end = smallSize),
+                onClick = { /*TODO*/ }) {
+                Text(text = stringResource(id = R.string.contributions))
+            }
+            FilledTonalButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = { /*TODO*/ }) {
+                Text(text = stringResource(id = R.string.directions))
+            }
+        }
+
+        if (element.media.size > 1) {
             TitleAndSubtitle(
-                modifier = Modifier
-                    .padding(top = mediumSize)
-                    .fillMaxWidth(),
-                title = stringResource(R.string.description)
+                modifier = Modifier.padding(bottom = mediumSize),
+                title = stringResource(R.string.media)
             )
 
-            LargeDynamicRoundedTextField(
-                modifier = Modifier
-                    .defaultMinSize(minHeight = xxxxlSize)
-                    .padding(vertical = mediumSize)
-                    .fillMaxWidth(),
-                value = element.information,
-                readOnly = true
-            )
-
-            if (element.type == ElementType.Event) {
-                TitleAndSubtitle(
-                    modifier = Modifier.padding(vertical = smallSize),
-                    title = stringResource(R.string.event_info)
-                )
-
-                if (element.eventType?.startDateTime != null) {
-                    OutlinedSurface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = smallSize),
-                        title = stringResource(
-                            id = R.string.event_date,
-                            element.eventType?.startDateTime?.prettyPrint() ?: ""
+            LazyRow {
+                items(element.media) {
+                    if (it.isImage()) {
+                        ImageComposable(
+                            modifier = Modifier
+                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                .padding(end = mediumSize),
+                            uri = it.uri.toUri(),
                         )
-                    )
-                }
-
-                if (element.eventType?.location != null) {
-                    LocationBody(
-                        modifier = Modifier
-                            .padding(bottom = mediumSize)
-                            .clip(mediumRoundedShape)
-                            .height(xxxxlSize)
-                            .fillMaxWidth(),
-                        isDisplayOnly = true,
-                        locationToShow = element.eventType?.location
-                    )
-                }
-            }
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-                FilledTonalButton(
-                    modifier = Modifier
-                        .fillMaxWidth(.5f)
-                        .padding(end = smallSize),
-                    onClick = { /*TODO*/ }) {
-                    Text(text = stringResource(id = R.string.contributions))
-                }
-                FilledTonalButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = { /*TODO*/ }) {
-                    Text(text = stringResource(id = R.string.directions))
-                }
-            }
-
-            if (element.media.size > 1) {
-                TitleAndSubtitle(
-                    modifier = Modifier.padding(bottom = mediumSize),
-                    title = stringResource(R.string.media)
-                )
-
-                LazyRow {
-                    items(element.media) {
-                        if (it.isImage()) {
-                            ImageComposable(
-                                modifier = Modifier
-                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                    .padding(end = mediumSize),
-                                uri = it.uri.toUri(),
+                    } else if (it.isVideo()) {
+                        VideoComposable(
+                            modifier = Modifier
+                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                .padding(end = mediumSize),
+                            uri = it.uri.toUri(),
+                            headers = mapOf(
+                                Constants.AuthorizationHeader to Constants.getBearerValue(
+                                    token
+                                ),
+                                Constants.ApiKeyHeader to apiKey
                             )
-                        } else if (it.isVideo()) {
-                            VideoComposable(
-                                modifier = Modifier
-                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                    .padding(end = mediumSize),
-                                uri = it.uri.toUri(),
-                                headers = mapOf(
-                                    Constants.AuthorizationHeader to Constants.getBearerValue(token),
-                                    Constants.ApiKeyHeader to apiKey
-                                )
-                            )
-                        } else if (it.isAudio()) {
-                            AudioComposable(
-                                modifier = Modifier
-                                    .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                    .padding(end = mediumSize),
-                                uri = it.uri.toUri(),
-                            )
-                        }
+                        )
+                    } else if (it.isAudio()) {
+                        AudioComposable(
+                            modifier = Modifier
+                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
+                                .padding(end = mediumSize),
+                            uri = it.uri.toUri(),
+                        )
                     }
                 }
             }
@@ -223,16 +264,19 @@ fun ElementDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsAppbar(
-    element: Element,
+    title: String = stringResource(R.string.details),
     navigateBack: () -> Unit = {},
-    onFavouriteClicked: (Element) -> Unit = {},
-    onOptionsClicked: (ElementOptionsState) -> Unit = {}
+    onFavouriteClicked: () -> Unit = {},
+    isFavourite: Boolean = false,
+    onHide: () -> Unit = {},
+    onBlock: () -> Unit = {},
+    onReport: () -> Unit = {}
 ) {
     TopAppBar(modifier = Modifier.fillMaxWidth(),
         actions = {
             var expanded by remember { mutableStateOf(false) }
-            IconButton(onClick = { onFavouriteClicked(element) }) {
-                if (element.favourite) {
+            IconButton(onClick = { onFavouriteClicked() }) {
+                if (isFavourite) {
                     Icon(AppIcon.FavouriteFilled.getPainter(), contentDescription = "fav")
                 } else {
                     Icon(AppIcon.FavouriteOutline.getPainter(), contentDescription = "fav")
@@ -252,21 +296,21 @@ fun DetailsAppbar(
                     DropdownMenuItem(
                         onClick = {
                             expanded = false
-                            onOptionsClicked(ElementOptionsState.Hide(id = element.id!!))
+                            onHide()
                         },
                         text = { Text(stringResource(R.string.hide)) }
                     )
                     DropdownMenuItem(
                         onClick = {
                             expanded = false
-                            onOptionsClicked(ElementOptionsState.Report(id = element.id!!))
+                            onReport()
                         },
                         text = { Text(stringResource(R.string.report)) }
                     )
                     DropdownMenuItem(
                         onClick = {
                             expanded = false
-                            onOptionsClicked(ElementOptionsState.Block(id = element.id!!))
+                            onBlock()
                         },
                         text = { Text(stringResource(R.string.block)) }
                     )
@@ -277,7 +321,7 @@ fun DetailsAppbar(
             var showPopup by remember { mutableStateOf(false) }
             Text(
                 modifier = Modifier.clickable { showPopup = !showPopup },
-                text = element.name,
+                text = title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -285,7 +329,7 @@ fun DetailsAppbar(
             if (showPopup) {
                 Popup(onDismissRequest = { showPopup = false }) {
                     LaunchedEffect(Unit) {
-                        delay(element.name.length * 100L)
+                        delay(title.length * 100L)
                         showPopup = false
                     }
 
@@ -296,7 +340,7 @@ fun DetailsAppbar(
                     ) {
                         Text(
                             modifier = Modifier.padding(mediumSize),
-                            text = element.name
+                            text = title
                         )
                     }
                 }
