@@ -26,32 +26,4 @@ class NearbyRepository(context: Context) {
     suspend fun getCultures(searchCriteria: SearchCriteria) =
         apiInterface.getCultures(searchCriteria)
 
-    suspend fun blockElement(uuid: UUID?) = uuid?.let {
-        apiInterface.blockElement(
-            BlockedElement(it)
-        )
-    }
-
-    suspend fun blockContribution(uuid: UUID?) = uuid?.let {
-        apiInterface.blockContribution(BlockedElement(it))
-    }
-
-    suspend fun blockCulture(uuid: UUID?) = uuid?.let {
-        apiInterface.blockCulture(BlockedElement(it))
-    }
-
-    suspend fun favouriteElement(uuid: UUID?) = uuid?.let {
-        apiInterface.favouriteElement(
-            FavouriteElement(it)
-        )
-    }
-
-    suspend fun favouriteContribution(uuid: UUID?) = uuid?.let {
-        apiInterface.favouriteContribution(FavouriteElement(it))
-    }
-
-    suspend fun favouriteCulture(uuid: UUID?) = uuid?.let {
-        apiInterface.favouriteCulture(FavouriteElement(it))
-    }
-
 }

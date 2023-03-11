@@ -28,6 +28,7 @@ import uk.co.common.choose_location.LocationBody
 import uk.co.culturebook.data.Constants
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.remote_config.RemoteConfig
+import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.data.utils.toUri
 import uk.co.culturebook.nav.Route.Details.elementParam
 import uk.co.culturebook.nav.fromJsonString
@@ -42,18 +43,33 @@ import uk.co.culturebook.ui.utils.prettyPrint
 fun DetailsScreenRoute(navController: NavController) {
     val viewModel = viewModel {
         val app = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
-        DetailsViewModel()
+        val updateRepository = UpdateRepository(app)
+        DetailsViewModel(updateRepository)
     }
     val element = navController.currentBackStackEntry?.arguments?.getString(elementParam)
         ?.fromJsonString<Element>() ?: return
 
-    DetailsScreenComposable(onBack = { navController.navigateUp() }, element = element)
+    ElementDetailScreen(
+        onBack = { navController.navigateUp() },
+        element = element,
+        onFavouriteClicked = {
+            viewModel.postEvent(DetailEvent.FavouriteElement(it))
+        },
+        onOptionsClicked = {
+            when (it) {
+                is ElementOptionsState.Block -> viewModel.postEvent(DetailEvent.BlockElement(it.id))
+                is ElementOptionsState.Hide -> viewModel.postEvent(DetailEvent.BlockElement(it.id))
+                is ElementOptionsState.Report -> viewModel.postEvent(DetailEvent.BlockElement(it.id))
+            }
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsScreenComposable(
+fun ElementDetailScreen(
     onBack: () -> Unit,
+    onFavouriteClicked: (Element) -> Unit,
+    onOptionsClicked: (ElementOptionsState) -> Unit,
     element: Element,
 ) {
     val scrollState = rememberScrollState()
@@ -62,7 +78,7 @@ fun DetailsScreenComposable(
     val apiKey = remember { Firebase.remoteConfig.getString(RemoteConfig.MediaApiKey.key).trim() }
 
     Scaffold(
-        topBar = { DetailsAppbar(element, onBack) },
+        topBar = { DetailsAppbar(element, onBack, onFavouriteClicked, onOptionsClicked) },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -209,13 +225,13 @@ fun DetailsScreenComposable(
 fun DetailsAppbar(
     element: Element,
     navigateBack: () -> Unit = {},
-    onFavouriteClicked: () -> Unit = {},
+    onFavouriteClicked: (Element) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit = {}
 ) {
     TopAppBar(modifier = Modifier.fillMaxWidth(),
         actions = {
             var expanded by remember { mutableStateOf(false) }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { onFavouriteClicked(element) }) {
                 if (element.favourite) {
                     Icon(AppIcon.FavouriteFilled.getPainter(), contentDescription = "fav")
                 } else {

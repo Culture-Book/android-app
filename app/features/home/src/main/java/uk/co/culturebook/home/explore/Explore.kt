@@ -20,6 +20,7 @@ import uk.co.culturebook.data.location.LocationStatus
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
@@ -29,11 +30,15 @@ import uk.co.culturebook.ui.utils.ShowSnackbar
 @Composable
 fun ExploreRoute(navController: NavController) {
     val viewModel = viewModel {
-        val userRepository =
-            UserRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
-        val nearbyRepository =
-            NearbyRepository((this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application))
-        ExploreViewModel(userRepository = userRepository, nearbyRepository = nearbyRepository)
+        val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
+        val userRepository = UserRepository(app)
+        val nearbyRepository = NearbyRepository(app)
+        val updateRepository = UpdateRepository(app)
+        ExploreViewModel(
+            userRepository = userRepository,
+            nearbyRepository = nearbyRepository,
+            updateRepository = updateRepository
+        )
     }
     val searchCriteriaState = viewModel.searchCriteriaState
     val nearbyState by viewModel.exploreState.collectAsState()

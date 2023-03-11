@@ -12,6 +12,7 @@ import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.nav.toJsonString
 import uk.co.culturebook.ui.R
@@ -19,6 +20,7 @@ import java.util.*
 
 class ExploreViewModel(
     private val userRepository: UserRepository,
+    private val updateRepository: UpdateRepository,
     private val nearbyRepository: NearbyRepository
 ) : ViewModel() {
 
@@ -137,7 +139,7 @@ class ExploreViewModel(
 
     private fun blockElement(uuid: UUID?) {
         viewModelScope.launch {
-            when (nearbyRepository.blockElement(uuid)) {
+            when (updateRepository.blockElement(uuid)) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetElements)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
@@ -146,7 +148,7 @@ class ExploreViewModel(
 
     private fun blockContribution(uuid: UUID?) {
         viewModelScope.launch {
-            when (nearbyRepository.blockContribution(uuid)) {
+            when (updateRepository.blockContribution(uuid)) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetContributions)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
@@ -155,7 +157,7 @@ class ExploreViewModel(
 
     private fun blockCulture(uuid: UUID?) {
         viewModelScope.launch {
-            when (nearbyRepository.blockCulture(uuid)) {
+            when (updateRepository.blockCulture(uuid)) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetCultures)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
@@ -164,7 +166,7 @@ class ExploreViewModel(
 
     private fun favouriteElement(uuid: UUID?) {
         viewModelScope.launch {
-            when (nearbyRepository.favouriteElement(uuid)) {
+            when (updateRepository.favouriteElement(uuid)) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetElements)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
@@ -173,7 +175,7 @@ class ExploreViewModel(
 
     private fun favouriteContribution(uuid: UUID?) {
         viewModelScope.launch {
-            when (nearbyRepository.favouriteContribution(uuid)) {
+            when (updateRepository.favouriteContribution(uuid)) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetContributions)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
@@ -182,7 +184,7 @@ class ExploreViewModel(
 
     private fun favouriteCulture(uuid: UUID?) {
         viewModelScope.launch {
-            when (nearbyRepository.favouriteCulture(uuid)) {
+            when (updateRepository.favouriteCulture(uuid)) {
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> postEvent(ExploreEvent.GetCultures)
                 else -> postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
             }
