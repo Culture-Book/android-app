@@ -58,8 +58,7 @@ sealed interface Route {
             }
 
             object LinkElements : Route {
-                const val linkedElementsParam = "elements"
-                override val route = "link_elements?$linkedElementsParam="
+                override val route = "link_elements"
             }
         }
 

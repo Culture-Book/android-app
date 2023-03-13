@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -138,14 +139,29 @@ fun Explore(
         }
     ) { padding ->
         when (exploreState) {
+            is ExploreState.Navigate,
+            ExploreState.GetContributions,
+            ExploreState.GetCultures,
+            ExploreState.GetElements,
+            ExploreState.Idle,
+            ExploreState.Success.UserFetched,
             ExploreState.Loading -> LoadingComposable(padding)
-
-            else -> ExploreBody(
-                Modifier.padding(padding),
-                exploreState,
-                searchCriteriaState,
-                postEvent,
-            )
+            is ExploreState.Error -> {
+                Text(
+                    modifier = Modifier.fillMaxSize(),
+                    text = stringResource(R.string.generic_sorry)
+                )
+            }
+            is ExploreState.Success.ContributionsReceived,
+            is ExploreState.Success.CulturesReceived,
+            is ExploreState.Success.ElementsReceived -> {
+                ExploreBody(
+                    Modifier.padding(padding),
+                    exploreState,
+                    searchCriteriaState,
+                    postEvent,
+                )
+            }
         }
     }
 }

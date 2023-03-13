@@ -19,8 +19,8 @@ class AddNewRepository(private val context: Context) {
     suspend fun postElement(element: Element, files: List<MediaFile>) =
         apiInterface.postElement(
             element = MultipartBody.Part.createFormData("element", Json.encodeToString(element)),
-            files = files.mapNotNull { file ->
-                file.toRequestBody(context)?.let { inputStream ->
+            files = files.map { file ->
+                file.toRequestBody(context).let { inputStream ->
                     MultipartBody.Part.createFormData("", "", inputStream)
                 }
             }
@@ -35,8 +35,8 @@ class AddNewRepository(private val context: Context) {
                 "contribution",
                 Json.encodeToString(contribution)
             ),
-            files = files.mapNotNull { file ->
-                file.toRequestBody(context)?.let { inputStream ->
+            files = files.map { file ->
+                file.toRequestBody(context).let { inputStream ->
                     MultipartBody.Part.createFormData("", "", inputStream)
                 }
             }

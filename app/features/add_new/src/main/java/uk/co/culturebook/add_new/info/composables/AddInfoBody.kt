@@ -19,24 +19,21 @@ import uk.co.common.AudioComposable
 import uk.co.common.ImageComposable
 import uk.co.common.VideoComposable
 import uk.co.common.choose_location.LocationBody
-import uk.co.culturebook.add_new.data.InfoData
+import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.data.models.cultural.ElementType
 import uk.co.culturebook.data.models.cultural.Location
 import uk.co.culturebook.data.models.cultural.MediaFile
 import uk.co.culturebook.data.models.cultural.isNotEmpty
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
-import uk.co.culturebook.ui.theme.molecules.DateTimeDialog
-import uk.co.culturebook.ui.theme.molecules.LargeDynamicRoundedTextField
-import uk.co.culturebook.ui.theme.molecules.OutlinedSurface
-import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
+import uk.co.culturebook.ui.theme.molecules.*
 import uk.co.culturebook.ui.utils.prettyPrint
 import java.time.LocalDateTime
 
 @Composable
 fun AddInfoBody(
     modifier: Modifier = Modifier,
-    infoData: InfoData = InfoData(),
+    addNewState: AddNewState,
     onLinkElementsClicked: () -> Unit = {},
     onDateAdded: (LocalDateTime) -> Unit = {},
     onLocationAdded: (Location) -> Unit = {},
@@ -45,38 +42,31 @@ fun AddInfoBody(
     onSubmitClicked: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
-    var background by rememberSaveable { mutableStateOf(infoData.background) }
+    var background by rememberSaveable { mutableStateOf(addNewState.information) }
     var showDateCalendar by remember { mutableStateOf(false) }
     var showMap by remember { mutableStateOf(false) }
 
     if (showDateCalendar) {
-        DateTimeDialog(
-            pickedDate = infoData.eventType?.startDateTime,
-            onDateChanged = {
-                onDateAdded(it)
-                showDateCalendar = false
-            },
-            onDismiss = {
-                showDateCalendar = false
-            }
-        )
+        DateTimeDialog(pickedDate = addNewState.eventType?.startDateTime, onDateChanged = {
+            onDateAdded(it)
+            showDateCalendar = false
+        }, onDismiss = {
+            showDateCalendar = false
+        })
     }
 
     if (showMap) {
         val cameraPositionState = rememberCameraPositionState()
-        LocationBody(
-            modifier = modifier,
+        LocationBody(modifier = modifier,
             cameraPositionState = cameraPositionState,
             onLocationSelected = {
                 onLocationAdded(it)
                 showMap = false
             },
-            onBack = { showMap = false }
-        )
+            onBack = { showMap = false })
     } else {
         Column(
-            modifier = modifier
-                .verticalScroll(scrollState)
+            modifier = modifier.verticalScroll(scrollState)
         ) {
             TitleAndSubtitle(
                 modifier = Modifier.padding(bottom = mediumSize),
@@ -84,53 +74,76 @@ fun AddInfoBody(
                 message = stringResource(R.string.background_message)
             )
 
-            LargeDynamicRoundedTextField(
-                modifier = Modifier
-                    .defaultMinSize(minHeight = xxxxlSize)
-                    .padding(bottom = mediumSize)
-                    .fillMaxWidth(),
+            LargeDynamicRoundedTextField(modifier = Modifier
+                .defaultMinSize(minHeight = xxxxlSize)
+                .padding(bottom = mediumSize)
+                .fillMaxWidth(),
                 value = background,
                 onValueChange = { background = it })
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = onLinkElementsClicked,
-                enabled = false
-            ) {
-                // TODO - Implement linking when the nearby screen is done
-                Text(stringResource(R.string.link_elements))
+            if (addNewState.linkElements.isNotEmpty()) {
+                TitleAndSubtitle(modifier = Modifier.padding(bottom = smallSize),
+                    title = stringResource(R.string.linked_elements, addNewState.linkElements.size),
+                    titleType = TitleType.Small,
+                    titleContent = {
+                        TextButton(onClick = { addNewState.linkElements = emptyList() }) {
+                            Text(
+                                modifier = Modifier.padding(end = smallSize),
+                                text = stringResource(R.string.clear)
+                            )
+                        }
+                    })
             }
 
-            if (infoData.elementType == ElementType.Event.name) {
+            TextButton(
+                modifier = Modifier.fillMaxWidth(), onClick = onLinkElementsClicked
+            ) {
+                if (addNewState.linkElements.isEmpty()) {
+                    Text(stringResource(R.string.link_elements))
+                } else {
+                    Text(stringResource(R.string.link_more_elements))
+                }
+            }
+
+
+            if (addNewState.type == ElementType.Event) {
                 TitleAndSubtitle(
                     modifier = Modifier.padding(vertical = smallSize),
                     title = stringResource(R.string.event_info),
                     message = stringResource(R.string.event_info_message)
                 )
 
-                if (infoData.eventType?.startDateTime != LocalDateTime.MIN && infoData.eventType != null) {
-                    OutlinedSurface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = smallSize),
-                        title = stringResource(
-                            id = R.string.event_date,
-                            infoData.eventType?.startDateTime?.prettyPrint() ?: ""
-                        )
-                    )
-                }
+                if (addNewState.eventType != null) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        if (addNewState.eventType?.startDateTime != LocalDateTime.MIN) {
+                            OutlinedSurface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(.5f)
+                                    .padding(end = smallSize)
+                                    .height(xxxxlSize),
+                                icon = {
+                                    Icon(
+                                        painter = AppIcon.Calendar.getPainter(),
+                                        contentDescription = "calendar"
+                                    )
+                                },
+                                title = addNewState.eventType?.startDateTime?.prettyPrint() ?: ""
+                            )
+                        }
 
-                if (infoData.eventType?.location.isNotEmpty() && infoData.eventType != null) {
-                    LocationBody(
-                        modifier = Modifier
-                            .padding(bottom = mediumSize)
-                            .clip(mediumRoundedShape)
-                            .height(xxxxlSize)
-                            .fillMaxWidth(),
-                        isDisplayOnly = true,
-                        locationToShow = infoData.eventType?.location
-                    )
+                        if (addNewState.eventType?.location.isNotEmpty()) {
+                            LocationBody(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(.5f)
+                                    .clip(mediumRoundedShape)
+                                    .height(xxxxlSize),
+                                isDisplayOnly = true,
+                                locationToShow = addNewState.eventType?.location
+                            )
+                        }
+                    }
                 }
 
                 EventTypeComposable(
@@ -140,8 +153,7 @@ fun AddInfoBody(
 
             }
 
-            TitleAndSubtitle(
-                modifier = Modifier.padding(vertical = mediumSize),
+            TitleAndSubtitle(modifier = Modifier.padding(vertical = mediumSize),
                 title = stringResource(R.string.media),
                 message = stringResource(R.string.media_message),
                 titleContent = {
@@ -149,69 +161,57 @@ fun AddInfoBody(
                         onClick = onAddFilesClicked
                     ) {
                         Icon(
-                            painter = AppIcon.Add.getPainter(),
-                            contentDescription = "Plus icon"
+                            painter = AppIcon.Add.getPainter(), contentDescription = "Plus icon"
                         )
                         Text(
                             modifier = Modifier.padding(start = smallSize),
                             text = stringResource(R.string.add_files)
                         )
                     }
-                }
-            )
+                })
 
             LazyRow {
-                items(infoData.files) {
+                items(addNewState.files) {
                     if (it.contentType.contains("image")) {
-                        ImageComposable(
-                            modifier = Modifier
-                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                .padding(end = mediumSize),
-                            uri = it.uri,
-                            icon = {
-                                Icon(
-                                    painter = AppIcon.Bin.getPainter(),
-                                    contentDescription = "Delete file"
-                                )
-                            },
-                            onButtonClicked = { onDeleteFile(it) }
-                        )
+                        ImageComposable(modifier = Modifier
+                            .size(
+                                height = xxxxlSize, width = xxxxlSize * 1.5f
+                            )
+                            .padding(end = mediumSize), uri = it.uri, icon = {
+                            Icon(
+                                painter = AppIcon.Bin.getPainter(),
+                                contentDescription = "Delete file"
+                            )
+                        }, onButtonClicked = { onDeleteFile(it) })
                     } else if (it.contentType.contains("video")) {
-                        VideoComposable(
-                            modifier = Modifier
-                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                .padding(end = mediumSize),
-                            uri = it.uri,
-                            icon = {
-                                Icon(
-                                    painter = AppIcon.Bin.getPainter(),
-                                    contentDescription = "Delete file"
-                                )
-                            },
-                            onButtonClicked = { onDeleteFile(it) }
-                        )
+                        VideoComposable(modifier = Modifier
+                            .size(
+                                height = xxxxlSize, width = xxxxlSize * 1.5f
+                            )
+                            .padding(end = mediumSize), uri = it.uri, icon = {
+                            Icon(
+                                painter = AppIcon.Bin.getPainter(),
+                                contentDescription = "Delete file"
+                            )
+                        }, onButtonClicked = { onDeleteFile(it) })
                     } else if (it.contentType.contains("audio")) {
-                        AudioComposable(
-                            modifier = Modifier
-                                .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
-                                .padding(end = mediumSize),
-                            uri = it.uri,
-                            icon = {
-                                Icon(
-                                    painter = AppIcon.Bin.getPainter(),
-                                    contentDescription = "Delete file"
-                                )
-                            },
-                            onButtonClicked = { onDeleteFile(it) }
-                        )
+                        AudioComposable(modifier = Modifier
+                            .size(
+                                height = xxxxlSize, width = xxxxlSize * 1.5f
+                            )
+                            .padding(end = mediumSize), uri = it.uri, icon = {
+                            Icon(
+                                painter = AppIcon.Bin.getPainter(),
+                                contentDescription = "Delete file"
+                            )
+                        }, onButtonClicked = { onDeleteFile(it) })
                     }
                 }
             }
 
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = mediumSize),
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = mediumSize),
                 onClick = { onSubmitClicked(background) }) {
                 Text(stringResource(R.string.next))
             }

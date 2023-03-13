@@ -22,6 +22,16 @@ class SearchCriteriaState {
     var page: Int by mutableStateOf(1)
     var radius: Double by mutableStateOf(10.0)
 
+    fun toggleTypesSelection(elementType: ElementType) {
+        val types = types.toMutableList()
+        if (types.contains(elementType)) {
+            types -= elementType
+        } else {
+            types += elementType
+        }
+        this.types = types
+    }
+
     fun copy(
         _location: Location? = location,
         _searchString: String? = searchString,

@@ -31,18 +31,22 @@ import java.util.*
 @Composable
 fun ShowElements(
     modifier: Modifier = Modifier,
-    elements: List<Element>,
-    onElementClicked: (Element) -> Unit,
+    elements: List<Element> = emptyList(),
+    selectedElements: List<Element> = emptyList(),
+    showTitle: Boolean = true,
+    onElementClicked: (Element) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit,
     onFavouriteClicked: (UUID) -> Unit,
     lastComposable: @Composable () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
-        item {
-            TitleAndSubtitle(
-                modifier = Modifier.padding(mediumSize),
-                title = stringResource(id = R.string.elements)
-            )
+        if (showTitle) {
+            item {
+                TitleAndSubtitle(
+                    modifier = Modifier.padding(mediumSize),
+                    title = stringResource(id = R.string.elements)
+                )
+            }
         }
         if (elements.isEmpty()) {
             item {
@@ -52,19 +56,20 @@ fun ShowElements(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        modifier = Modifier.padding(mediumSize),
-                        text = "No elements found"
+                        modifier = Modifier.padding(mediumSize), text = "No elements found"
                     )
                 }
             }
         } else {
             items(elements) {
+                val isSelected = selectedElements.contains(it)
                 ElementComposable(
                     modifier = Modifier.padding(horizontal = mediumSize, vertical = smallSize),
                     element = it,
                     onElementClicked = onElementClicked,
                     onOptionsClicked = onOptionsClicked,
-                    onFavouriteClicked = onFavouriteClicked
+                    onFavouriteClicked = onFavouriteClicked,
+                    isSelected = isSelected
                 )
             }
         }
@@ -98,8 +103,7 @@ fun ShowContributions(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        modifier = Modifier.padding(mediumSize),
-                        text = "No contributions found"
+                        modifier = Modifier.padding(mediumSize), text = "No contributions found"
                     )
                 }
             }
@@ -144,8 +148,7 @@ fun ShowCultures(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        modifier = Modifier.padding(mediumSize),
-                        text = "No cultures found"
+                        modifier = Modifier.padding(mediumSize), text = "No cultures found"
                     )
                 }
             }
@@ -171,17 +174,18 @@ fun ShowCultures(
 fun ElementComposable(
     modifier: Modifier = Modifier,
     element: Element,
+    isSelected: Boolean = false,
     onElementClicked: (Element) -> Unit,
     onFavouriteClicked: (UUID) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
-    Card(
-        modifier = modifier,
-        shape = mediumRoundedShape,
-        onClick = { onElementClicked(element) }
-    ) {
+    Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onElementClicked(element) }) {
         val media = element.media.firstOrNull()
         val imageLoader = rememberImageLoader()
+        val backgroundColor =
+            if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface
+        val contentColor =
+            if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
 
         if (media?.isImage() == true) {
             var showLoading by remember { mutableStateOf(false) }
@@ -193,8 +197,7 @@ fun ElementComposable(
                 if (showLoading) {
                     LoadingComposable()
                 }
-                AsyncImage(
-                    modifier = Modifier.size(maxWidth, maxHeight),
+                AsyncImage(modifier = Modifier.size(maxWidth, maxHeight),
                     imageLoader = imageLoader,
                     model = media.uri.toUri(),
                     contentScale = ContentScale.FillBounds,
@@ -202,8 +205,7 @@ fun ElementComposable(
                     contentDescription = "image preview",
                     onState = {
                         showLoading = it is AsyncImagePainter.State.Loading
-                    }
-                )
+                    })
             }
         }
         if (media?.isVideo() == true) {
@@ -232,15 +234,23 @@ fun ElementComposable(
             }
         }
 
-        Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {
-            TitleAndSubtitle(
-                modifier = Modifier.padding(mediumSize),
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            tonalElevation = xsSize,
+            color = backgroundColor,
+            contentColor = contentColor
+        ) {
+            TitleAndSubtitle(modifier = Modifier.padding(mediumSize),
                 title = element.name,
                 message = element.information,
                 maxMessageLines = 2,
                 maxTitleLines = 1,
                 leadingTitleContent = {
-                    Icon(element.type.icon, "type icon")
+                    if (isSelected){
+                        Icon(AppIcon.Tick.getPainter(), "tick")
+                    } else {
+                        Icon(element.type.icon, "type icon")
+                    }
                 },
                 titleContent = {
                     var expanded by remember { mutableStateOf(false) }
@@ -263,35 +273,22 @@ fun ElementComposable(
                                 Icon(Icons.Default.MoreVert, contentDescription = "options")
                             }
                         }
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Hide(id = element.id!!))
-                                },
-                                text = { Text(stringResource(R.string.hide)) }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Report(id = element.id!!))
-                                },
-                                text = { Text(stringResource(R.string.report)) }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Block(id = element.id!!))
-                                },
-                                text = { Text(stringResource(R.string.block)) }
-                            )
+                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                onOptionsClicked(ElementOptionsState.Hide(id = element.id!!))
+                            }, text = { Text(stringResource(R.string.hide)) })
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                onOptionsClicked(ElementOptionsState.Report(id = element.id!!))
+                            }, text = { Text(stringResource(R.string.report)) })
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                onOptionsClicked(ElementOptionsState.Block(id = element.id!!))
+                            }, text = { Text(stringResource(R.string.block)) })
                         }
                     }
-                }
-            )
+                })
         }
     }
 }
@@ -305,11 +302,7 @@ fun ContributionComposable(
     onFavouriteClicked: (UUID) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
-    Card(
-        modifier = modifier,
-        shape = mediumRoundedShape,
-        onClick = { onClicked(contribution) }
-    ) {
+    Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onClicked(contribution) }) {
         val media = contribution.media.firstOrNull()
         val imageLoader = rememberImageLoader()
 
@@ -323,8 +316,7 @@ fun ContributionComposable(
                 if (showLoading) {
                     LoadingComposable()
                 }
-                AsyncImage(
-                    modifier = Modifier.size(maxWidth, maxHeight),
+                AsyncImage(modifier = Modifier.size(maxWidth, maxHeight),
                     imageLoader = imageLoader,
                     model = media.uri.toUri(),
                     contentScale = ContentScale.FillBounds,
@@ -332,8 +324,7 @@ fun ContributionComposable(
                     contentDescription = "image preview",
                     onState = {
                         showLoading = it is AsyncImagePainter.State.Loading
-                    }
-                )
+                    })
             }
         }
         if (media?.isVideo() == true) {
@@ -361,8 +352,7 @@ fun ContributionComposable(
         }
 
         Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {
-            TitleAndSubtitle(
-                modifier = Modifier.padding(mediumSize),
+            TitleAndSubtitle(modifier = Modifier.padding(mediumSize),
                 title = contribution.name,
                 message = contribution.information,
                 maxMessageLines = 2,
@@ -391,35 +381,22 @@ fun ContributionComposable(
                                 Icon(Icons.Default.MoreVert, contentDescription = "options")
                             }
                         }
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Hide(id = contribution.id!!))
-                                },
-                                text = { Text(stringResource(R.string.hide)) }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Report(id = contribution.id!!))
-                                },
-                                text = { Text(stringResource(R.string.report)) }
-                            )
-                            DropdownMenuItem(
-                                onClick = {
-                                    expanded = false
-                                    onOptionsClicked(ElementOptionsState.Block(id = contribution.id!!))
-                                },
-                                text = { Text(stringResource(R.string.block)) }
-                            )
+                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                onOptionsClicked(ElementOptionsState.Hide(id = contribution.id!!))
+                            }, text = { Text(stringResource(R.string.hide)) })
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                onOptionsClicked(ElementOptionsState.Report(id = contribution.id!!))
+                            }, text = { Text(stringResource(R.string.report)) })
+                            DropdownMenuItem(onClick = {
+                                expanded = false
+                                onOptionsClicked(ElementOptionsState.Block(id = contribution.id!!))
+                            }, text = { Text(stringResource(R.string.block)) })
                         }
                     }
-                }
-            )
+                })
         }
     }
 }
@@ -433,27 +410,20 @@ fun CultureComposable(
     onFavouriteClicked: (UUID) -> Unit = {},
     onOptionsClicked: (ElementOptionsState) -> Unit
 ) {
-    Card(
-        modifier = modifier,
-        shape = mediumRoundedShape,
-        onClick = { onClicked(culture) }
-    ) {
+    Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onClicked(culture) }) {
         Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {
-            TitleAndSubtitle(
-                modifier = Modifier.padding(mediumSize),
+            TitleAndSubtitle(modifier = Modifier.padding(mediumSize),
                 title = culture.name,
                 maxTitleLines = 1,
                 titleContent = {
                     var expanded by remember { mutableStateOf(false) }
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                        modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
                     ) {
                         IconButton(onClick = { onFavouriteClicked(culture.id!!) }) {
                             if (culture.favourite) {
                                 Icon(
-                                    AppIcon.FavouriteFilled.getPainter(),
-                                    contentDescription = "fav"
+                                    AppIcon.FavouriteFilled.getPainter(), contentDescription = "fav"
                                 )
                             } else {
                                 Icon(
@@ -466,36 +436,24 @@ fun CultureComposable(
                         IconButton(onClick = { expanded = true }) {
                             Icon(Icons.Default.MoreVert, contentDescription = "options")
 
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                DropdownMenuItem(
-                                    onClick = {
-                                        expanded = false
-                                        onOptionsClicked(ElementOptionsState.Hide(id = culture.id!!))
-                                    },
-                                    text = { Text(stringResource(R.string.hide)) }
-                                )
-                                DropdownMenuItem(
-                                    onClick = {
-                                        expanded = false
-                                        onOptionsClicked(ElementOptionsState.Report(id = culture.id!!))
-                                    },
-                                    text = { Text(stringResource(R.string.report)) }
-                                )
-                                DropdownMenuItem(
-                                    onClick = {
-                                        expanded = false
-                                        onOptionsClicked(ElementOptionsState.Block(id = culture.id!!))
-                                    },
-                                    text = { Text(stringResource(R.string.block)) }
-                                )
+                            DropdownMenu(expanded = expanded,
+                                onDismissRequest = { expanded = false }) {
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(ElementOptionsState.Hide(id = culture.id!!))
+                                }, text = { Text(stringResource(R.string.hide)) })
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(ElementOptionsState.Report(id = culture.id!!))
+                                }, text = { Text(stringResource(R.string.report)) })
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(ElementOptionsState.Block(id = culture.id!!))
+                                }, text = { Text(stringResource(R.string.block)) })
                             }
                         }
                     }
-                }
-            )
+                })
         }
     }
 }

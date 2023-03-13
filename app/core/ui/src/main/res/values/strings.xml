@@ -66,6 +66,7 @@
     <string name="location_permission_rationale">Location access is needed for showing you nearby cultural elements and when adding a new element.</string>
     <string name="request_permission">Request permission</string>
     <string name="close">Close</string>
+    <string name="clear">Clear</string>
 
     <string name="add_culture_message">Please add a culture name, only alphabetic characters and spaces are allowed.</string>
     <string name="add_culture_duplicate">This culture already exists near you.</string>
@@ -93,6 +94,8 @@
     <string name="background">Background</string>
     <string name="background_message">You can add any piece of information you think is relevant.</string>
     <string name="link_elements">Link other elements</string>
+    <string name="linked_elements">Linked elements: %s</string>
+    <string name="link_more_elements">Link more elements</string>
     <string name="select_date">Select date</string>
     <string name="media">Media</string>
     <string name="event_info">Event information</string>

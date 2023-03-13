@@ -14,7 +14,7 @@ class AddNewState {
     var location: Location? by mutableStateOf(null)
     var information: String by mutableStateOf("")
     var eventType: EventType? by mutableStateOf(null)
-    var linkElements: List<UUID> by mutableStateOf(emptyList())
+    var linkElements: List<Element> by mutableStateOf(emptyList())
     var files by mutableStateOf<List<MediaFile>>(emptyList())
 
     fun toElement() = Element(
@@ -24,7 +24,7 @@ class AddNewState {
         location = location!!,
         information = information,
         eventType = eventType,
-        linkElements = linkElements
+        linkElements = linkElements.mapNotNull { it.id }
     )
 
     fun toContribution() = Contribution(
@@ -34,7 +34,7 @@ class AddNewState {
         location = location!!,
         information = information,
         eventType = eventType,
-        linkElements = linkElements,
+        linkElements = linkElements.mapNotNull { it.id },
     )
 
     fun clear() {

@@ -42,4 +42,14 @@ sealed interface PrefKey {
     object RefreshToken : PrefKey {
         override val key: String = "refresh_token"
     }
+
+    object Element : PrefKey {
+        override val key = "element"
+    }
+    object Contribution : PrefKey {
+        override val key = "contribution"
+    }
+    object Files : PrefKey {
+        override val key = "files"
+    }
 }

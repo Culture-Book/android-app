@@ -220,6 +220,11 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = Icons.Filled.Star.getPainter()
     }
+    
+    object Calendar : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_calendar.getPainter()
+    }
 }
 
 @Composable

@@ -7,12 +7,11 @@ import androidx.navigation.navigation
 import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.add_new.data.TypeData
 import uk.co.culturebook.add_new.info.composables.AddInfoRoute
+import uk.co.culturebook.add_new.link_elements.LinkElementsRoute
 import uk.co.culturebook.add_new.location.composables.LocationRoute
 import uk.co.culturebook.add_new.submit.SubmitRoute
 import uk.co.culturebook.add_new.title_type.composables.TitleAndTypeRoute
 import uk.co.culturebook.nav.Route
-import uk.co.culturebook.nav.Route.AddNew.AddInfo.LinkElements.linkedElementsParam
-import uk.co.culturebook.nav.fromJsonString
 
 fun NavGraphBuilder.addNewGraph(navController: NavController) {
     val addNewState = AddNewState()
@@ -48,18 +47,15 @@ fun NavGraphBuilder.addNewGraph(navController: NavController) {
             composable(Route.AddNew.AddInfo.Base.route) {
                 AddInfoRoute(
                     navController,
-                    type = addNewState.type!!,
-                    onDone = { infoData ->
-                        addNewState.information = infoData.background
-                        addNewState.linkElements = infoData.linkedElements
-                        addNewState.files = infoData.files
-                        addNewState.eventType = infoData.eventType
-                    }
+                    addNewState = addNewState
                 )
             }
-            composable(Route.AddNew.AddInfo.LinkElements.route + "{$linkedElementsParam}") {
-                it.arguments?.getString(linkedElementsParam)?.fromJsonString<List<String>>()
-                // TODO - add linking when nearby is done
+            composable(Route.AddNew.AddInfo.LinkElements.route) {
+                val elements = addNewState.linkElements
+                LinkElementsRoute(
+                    navController = navController,
+                    elements = elements,
+                    onSubmit = { addNewState.linkElements = it })
             }
         }
 

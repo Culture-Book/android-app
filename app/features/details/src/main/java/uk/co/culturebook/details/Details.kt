@@ -35,12 +35,10 @@ import uk.co.culturebook.nav.Route.Details.elementParam
 import uk.co.culturebook.nav.fromJsonString
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
-import uk.co.culturebook.ui.theme.molecules.LargeDynamicRoundedTextField
-import uk.co.culturebook.ui.theme.molecules.LoadingComposable
-import uk.co.culturebook.ui.theme.molecules.OutlinedSurface
-import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
+import uk.co.culturebook.ui.theme.molecules.*
 import uk.co.culturebook.ui.utils.ShowSnackbar
 import uk.co.culturebook.ui.utils.prettyPrint
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,7 +129,7 @@ fun ElementDetailScreen(
         val media = element.media.firstOrNull()
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(bottom = mediumSize),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -191,36 +189,6 @@ fun ElementDetailScreen(
             readOnly = true
         )
 
-        if (element.type == ElementType.Event) {
-            TitleAndSubtitle(
-                modifier = Modifier.padding(vertical = smallSize),
-                title = stringResource(R.string.event_info)
-            )
-
-            if (element.eventType?.startDateTime != null) {
-                OutlinedSurface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = smallSize),
-                    title = stringResource(
-                        id = R.string.event_date,
-                        element.eventType?.startDateTime?.prettyPrint() ?: ""
-                    )
-                )
-            }
-
-            if (element.eventType?.location != null) {
-                LocationBody(
-                    modifier = Modifier
-                        .padding(bottom = mediumSize)
-                        .clip(mediumRoundedShape)
-                        .height(xxxxlSize)
-                        .fillMaxWidth(),
-                    isDisplayOnly = true,
-                    locationToShow = element.eventType?.location
-                )
-            }
-        }
 
         Row(modifier = Modifier.fillMaxWidth()) {
             FilledTonalButton(
@@ -235,6 +203,54 @@ fun ElementDetailScreen(
                     .fillMaxWidth(),
                 onClick = { /*TODO*/ }) {
                 Text(text = stringResource(id = R.string.directions))
+            }
+        }
+
+        if (element.linkElements.isNotEmpty()) {
+            TitleAndSubtitle(
+                modifier = Modifier.padding(bottom = smallSize),
+                title = stringResource(R.string.linked_elements, element.linkElements.size),
+                titleType = TitleType.Small
+            )
+        }
+
+        if (element.type == ElementType.Event) {
+            TitleAndSubtitle(
+                modifier = Modifier.padding(vertical = smallSize),
+                title = stringResource(R.string.event_info)
+            )
+
+            if (element.eventType != null) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    if (element.eventType?.startDateTime != LocalDateTime.MIN) {
+                        OutlinedSurface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(.5f)
+                                .padding(end = smallSize)
+                                .height(xxxxlSize),
+                            icon = {
+                                Icon(
+                                    painter = AppIcon.Calendar.getPainter(),
+                                    contentDescription = "calendar"
+                                )
+                            },
+                            title = element.eventType?.startDateTime?.prettyPrint() ?: ""
+                        )
+                    }
+
+                    if (element.eventType?.location.isNotEmpty()) {
+                        LocationBody(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(.5f)
+                                .clip(mediumRoundedShape)
+                                .height(xxxxlSize),
+                            isDisplayOnly = true,
+                            locationToShow = element.eventType?.location
+                        )
+                    }
+                }
             }
         }
 

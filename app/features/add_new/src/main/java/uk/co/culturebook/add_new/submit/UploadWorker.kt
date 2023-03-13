@@ -2,28 +2,23 @@ package uk.co.culturebook.add_new.submit
 
 import android.content.Context
 import androidx.work.*
-import uk.co.culturebook.add_new.data.AddNewState
+import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.models.cultural.Contribution
 import uk.co.culturebook.data.models.cultural.Element
 import uk.co.culturebook.data.models.cultural.MediaFile
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
+import uk.co.culturebook.data.remove
 import uk.co.culturebook.data.repositories.cultural.AddNewRepository
+import uk.co.culturebook.data.sharedPreferences
 import uk.co.culturebook.nav.fromJsonString
-import uk.co.culturebook.nav.toJsonString
 import uk.co.culturebook.ui.R
 
 const val UploadWorkerTag = "UploadWorkerTag"
 
 
-fun uploadElementWorkRequest(addNewState: AddNewState): OneTimeWorkRequest =
+fun uploadElementWorkRequest(): OneTimeWorkRequest =
     OneTimeWorkRequestBuilder<UploadWorker>()
-        .setInputData(
-            workDataOf(
-                "element" to addNewState.toElement().toJsonString(),
-                "files" to addNewState.files.toJsonString()
-            )
-        )
         .setConstraints(
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -33,14 +28,8 @@ fun uploadElementWorkRequest(addNewState: AddNewState): OneTimeWorkRequest =
         .addTag(UploadWorkerTag)
         .build()
 
-fun uploadContributionWorkRequest(addNewState: AddNewState): OneTimeWorkRequest =
+fun uploadContributionWorkRequest(): OneTimeWorkRequest =
     OneTimeWorkRequestBuilder<UploadWorker>()
-        .setInputData(
-            workDataOf(
-                "contribution" to addNewState.toContribution().toJsonString(),
-                "files" to addNewState.files.toJsonString()
-            )
-        )
         .setConstraints(
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -58,9 +47,13 @@ class UploadWorker(
     override suspend fun doWork(): Result {
         EventBus.registerRunningWorker(id)
 
-        val element = inputData.getString("element")?.fromJsonString<Element>()
-        val contribution = inputData.getString("contribution")?.fromJsonString<Contribution>()
-        val files = inputData.getString("files")?.fromJsonString<List<MediaFile>>()
+        val element = applicationContext.sharedPreferences.getString(PrefKey.Element.key, null)
+            ?.fromJsonString<Element>()
+        val contribution =
+            applicationContext.sharedPreferences.getString(PrefKey.Contribution.key, null)
+                ?.fromJsonString<Contribution>()
+        val files = applicationContext.sharedPreferences.getString(PrefKey.Files.key, null)
+            ?.fromJsonString<List<MediaFile>>()
             ?: return Result.failure(workDataOf("error" to R.string.generic_sorry))
 
         if (element == null && contribution == null) return Result.failure(
@@ -80,6 +73,10 @@ class UploadWorker(
             is ApiResponse.Success -> Result.success()
             else -> Result.failure()
         }
+
+        applicationContext.sharedPreferences.remove(PrefKey.Element)
+        applicationContext.sharedPreferences.remove(PrefKey.Contribution)
+        applicationContext.sharedPreferences.remove(PrefKey.Files)
 
         return result
     }

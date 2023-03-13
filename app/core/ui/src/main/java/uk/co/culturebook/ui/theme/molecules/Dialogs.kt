@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
@@ -200,6 +201,7 @@ fun ModalBottomSheet(
 ) {
     val swipeableState = rememberSwipeableState(0.5f)
     var contentSize by remember { mutableStateOf(IntSize(0, 1)) }
+    val localConfig = LocalConfiguration.current
 
     val expandedTarget = with(LocalDensity.current) { (-contentSize.height.dp).toPx() }
     val anchors = mapOf(
@@ -244,7 +246,10 @@ fun ModalBottomSheet(
                     header()
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxHeight(0.9f)
+                            .heightIn(
+                                min = localConfig.screenHeightDp.dp * 0.3f,
+                                max = localConfig.screenHeightDp.dp * 0.9f
+                            )
                     ) {
                         item {
                             content()

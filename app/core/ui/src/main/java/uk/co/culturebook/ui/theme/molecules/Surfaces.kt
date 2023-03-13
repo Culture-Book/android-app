@@ -2,10 +2,7 @@ package uk.co.culturebook.ui.theme.molecules
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,10 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import uk.co.culturebook.ui.theme.mediumRoundedShape
-import uk.co.culturebook.ui.theme.mediumSize
-import uk.co.culturebook.ui.theme.smallSize
-import uk.co.culturebook.ui.theme.xxsSize
+import uk.co.culturebook.ui.theme.*
 
 
 @Composable
@@ -59,6 +53,7 @@ fun SecondarySurfaceWithIcon(
 @Preview
 fun OutlinedSurface(
     modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
     title: String = "Title",
 ) {
     Surface(
@@ -67,13 +62,17 @@ fun OutlinedSurface(
         color = Color.Transparent,
         border = BorderStroke(xxsSize, MaterialTheme.colorScheme.outline)
     ) {
-        Row(
+        Column(
             modifier = Modifier.padding(mediumSize),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            icon?.let {
+                it()
+                Spacer(modifier = Modifier.padding(bottom = mediumSize))
+            }
             Text(
-                title,
+                text = title,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

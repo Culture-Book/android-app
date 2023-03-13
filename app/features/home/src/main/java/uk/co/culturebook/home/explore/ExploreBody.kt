@@ -21,18 +21,8 @@ fun ExploreBody(
     modifier: Modifier,
     exploreState: ExploreState,
     searchCriteria: SearchCriteriaState,
-    postEvent: (ExploreEvent) -> Unit
+    postEvent: (ExploreEvent) -> Unit,
 ) {
-    var maxPage by remember { mutableStateOf(searchCriteria.page) }
-
-    LaunchedEffect(exploreState) {
-        maxPage = when (exploreState) {
-            is ExploreState.Success.ElementsReceived ->
-                if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
-            else -> 1
-        }
-    }
-
     Column(modifier) {
         ShowBanners()
 
@@ -55,7 +45,7 @@ fun ExploreBody(
                         onNextPage = { searchCriteria.page = it },
                         onPreviousPage = { searchCriteria.page = it },
                         currentPage = searchCriteria.page,
-                        maxPage = maxPage
+                        items = exploreState.elements
                     )
                 }
             }
@@ -91,7 +81,7 @@ fun ExploreBody(
                         onNextPage = { searchCriteria.page = it },
                         onPreviousPage = { searchCriteria.page = it },
                         currentPage = searchCriteria.page,
-                        maxPage = maxPage
+                        items = exploreState.contributions
                     )
                 }
             }
@@ -113,7 +103,7 @@ fun ExploreBody(
                         onNextPage = { searchCriteria.page = it },
                         onPreviousPage = { searchCriteria.page = it },
                         currentPage = searchCriteria.page,
-                        maxPage = maxPage
+                        items = exploreState.cultures
                     )
                 }
             }
@@ -161,44 +151,5 @@ fun ShowBanners() {
                 )
             },
             onClick = { askForLocationPermission = true })
-    }
-}
-
-@Composable
-fun PageInformation(
-    modifier: Modifier,
-    currentPage: Int = 1,
-    onNextPage: (Int) -> Unit,
-    onPreviousPage: (Int) -> Unit,
-    minPage: Int = 1,
-    maxPage: Int
-) {
-    if (minPage == maxPage) return
-
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (minPage < currentPage) {
-            FilledTonalIconButton(
-                onClick = {
-                    val prevPage = (currentPage - 1).coerceAtLeast(minPage)
-                    onPreviousPage(prevPage)
-                }) {
-                Icon(
-                    painter = AppIcon.ChevronLeft.getPainter(), contentDescription = "previous page"
-                )
-            }
-        }
-
-        if (maxPage > currentPage) {
-            FilledTonalIconButton(onClick = {
-                val nextPage = (currentPage + 1).coerceAtMost(maxPage)
-                onNextPage(nextPage)
-            }) {
-                Icon(painter = AppIcon.ChevronRight.getPainter(), contentDescription = "next page")
-            }
-        }
     }
 }

@@ -37,14 +37,6 @@ fun FilterSheet(
     val localConfig = LocalConfiguration.current
     val localState by remember { derivedStateOf { searchCriteriaState.copy() } }
 
-    fun toggleSelection(elementType: ElementType) {
-        if (localState.types.contains(elementType)) {
-            localState.types -= elementType
-        } else {
-            localState.types += elementType
-        }
-    }
-
     ModalBottomSheet(
         onDismiss = onDismiss,
         onConfirm = { onConfirm(localState) }) {
@@ -226,7 +218,7 @@ fun FilterSheet(
 
             ElementTypesComposable(
                 selectedTypes = localState.types,
-                onTypeClicked = { toggleSelection(it) }
+                onTypeClicked = { localState.toggleTypesSelection(it) }
             )
 
             TitleAndSubtitle(
