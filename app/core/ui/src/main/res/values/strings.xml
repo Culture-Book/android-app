@@ -12,6 +12,7 @@
     <string name="email_invalid">Invalid email, make sure it is of the form email@domain.com</string>
     <string name="display_name">Display name</string>
     <string name="description">Description</string>
+    <string name="title">Title</string>
 
     <string name="tos">Terms and Conditions</string>
     <string name="read_tos">Read the terms and conditions</string>

@@ -130,6 +130,25 @@ fun ElementDetailScreen(
     ) {
         val media = element.media.firstOrNull()
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${stringResource(R.string.title)}: ",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Icon(
+                modifier = Modifier.padding(horizontal = smallSize),
+                painter = element.type.icon,
+                contentDescription = "type icon"
+            )
+            Text(
+                text = element.name,
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+
         if (media?.isImage() == true) {
             ImageComposable(
                 modifier = Modifier

@@ -11,6 +11,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -33,7 +35,7 @@ fun FilterSheet(
     onConfirm: (SearchCriteriaState) -> Unit
 ) {
     val localConfig = LocalConfiguration.current
-    val localState = remember { searchCriteriaState.copy() }
+    val localState by remember { derivedStateOf { searchCriteriaState.copy() } }
 
     fun toggleSelection(elementType: ElementType) {
         if (localState.types.contains(elementType)) {

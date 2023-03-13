@@ -14,6 +14,7 @@ import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.Banner
 import uk.co.culturebook.ui.theme.molecules.BannerType
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
 fun ExploreBody(
@@ -27,7 +28,7 @@ fun ExploreBody(
     LaunchedEffect(exploreState) {
         maxPage = when (exploreState) {
             is ExploreState.Success.ElementsReceived ->
-                if (exploreState.elements.size <= 3) searchCriteria.page else maxPage + 1
+                if (exploreState.elements.size < 3) searchCriteria.page else maxPage + 1
             else -> 1
         }
     }
@@ -116,7 +117,7 @@ fun ExploreBody(
                     )
                 }
             }
-            else -> {}
+            else -> LoadingComposable()
         }
     }
 }

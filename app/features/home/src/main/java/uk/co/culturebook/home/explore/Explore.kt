@@ -139,6 +139,7 @@ fun Explore(
     ) { padding ->
         when (exploreState) {
             ExploreState.Loading -> LoadingComposable(padding)
+
             else -> ExploreBody(
                 Modifier.padding(padding),
                 exploreState,

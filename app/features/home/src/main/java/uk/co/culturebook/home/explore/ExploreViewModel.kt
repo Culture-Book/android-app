@@ -30,6 +30,7 @@ class ExploreViewModel(
 
     fun postEvent(event: ExploreEvent) {
         viewModelScope.launch {
+            _exploreState.emit(ExploreState.Loading)
             when (event) {
                 ExploreEvent.Idle -> _exploreState.emit(ExploreState.Idle)
                 ExploreEvent.GetElements -> getElements(searchCriteriaState)

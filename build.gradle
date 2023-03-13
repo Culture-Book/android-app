@@ -3,8 +3,8 @@ buildscript {
         buildNumber = System.getenv("GITHUB_RUN_NUMBER") ?: "0"
         majorRelease = "1"
         minorRelease = "0"
-        compose_version = "1.4.0-beta01"
-        compose_compiler_version = "1.4.2" // https://developer.android.com/jetpack/androidx/releases/compose-compiler
+        compose_version = "1.4.0-rc01"
+        compose_compiler_version = "1.4.3" // https://developer.android.com/jetpack/androidx/releases/compose-compiler
 
         // App Constants
         app_id = "uk.co.culturebook"
