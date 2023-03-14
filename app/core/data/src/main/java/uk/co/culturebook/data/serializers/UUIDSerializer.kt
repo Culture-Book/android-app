@@ -1,4 +1,4 @@
-package uk.co.culturebook.data_access.serializers
+package uk.co.culturebook.data.serializers
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind

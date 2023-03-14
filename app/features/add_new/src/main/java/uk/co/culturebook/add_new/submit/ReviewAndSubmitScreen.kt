@@ -126,10 +126,12 @@ fun SubmitScreenComposable(
                 }
             }
 
-            TitleAndSubtitle(
-                modifier = Modifier.padding(bottom = mediumSize),
-                title = stringResource(R.string.media)
-            )
+            if (addNewState.files.isNotEmpty()) {
+                TitleAndSubtitle(
+                    modifier = Modifier.padding(bottom = mediumSize),
+                    title = stringResource(R.string.media)
+                )
+            }
 
             LazyRow {
                 items(addNewState.files) {

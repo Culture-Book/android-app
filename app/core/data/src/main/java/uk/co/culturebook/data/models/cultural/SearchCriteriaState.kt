@@ -73,12 +73,3 @@ class SearchCriteriaState {
         radius = radius
     )
 }
-
-fun SearchCriteriaState.isValid() = page > 0 && radius > 0.0
-
-fun SearchCriteriaState.isValidElementSearch() = isValid() && searchType == SearchType.Element
-fun SearchCriteriaState.isValidContributionSearch() =
-    isValid() && searchType == SearchType.Contribution
-
-fun SearchCriteriaState.isValidCultureSearch() =
-    page > 0 && radius > 0.0 && searchType == SearchType.Culture

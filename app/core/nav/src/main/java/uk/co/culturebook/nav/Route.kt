@@ -35,8 +35,17 @@ sealed interface Route {
     }
 
     object Details : Route {
-        const val elementParam = "object_param"
-        override val route = "details?$elementParam"
+        const val id = "id"
+        const val isContribution = "is_contribution"
+        override val route = "details"
+
+        val args = listOf(
+            navArgument(id) { defaultValue = "" },
+            navArgument(isContribution) {
+                defaultValue = false
+                type = NavType.BoolType
+            }
+        )
     }
 
     object AddNew : Route {

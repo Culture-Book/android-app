@@ -49,14 +49,21 @@ fun ExploreRoute(navController: NavController) {
         val location = (locationStatus as? LocationStatus.Success)?.location
         if (location != null) {
             searchCriteriaState.location = location
-            viewModel.postEvent(ExploreEvent.GetElements)
+            when (searchCriteriaState.searchType) {
+                SearchType.Culture -> viewModel.postEvent(ExploreEvent.GetCultures)
+                SearchType.Element -> viewModel.postEvent(ExploreEvent.GetElements)
+                SearchType.Contribution -> viewModel.postEvent(ExploreEvent.GetContributions)
+            }
         }
     }
 
     LaunchedEffect(nearbyState) {
         when (nearbyState) {
             is ExploreState.Navigate -> {
-                navController.navigate((nearbyState as ExploreState.Navigate).route)
+                val id = (nearbyState as ExploreState.Navigate).id
+                val isContribution = (nearbyState as ExploreState.Navigate).isContribution
+                navController.navigate(Route.Details.route + "${Route.Details.id}=$id" + "&" +
+                        "${Route.Details.isContribution}=$isContribution")
                 viewModel.postEvent(ExploreEvent.Idle)
             }
             is ExploreState.Idle -> {

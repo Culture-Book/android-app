@@ -65,7 +65,8 @@ fun SearchField(
             disabledIndicatorColor = Color.Transparent,
             errorIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+            textColor = MaterialTheme.colorScheme.onSurface
         ),
         leadingIcon = {
             if (value.isEmpty()) {
@@ -83,7 +84,7 @@ fun SearchField(
             }
         },
         placeholder = {
-            Text(stringResource(R.string.search_filter))
+            Text(stringResource(R.string.search_filter), color = MaterialTheme.colorScheme.onSurface)
         },
         singleLine = true,
         value = value,

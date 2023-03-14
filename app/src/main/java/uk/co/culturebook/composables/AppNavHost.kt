@@ -54,7 +54,12 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
             val token = backStackEntry.arguments?.getString(Route.Forgot.tokenArgument) ?: ""
             ForgotRoute(navController, userId, token)
         }
-        composable(Route.Details.route + "{${Route.Details.elementParam}}") {
+        composable(
+            Route.Details.route + Route.Details.id + "=" +
+                    "{${Route.Details.id}}" + "&" + Route.Details.isContribution + "=" +
+                    "{${Route.Details.isContribution}}",
+            arguments = Route.Details.args
+        ) {
             DetailsScreenRoute(navController)
         }
     }

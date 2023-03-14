@@ -13,8 +13,6 @@ import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.NearbyRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
-import uk.co.culturebook.nav.Route
-import uk.co.culturebook.nav.toJsonString
 import uk.co.culturebook.ui.R
 import java.util.*
 
@@ -46,12 +44,14 @@ class ExploreViewModel(
                 is ExploreEvent.FavouriteContribution -> favouriteContribution(event.uuid)
                 is ExploreEvent.FavouriteCulture -> favouriteCulture(event.uuid)
                 is ExploreEvent.FavouriteElement -> favouriteElement(event.uuid)
-                is ExploreEvent.GoToContributionDetails -> _exploreState.emit(
-                    ExploreState.Navigate("${Route.Details.route}${event.contribution.toJsonString()}")
-                )
-                is ExploreEvent.GoToElementDetails -> _exploreState.emit(
-                    ExploreState.Navigate("${Route.Details.route}${event.element.toJsonString()}")
-                )
+                is ExploreEvent.GoToContributionDetails ->
+                    _exploreState.emit(
+                        ExploreState.Navigate(event.contribution.id.toString(), true)
+                    )
+                is ExploreEvent.GoToElementDetails ->
+                    _exploreState.emit(
+                        ExploreState.Navigate(event.element.id.toString(), false)
+                    )
             }
         }
     }
@@ -196,9 +196,5 @@ class ExploreViewModel(
         get() = when (message) {
             "ToSUpdate", "PrivacyUpdate" -> R.string.tos_update
             else -> R.string.generic_sorry
-        }
-    private val <T : Any> ApiResponse.Exception<T>.errorMessage: Int
-        get() {
-            throwable.message.logD().also { return R.string.generic_sorry }
         }
 }

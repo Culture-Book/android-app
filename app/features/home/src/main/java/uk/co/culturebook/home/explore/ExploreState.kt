@@ -12,7 +12,7 @@ sealed interface ExploreState {
         data class CulturesReceived(val cultures: List<Culture>) : Success
     }
 
-    data class Navigate(val route: String) : ExploreState
+    data class Navigate(val id: String, val isContribution: Boolean) : ExploreState
     object GetElements : ExploreState
     object GetContributions : ExploreState
     object GetCultures : ExploreState

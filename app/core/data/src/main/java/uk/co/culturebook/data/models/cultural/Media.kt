@@ -2,7 +2,7 @@ package uk.co.culturebook.data.models.cultural
 
 import kotlinx.serialization.Serializable
 import uk.co.culturebook.data.serializers.URISerializer
-import uk.co.culturebook.data_access.serializers.UUIDSerializer
+import uk.co.culturebook.data.serializers.UUIDSerializer
 import java.net.URI
 import java.util.*
 
