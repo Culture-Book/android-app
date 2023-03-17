@@ -17,5 +17,8 @@ data class Element(
     val eventType: EventType? = null,
     val linkElements: List<@Serializable(with = UUIDSerializer::class) UUID> = emptyList(),
     val media: List<Media> = emptyList(),
-    val favourite: Boolean = false
+    val comments: List<Comment> = emptyList(),
+    val reactions: List<Reaction> = emptyList(),
+    val favourite: Boolean = false,
+    val isVerified: Boolean = false
 )

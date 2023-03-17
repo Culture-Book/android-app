@@ -21,3 +21,25 @@ val mediumRoundedShape = RoundedCornerShape(mediumSize)
 val mediumHeaderRoundedShape = RoundedCornerShape(topStart = mediumSize, topEnd = mediumSize)
 val mediumFooterRoundedShape = RoundedCornerShape(bottomStart = mediumSize, bottomEnd = mediumSize)
 val largeRoundedShape = RoundedCornerShape(largeSize)
+
+// Buttons
+val buttonHeader = RoundedCornerShape(
+    topStart = mediumSize,
+    bottomStart = mediumSize,
+    topEnd = xsSize,
+    bottomEnd = xsSize
+)
+
+val buttonInside = RoundedCornerShape(
+    topStart = xsSize,
+    bottomStart = xsSize,
+    topEnd = xsSize,
+    bottomEnd = xsSize
+)
+
+val buttonFooter = RoundedCornerShape(
+    topStart = xsSize,
+    bottomStart = xsSize,
+    topEnd = mediumSize,
+    bottomEnd = mediumSize
+)

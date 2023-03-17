@@ -14,10 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.common.*
-import uk.co.culturebook.data.utils.toUUID
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.cultural.NearbyRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
+import uk.co.culturebook.data.utils.toUUID
 import uk.co.culturebook.nav.Route.Details.id
 import uk.co.culturebook.nav.Route.Details.isContribution
 import uk.co.culturebook.ui.R
@@ -106,14 +106,35 @@ fun DetailsScreenRoute(navController: NavController) {
     ) { padding ->
         when (state) {
             is DetailState.Loading -> LoadingComposable(padding)
-            is DetailState.ElementReceived -> ElementDetailScreen(
-                Modifier.padding(padding),
-                (state as DetailState.ElementReceived).element
-            )
-            is DetailState.ContributionReceived -> ContributionDetailScreen(
-                modifier = Modifier.padding(padding),
-                contribution = (state as DetailState.ContributionReceived).contribution
-            )
+            is DetailState.ElementReceived -> {
+                val element = (state as DetailState.ElementReceived).element
+                ElementDetailScreen(
+                    modifier = Modifier.padding(padding),
+                    element = element,
+                    onContributionsClicked = { viewModel.postEvent(DetailEvent.GetContributions(it)) },
+                    onCommentSent = {
+                        viewModel.postEvent(DetailEvent.AddComment(element.id!!, it))
+                    },
+                    onCommentBlocked = {
+                        viewModel.postEvent(DetailEvent.BlockComment(it))
+                    },
+                    onAddReaction = { viewModel.postEvent(DetailEvent.AddReaction(it)) }
+                )
+            }
+            is DetailState.ContributionReceived -> {
+                val contribution = (state as DetailState.ContributionReceived).contribution
+                ContributionDetailScreen(
+                    modifier = Modifier.padding(padding),
+                    contribution = contribution,
+                    onCommentSent = {
+                        viewModel.postEvent(DetailEvent.AddComment(contribution.id!!, it))
+                    },
+                    onCommentBlocked = {
+                        viewModel.postEvent(DetailEvent.BlockComment(it))
+                    },
+                    onAddReaction = { viewModel.postEvent(DetailEvent.AddReaction(it)) }
+                )
+            }
             else -> {}
         }
     }

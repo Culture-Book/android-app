@@ -1,10 +1,10 @@
 package uk.co.culturebook.home.explore
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import uk.co.common.*
@@ -33,9 +33,9 @@ fun ExploreBody(
                     onElementClicked = { postEvent(ExploreEvent.GoToElementDetails(it)) },
                     onOptionsClicked = {
                         when (it) {
-                            is ElementOptionsState.Block -> postEvent(ExploreEvent.BlockElement(it.id))
-                            is ElementOptionsState.Hide -> postEvent(ExploreEvent.BlockElement(it.id))
-                            is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockElement(it.id))
+                            is BlockOptionsState.Block -> postEvent(ExploreEvent.BlockElement(it.id))
+                            is BlockOptionsState.Hide -> postEvent(ExploreEvent.BlockElement(it.id))
+                            is BlockOptionsState.Report -> postEvent(ExploreEvent.BlockElement(it.id))
                         }
                     },
                     onFavouriteClicked = { postEvent(ExploreEvent.FavouriteElement(it)) }
@@ -57,17 +57,17 @@ fun ExploreBody(
                     },
                     onOptionsClicked = {
                         when (it) {
-                            is ElementOptionsState.Block -> postEvent(
+                            is BlockOptionsState.Block -> postEvent(
                                 ExploreEvent.BlockContribution(
                                     it.id
                                 )
                             )
-                            is ElementOptionsState.Hide -> postEvent(
+                            is BlockOptionsState.Hide -> postEvent(
                                 ExploreEvent.BlockContribution(
                                     it.id
                                 )
                             )
-                            is ElementOptionsState.Report -> postEvent(
+                            is BlockOptionsState.Report -> postEvent(
                                 ExploreEvent.BlockContribution(
                                     it.id
                                 )
@@ -91,9 +91,9 @@ fun ExploreBody(
                     onClicked = {},
                     onOptionsClicked = {
                         when (it) {
-                            is ElementOptionsState.Block -> postEvent(ExploreEvent.BlockCulture(it.id))
-                            is ElementOptionsState.Hide -> postEvent(ExploreEvent.BlockCulture(it.id))
-                            is ElementOptionsState.Report -> postEvent(ExploreEvent.BlockCulture(it.id))
+                            is BlockOptionsState.Block -> postEvent(ExploreEvent.BlockCulture(it.id))
+                            is BlockOptionsState.Hide -> postEvent(ExploreEvent.BlockCulture(it.id))
+                            is BlockOptionsState.Report -> postEvent(ExploreEvent.BlockCulture(it.id))
                         }
                     },
                     onFavouriteClicked = { postEvent(ExploreEvent.FavouriteCulture(it)) }

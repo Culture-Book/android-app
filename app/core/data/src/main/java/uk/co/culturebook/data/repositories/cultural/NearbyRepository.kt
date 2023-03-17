@@ -2,8 +2,6 @@ package uk.co.culturebook.data.repositories.cultural
 
 import android.content.Context
 import uk.co.culturebook.data.Singletons
-import uk.co.culturebook.data.models.cultural.BlockedElement
-import uk.co.culturebook.data.models.cultural.FavouriteElement
 import uk.co.culturebook.data.models.cultural.SearchCriteria
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import java.util.*

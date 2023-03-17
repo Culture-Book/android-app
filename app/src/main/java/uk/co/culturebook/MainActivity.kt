@@ -2,13 +2,15 @@ package uk.co.culturebook
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.emoji2.bundled.BundledEmojiCompatConfig
+import androidx.emoji2.text.EmojiCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
@@ -26,7 +28,7 @@ import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.states.AppState
 import uk.co.culturebook.states.rememberAppState
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
 
     private fun initializeFirebase() {
@@ -34,11 +36,16 @@ class MainActivity : ComponentActivity() {
         getRemoteConfig(this)
     }
 
+    private fun initializeEmojis() {
+        EmojiCompat.init(BundledEmojiCompatConfig(this))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
         initializeFirebase()
+        initializeEmojis()
 
         setContent {
             val appState = rememberAppState()

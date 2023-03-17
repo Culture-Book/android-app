@@ -2,7 +2,6 @@ package uk.co.culturebook.add_new.link_elements
 
 import android.app.Application
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
@@ -12,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import uk.co.common.ElementOptionsState
+import uk.co.common.BlockOptionsState
 import uk.co.common.ElementTypesComposableHorizontal
 import uk.co.common.PageInformation
 import uk.co.common.ShowElements
@@ -65,9 +64,9 @@ fun LinkElementsRoute(
         onElementClicked = { viewModel.postEvent(LinkEvent.LinkElement(it)) },
         onOptionsClicked = {
             when (it) {
-                is ElementOptionsState.Block -> viewModel.postEvent(LinkEvent.BlockElement(it.id))
-                is ElementOptionsState.Hide -> viewModel.postEvent(LinkEvent.BlockElement(it.id))
-                is ElementOptionsState.Report -> viewModel.postEvent(LinkEvent.BlockElement(it.id))
+                is BlockOptionsState.Block -> viewModel.postEvent(LinkEvent.BlockElement(it.id))
+                is BlockOptionsState.Hide -> viewModel.postEvent(LinkEvent.BlockElement(it.id))
+                is BlockOptionsState.Report -> viewModel.postEvent(LinkEvent.BlockElement(it.id))
             }
         },
         onFavouriteClicked = { viewModel.postEvent(LinkEvent.FavouriteElement(it)) },
@@ -83,7 +82,7 @@ fun LinkBody(
     state: LinkState,
     selectedElements: List<Element>,
     onElementClicked: (Element) -> Unit,
-    onOptionsClicked: (ElementOptionsState) -> Unit,
+    onOptionsClicked: (BlockOptionsState) -> Unit,
     onFavouriteClicked: (UUID) -> Unit,
     onSubmit: () -> Unit,
     onBack: () -> Unit,

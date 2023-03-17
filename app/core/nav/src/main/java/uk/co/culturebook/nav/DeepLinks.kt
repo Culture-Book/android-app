@@ -1,7 +1,7 @@
 package uk.co.culturebook.nav
 
-import android.content.Intent
 import androidx.navigation.navDeepLink
+import java.util.*
 
 object DeepLinks {
     private const val deepLinkUri = "api.culturebook.co.uk"
@@ -10,12 +10,28 @@ object DeepLinks {
         navDeepLink {
             uriPattern =
                 "https://$deepLinkUri/forgot/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
-            action = Intent.ACTION_VIEW
         },
         navDeepLink {
             uriPattern =
                 "app://$deepLinkUri/forgot/{${Route.Forgot.userIdArgument}}/{${Route.Forgot.tokenArgument}}"
-            action = Intent.ACTION_VIEW
         }
     )
+
+    val detailsDeepLink = listOf(
+        navDeepLink {
+            uriPattern =
+                "https://$deepLinkUri/" + Route.Details.route + "?" + Route.Details.id + "=" +
+                        "{${Route.Details.id}}" + "&" + Route.Details.isContribution + "=" +
+                        "{${Route.Details.isContribution}}"
+        },
+        navDeepLink {
+            uriPattern =
+                "app://$deepLinkUri/" + Route.Details.route + "?" + Route.Details.id + "=" +
+                        "{${Route.Details.id}}" + "&" + Route.Details.isContribution + "=" +
+                        "{${Route.Details.isContribution}}"
+        }
+    )
+
+    fun buildDetailsDeepLink(id: UUID, isContribution: Boolean) =
+        "app://$deepLinkUri/${Route.Details.route}?${Route.Details.id}=$id&${Route.Details.isContribution}=$isContribution"
 }

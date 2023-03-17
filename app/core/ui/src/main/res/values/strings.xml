@@ -12,6 +12,7 @@
     <string name="email_invalid">Invalid email, make sure it is of the form email@domain.com</string>
     <string name="display_name">Display name</string>
     <string name="description">Description</string>
+    <string name="verified">This content is verified.</string>
     <string name="title">Title</string>
 
     <string name="tos">Terms and Conditions</string>
@@ -142,4 +143,7 @@
     <string name="story">Story</string>
     <string name="poi">Point of Interest</string>
     <string name="event">Local event</string>
+    <string name="add_comment">Add a comment</string>
+    <string name="no_comments">No comments found.</string>
+    <string name="share_string">Check this cultural element out!</string>
 </resources>

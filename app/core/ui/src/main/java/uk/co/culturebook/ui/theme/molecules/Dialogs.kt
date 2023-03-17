@@ -162,8 +162,8 @@ fun DateTimeDialog(
 @Composable
 fun ModalBottomSheet(
     modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onDismiss: () -> Unit = {},
+    onConfirm: () -> Unit = {},
     header: @Composable ColumnScope.() -> Unit = {
         Divider(
             modifier = Modifier
@@ -255,7 +255,9 @@ fun ModalBottomSheet(
                             content()
                         }
                         item {
-                            footer()
+                            Box(modifier = Modifier.padding(vertical = mediumSize)) {
+                                footer()
+                            }
                         }
                     }
                 }

@@ -55,10 +55,11 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
             ForgotRoute(navController, userId, token)
         }
         composable(
-            Route.Details.route + Route.Details.id + "=" +
+            Route.Details.route + "?" + Route.Details.id + "=" +
                     "{${Route.Details.id}}" + "&" + Route.Details.isContribution + "=" +
                     "{${Route.Details.isContribution}}",
-            arguments = Route.Details.args
+            arguments = Route.Details.args,
+            deepLinks = DeepLinks.detailsDeepLink
         ) {
             DetailsScreenRoute(navController)
         }

@@ -46,9 +46,11 @@ sealed interface PrefKey {
     object Element : PrefKey {
         override val key = "element"
     }
+
     object Contribution : PrefKey {
         override val key = "contribution"
     }
+
     object Files : PrefKey {
         override val key = "files"
     }

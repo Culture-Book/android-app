@@ -11,7 +11,6 @@ import uk.co.culturebook.add_new.info.states.AddInfoState
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.ui.R
 import java.time.LocalDateTime
-import java.util.*
 
 class AddInfoViewModel(
     private val addNewState: AddNewState

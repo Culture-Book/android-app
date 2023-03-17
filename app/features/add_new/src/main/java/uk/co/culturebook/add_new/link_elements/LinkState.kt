@@ -1,7 +1,6 @@
 package uk.co.culturebook.add_new.link_elements
 
 import uk.co.culturebook.data.models.cultural.Element
-import java.util.UUID
 
 sealed interface LinkState {
     object Idle : LinkState

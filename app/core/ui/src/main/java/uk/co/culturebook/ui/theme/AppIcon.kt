@@ -71,18 +71,9 @@ sealed interface AppIcon {
         override fun getPainter() = icon.getPainter()
     }
 
-    object Social : AppIcon {
-        private val icon = R.drawable.ic_groups
-
+    object Emoji : AppIcon {
         @Composable
-        override fun getPainter() = icon.getPainter()
-    }
-
-    object SocialOutline : AppIcon {
-        private val icon = R.drawable.ic_outline_groups
-
-        @Composable
-        override fun getPainter() = icon.getPainter()
+        override fun getPainter() = R.drawable.ic_emoji.getPainter()
     }
 
     object Add : AppIcon {
@@ -220,10 +211,35 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = Icons.Filled.Star.getPainter()
     }
-    
+
     object Calendar : AppIcon {
         @Composable
         override fun getPainter() = R.drawable.ic_calendar.getPainter()
+    }
+
+    object Share : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.Share.getPainter()
+    }
+
+    object Comment : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_comment.getPainter()
+    }
+
+    object Send : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_send.getPainter()
+    }
+
+    object MoreVert : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.MoreVert.getPainter()
+    }
+
+    object Sparkle : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_sparkle.getPainter()
     }
 }
 

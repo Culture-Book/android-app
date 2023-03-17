@@ -29,6 +29,10 @@ class DetailsViewModel(
                 is DetailEvent.FavouriteElement -> favouriteElement(event.element.id)
                 is DetailEvent.GetContribution -> getContribution(event.uuid)
                 is DetailEvent.GetElement -> getElement(event.uuid)
+                is DetailEvent.AddComment -> TODO()
+                is DetailEvent.AddReaction -> TODO()
+                is DetailEvent.BlockComment -> TODO()
+                is DetailEvent.GetContributions -> TODO()
             }
         }
     }

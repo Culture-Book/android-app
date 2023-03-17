@@ -24,7 +24,10 @@ fun SubmitRoute(navController: NavController, addNewState: AddNewState, onFinish
             context.sharedPreferences.put(PrefKey.Files, it.files.toJsonString())
 
             val worker = if (it.isContribution) {
-                context.sharedPreferences.put(PrefKey.Contribution, it.toContribution().toJsonString())
+                context.sharedPreferences.put(
+                    PrefKey.Contribution,
+                    it.toContribution().toJsonString()
+                )
                 uploadContributionWorkRequest()
             } else {
                 context.sharedPreferences.put(PrefKey.Element, it.toElement().toJsonString())

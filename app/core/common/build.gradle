@@ -45,9 +45,16 @@ android {
 }
 
 dependencies {
+    def emoji2_version = "1.2.0"
+
     api project(":app:core:ui")
     api project(":app:core:data")
     api project(":app:core:nav")
+
+    api "androidx.emoji2:emoji2:$emoji2_version"
+    api "androidx.emoji2:emoji2-views:$emoji2_version"
+    api "androidx.emoji2:emoji2-views-helper:$emoji2_version"
+    api "androidx.emoji2:emoji2-bundled:$emoji2_version"
 
     // Media
     implementation 'androidx.media3:media3-exoplayer:1.0.0-rc02'

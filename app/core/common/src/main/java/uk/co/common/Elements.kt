@@ -4,8 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,6 +24,7 @@ import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
+import uk.co.culturebook.ui.theme.molecules.TitleType
 import java.util.*
 
 @Composable
@@ -35,7 +34,7 @@ fun ShowElements(
     selectedElements: List<Element> = emptyList(),
     showTitle: Boolean = true,
     onElementClicked: (Element) -> Unit = {},
-    onOptionsClicked: (ElementOptionsState) -> Unit,
+    onOptionsClicked: (BlockOptionsState) -> Unit,
     onFavouriteClicked: (UUID) -> Unit,
     lastComposable: @Composable () -> Unit
 ) {
@@ -84,7 +83,7 @@ fun ShowContributions(
     modifier: Modifier = Modifier,
     contributions: List<Contribution>,
     onClicked: (Contribution) -> Unit,
-    onOptionsClicked: (ElementOptionsState) -> Unit,
+    onOptionsClicked: (BlockOptionsState) -> Unit,
     onFavouriteClicked: (UUID) -> Unit,
     lastComposable: @Composable () -> Unit
 ) {
@@ -129,7 +128,7 @@ fun ShowCultures(
     modifier: Modifier = Modifier,
     cultures: List<Culture>,
     onClicked: (Culture) -> Unit,
-    onOptionsClicked: (ElementOptionsState) -> Unit,
+    onOptionsClicked: (BlockOptionsState) -> Unit,
     onFavouriteClicked: (UUID) -> Unit,
     lastComposable: @Composable () -> Unit
 ) {
@@ -177,7 +176,7 @@ fun ElementComposable(
     isSelected: Boolean = false,
     onElementClicked: (Element) -> Unit,
     onFavouriteClicked: (UUID) -> Unit = {},
-    onOptionsClicked: (ElementOptionsState) -> Unit
+    onOptionsClicked: (BlockOptionsState) -> Unit
 ) {
     Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onElementClicked(element) }) {
         val media = element.media.firstOrNull()
@@ -240,55 +239,68 @@ fun ElementComposable(
             color = backgroundColor,
             contentColor = contentColor
         ) {
-            TitleAndSubtitle(modifier = Modifier.padding(mediumSize),
-                title = element.name,
-                message = element.information,
-                maxMessageLines = 2,
-                maxTitleLines = 1,
-                leadingTitleContent = {
-                    if (isSelected){
-                        Icon(AppIcon.Tick.getPainter(), "tick")
-                    } else {
-                        Icon(element.type.icon, "type icon")
-                    }
-                },
-                titleContent = {
-                    var expanded by remember { mutableStateOf(false) }
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                            IconButton(onClick = { onFavouriteClicked(element.id!!) }) {
-                                if (element.favourite) {
-                                    Icon(
-                                        AppIcon.FavouriteFilled.getPainter(),
-                                        contentDescription = "fav"
-                                    )
-                                } else {
-                                    Icon(
-                                        AppIcon.FavouriteOutline.getPainter(),
-                                        contentDescription = "fav"
-                                    )
+            Column(modifier = Modifier.padding(mediumSize)) {
+                TitleAndSubtitle(
+                    title = element.name,
+                    message = element.information,
+                    maxMessageLines = 2,
+                    maxTitleLines = 1,
+                    leadingTitleContent = {
+                        if (isSelected) {
+                            Icon(AppIcon.Tick.getPainter(), "tick")
+                        } else {
+                            Icon(element.type.icon, "type icon")
+                        }
+                    },
+                    titleContent = {
+                        var expanded by remember { mutableStateOf(false) }
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                                IconButton(onClick = { onFavouriteClicked(element.id!!) }) {
+                                    if (element.favourite) {
+                                        Icon(
+                                            AppIcon.FavouriteFilled.getPainter(),
+                                            contentDescription = "fav"
+                                        )
+                                    } else {
+                                        Icon(
+                                            AppIcon.FavouriteOutline.getPainter(),
+                                            contentDescription = "fav"
+                                        )
+                                    }
+                                }
+                                IconButton(onClick = { expanded = true }) {
+                                    Icon(AppIcon.MoreVert.getPainter(), contentDescription = "options")
                                 }
                             }
-                            IconButton(onClick = { expanded = true }) {
-                                Icon(Icons.Default.MoreVert, contentDescription = "options")
+                            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(BlockOptionsState.Hide(id = element.id!!))
+                                }, text = { Text(stringResource(R.string.hide)) })
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(BlockOptionsState.Report(id = element.id!!))
+                                }, text = { Text(stringResource(R.string.report)) })
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(BlockOptionsState.Block(id = element.id!!))
+                                }, text = { Text(stringResource(R.string.block)) })
                             }
                         }
-                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            DropdownMenuItem(onClick = {
-                                expanded = false
-                                onOptionsClicked(ElementOptionsState.Hide(id = element.id!!))
-                            }, text = { Text(stringResource(R.string.hide)) })
-                            DropdownMenuItem(onClick = {
-                                expanded = false
-                                onOptionsClicked(ElementOptionsState.Report(id = element.id!!))
-                            }, text = { Text(stringResource(R.string.report)) })
-                            DropdownMenuItem(onClick = {
-                                expanded = false
-                                onOptionsClicked(ElementOptionsState.Block(id = element.id!!))
-                            }, text = { Text(stringResource(R.string.block)) })
-                        }
-                    }
-                })
+                    })
+
+                if (element.isVerified) {
+                    TitleAndSubtitle(
+                        modifier = Modifier.padding(top = smallSize),
+                        title = stringResource(R.string.verified),
+                        titleType = TitleType.Medium,
+                        leadingTitleContent = {
+                            Icon(AppIcon.Sparkle.getPainter(), "verified")
+                        })
+                }
+            }
+
         }
     }
 }
@@ -300,7 +312,7 @@ fun ContributionComposable(
     contribution: Contribution,
     onClicked: (Contribution) -> Unit,
     onFavouriteClicked: (UUID) -> Unit = {},
-    onOptionsClicked: (ElementOptionsState) -> Unit
+    onOptionsClicked: (BlockOptionsState) -> Unit
 ) {
     Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onClicked(contribution) }) {
         val media = contribution.media.firstOrNull()
@@ -352,51 +364,64 @@ fun ContributionComposable(
         }
 
         Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {
-            TitleAndSubtitle(modifier = Modifier.padding(mediumSize),
-                title = contribution.name,
-                message = contribution.information,
-                maxMessageLines = 2,
-                maxTitleLines = 1,
-                leadingTitleContent = {
-                    Icon(contribution.type.icon, "type icon")
-                },
-                titleContent = {
-                    var expanded by remember { mutableStateOf(false) }
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                            IconButton(onClick = { onFavouriteClicked(contribution.id!!) }) {
-                                if (contribution.favourite) {
-                                    Icon(
-                                        AppIcon.FavouriteFilled.getPainter(),
-                                        contentDescription = "fav"
-                                    )
-                                } else {
-                                    Icon(
-                                        AppIcon.FavouriteOutline.getPainter(),
-                                        contentDescription = "fav"
-                                    )
+            Column(modifier = Modifier.padding(mediumSize)) {
+                TitleAndSubtitle(
+                    title = contribution.name,
+                    message = contribution.information,
+                    maxMessageLines = 2,
+                    maxTitleLines = 1,
+                    leadingTitleContent = {
+                        Icon(contribution.type.icon, "type icon")
+                    },
+                    titleContent = {
+                        var expanded by remember { mutableStateOf(false) }
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                                IconButton(onClick = { onFavouriteClicked(contribution.id!!) }) {
+                                    if (contribution.favourite) {
+                                        Icon(
+                                            AppIcon.FavouriteFilled.getPainter(),
+                                            contentDescription = "fav"
+                                        )
+                                    } else {
+                                        Icon(
+                                            AppIcon.FavouriteOutline.getPainter(),
+                                            contentDescription = "fav"
+                                        )
+                                    }
+                                }
+                                IconButton(onClick = { expanded = true }) {
+                                    Icon(AppIcon.MoreVert.getPainter(), contentDescription = "options")
                                 }
                             }
-                            IconButton(onClick = { expanded = true }) {
-                                Icon(Icons.Default.MoreVert, contentDescription = "options")
+                            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(BlockOptionsState.Hide(id = contribution.id!!))
+                                }, text = { Text(stringResource(R.string.hide)) })
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(BlockOptionsState.Report(id = contribution.id!!))
+                                }, text = { Text(stringResource(R.string.report)) })
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    onOptionsClicked(BlockOptionsState.Block(id = contribution.id!!))
+                                }, text = { Text(stringResource(R.string.block)) })
                             }
                         }
-                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            DropdownMenuItem(onClick = {
-                                expanded = false
-                                onOptionsClicked(ElementOptionsState.Hide(id = contribution.id!!))
-                            }, text = { Text(stringResource(R.string.hide)) })
-                            DropdownMenuItem(onClick = {
-                                expanded = false
-                                onOptionsClicked(ElementOptionsState.Report(id = contribution.id!!))
-                            }, text = { Text(stringResource(R.string.report)) })
-                            DropdownMenuItem(onClick = {
-                                expanded = false
-                                onOptionsClicked(ElementOptionsState.Block(id = contribution.id!!))
-                            }, text = { Text(stringResource(R.string.block)) })
-                        }
-                    }
-                })
+                    })
+
+                if (contribution.isVerified) {
+                    TitleAndSubtitle(
+                        modifier = Modifier.padding(top = smallSize),
+                        title = stringResource(R.string.verified),
+                        titleType = TitleType.Medium,
+                        leadingTitleContent = {
+                            Icon(AppIcon.Sparkle.getPainter(), "verified")
+                        })
+                }
+            }
+
         }
     }
 }
@@ -408,7 +433,7 @@ fun CultureComposable(
     culture: Culture,
     onClicked: (Culture) -> Unit,
     onFavouriteClicked: (UUID) -> Unit = {},
-    onOptionsClicked: (ElementOptionsState) -> Unit
+    onOptionsClicked: (BlockOptionsState) -> Unit
 ) {
     Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onClicked(culture) }) {
         Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {
@@ -434,21 +459,21 @@ fun CultureComposable(
                         }
 
                         IconButton(onClick = { expanded = true }) {
-                            Icon(Icons.Default.MoreVert, contentDescription = "options")
+                            Icon(AppIcon.MoreVert.getPainter(), contentDescription = "options")
 
                             DropdownMenu(expanded = expanded,
                                 onDismissRequest = { expanded = false }) {
                                 DropdownMenuItem(onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Hide(id = culture.id!!))
+                                    onOptionsClicked(BlockOptionsState.Hide(id = culture.id!!))
                                 }, text = { Text(stringResource(R.string.hide)) })
                                 DropdownMenuItem(onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Report(id = culture.id!!))
+                                    onOptionsClicked(BlockOptionsState.Report(id = culture.id!!))
                                 }, text = { Text(stringResource(R.string.report)) })
                                 DropdownMenuItem(onClick = {
                                     expanded = false
-                                    onOptionsClicked(ElementOptionsState.Block(id = culture.id!!))
+                                    onOptionsClicked(BlockOptionsState.Block(id = culture.id!!))
                                 }, text = { Text(stringResource(R.string.block)) })
                             }
                         }
@@ -458,8 +483,8 @@ fun CultureComposable(
     }
 }
 
-sealed interface ElementOptionsState {
-    data class Hide(val id: UUID) : ElementOptionsState
-    data class Report(val id: UUID) : ElementOptionsState
-    data class Block(val id: UUID) : ElementOptionsState
+sealed interface BlockOptionsState {
+    data class Hide(val id: UUID) : BlockOptionsState
+    data class Report(val id: UUID) : BlockOptionsState
+    data class Block(val id: UUID) : BlockOptionsState
 }

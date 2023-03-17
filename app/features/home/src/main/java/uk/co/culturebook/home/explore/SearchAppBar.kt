@@ -84,7 +84,10 @@ fun SearchField(
             }
         },
         placeholder = {
-            Text(stringResource(R.string.search_filter), color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                stringResource(R.string.search_filter),
+                color = MaterialTheme.colorScheme.onSurface
+            )
         },
         singleLine = true,
         value = value,

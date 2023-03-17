@@ -5,7 +5,6 @@ import uk.co.culturebook.data.models.cultural.Element
 import uk.co.culturebook.data.models.cultural.Location
 import uk.co.culturebook.data.models.cultural.MediaFile
 import java.time.LocalDateTime
-import java.util.*
 
 sealed interface AddInfoEvent {
     object Idle : AddInfoEvent

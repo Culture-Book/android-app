@@ -62,8 +62,9 @@ fun ExploreRoute(navController: NavController) {
             is ExploreState.Navigate -> {
                 val id = (nearbyState as ExploreState.Navigate).id
                 val isContribution = (nearbyState as ExploreState.Navigate).isContribution
-                navController.navigate(Route.Details.route + "${Route.Details.id}=$id" + "&" +
-                        "${Route.Details.isContribution}=$isContribution")
+                val route = Route.Details.route + "?" + "${Route.Details.id}=$id" + "&" +
+                        "${Route.Details.isContribution}=$isContribution"
+                navController.navigate(route)
                 viewModel.postEvent(ExploreEvent.Idle)
             }
             is ExploreState.Idle -> {
