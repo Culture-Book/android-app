@@ -1,6 +1,7 @@
 package uk.co.culturebook.home.explore
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -24,8 +25,6 @@ fun ExploreBody(
     postEvent: (ExploreEvent) -> Unit,
 ) {
     Column(modifier) {
-        ShowBanners()
-
         when (exploreState) {
             is ExploreState.Success.ElementsReceived -> {
                 ShowElements(
@@ -113,7 +112,7 @@ fun ExploreBody(
 }
 
 @Composable
-fun ShowBanners() {
+fun ShowBanners(paddingValues: PaddingValues) {
     var showLocationBanner by remember { mutableStateOf(true) }
     var askForLocationPermission by remember { mutableStateOf(false) }
 
@@ -121,7 +120,9 @@ fun ShowBanners() {
         if (askForLocationPermission) {
             AskForLocationPermission(forceAsk = true) { askForLocationPermission = false }
         }
-        Banner(title = stringResource(R.string.low_accuracy_title),
+        Banner(
+            modifier = Modifier.padding(paddingValues),
+            title = stringResource(R.string.low_accuracy_title),
             message = stringResource(R.string.low_accuracy_message),
             onDismiss = { showLocationBanner = false },
             leadingIcon = {
@@ -139,6 +140,7 @@ fun ShowBanners() {
             AskForLocationPermission(forceAsk = true) { askForLocationPermission = false }
         }
         Banner(
+            modifier = Modifier.padding(paddingValues),
             bannerType = BannerType.Warning,
             title = stringResource(R.string.no_location_title),
             message = stringResource(R.string.no_location_message),

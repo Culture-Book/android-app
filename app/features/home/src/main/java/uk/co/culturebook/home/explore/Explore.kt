@@ -146,6 +146,8 @@ fun Explore(
             }
         }
     ) { padding ->
+        ShowBanners(padding)
+
         when (exploreState) {
             is ExploreState.Navigate,
             ExploreState.GetContributions,

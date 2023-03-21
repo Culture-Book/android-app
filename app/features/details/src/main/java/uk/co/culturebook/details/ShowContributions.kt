@@ -41,7 +41,7 @@ fun ShowContributionsRoute(navController: NavController) {
     val snackbarState = remember { SnackbarHostState() }
     val searchCriteria = viewModel.searchCriteria
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(searchCriteria.elementId, searchCriteria.page) {
         viewModel.postEvent(DetailEvent.GetContributions(elementId))
     }
 
@@ -57,24 +57,29 @@ fun ShowContributionsRoute(navController: NavController) {
                     onOptionsClicked = {
                         when (it) {
                             is BlockOptionsState.Block -> viewModel.postEvent(
-                                DetailEvent.BlockContribution(
-                                    it.id
+                                DetailEvent.BlockFromShowContributions(
+                                    it.id, elementId!!
                                 )
                             )
                             is BlockOptionsState.Hide -> viewModel.postEvent(
-                                DetailEvent.BlockContribution(
-                                    it.id
+                                DetailEvent.BlockFromShowContributions(
+                                    it.id, elementId!!
                                 )
                             )
                             is BlockOptionsState.Report -> viewModel.postEvent(
-                                DetailEvent.BlockContribution(
-                                    it.id
+                                DetailEvent.BlockFromShowContributions(
+                                    it.id, elementId!!
                                 )
                             )
                         }
                     },
                     onFavouriteClicked = {
-                        viewModel.postEvent(DetailEvent.FavouriteContribution(it))
+                        viewModel.postEvent(
+                            DetailEvent.FavouriteFromShowContributions(
+                                it,
+                                elementId!!
+                            )
+                        )
                     },
                     onClicked = { contribution ->
                         val route =

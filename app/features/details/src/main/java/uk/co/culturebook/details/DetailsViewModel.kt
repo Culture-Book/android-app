@@ -69,6 +69,8 @@ class DetailsViewModel(
                 )
                 is DetailEvent.GetContributionComments -> getContributionComments(event.contributionId)
                 is DetailEvent.GetElementComments -> getElementComments(event.elementId)
+                is DetailEvent.FavouriteFromShowContributions -> favouriteContribution(event.contributionId, event.elementId)
+                is DetailEvent.BlockFromShowContributions -> blockContributionFromShowContributions(event.contributionId, event.elementId)
             }
         }
     }
@@ -107,6 +109,14 @@ class DetailsViewModel(
         }
     }
 
+    private suspend fun blockContributionFromShowContributions(uuid: UUID?, elementId: UUID) {
+        when (updateRepository.blockContribution(uuid)) {
+            is ApiResponse.Success, is ApiResponse.Success.Empty ->
+                postEvent(DetailEvent.GetContributions(elementId))
+            else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
+        }
+    }
+
     private suspend fun favouriteElement(uuid: UUID?) {
         when (updateRepository.favouriteElement(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
@@ -119,6 +129,14 @@ class DetailsViewModel(
         when (updateRepository.favouriteContribution(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContribution(uuid))
+            else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
+        }
+    }
+
+    private suspend fun favouriteContribution(uuid: UUID?, elementId: UUID) {
+        when (updateRepository.favouriteContribution(uuid)) {
+            is ApiResponse.Success, is ApiResponse.Success.Empty ->
+                postEvent(DetailEvent.GetContributions(elementId))
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }

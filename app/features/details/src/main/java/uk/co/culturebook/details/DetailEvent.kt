@@ -13,6 +13,8 @@ sealed interface DetailEvent {
     data class BlockContribution(val uuid: UUID?) : DetailEvent
     data class FavouriteElement(val element: Element) : DetailEvent
     data class FavouriteContribution(val contributionId: UUID) : DetailEvent
+    data class FavouriteFromShowContributions(val contributionId: UUID, val elementId: UUID) : DetailEvent
+    data class BlockFromShowContributions(val contributionId: UUID, val elementId: UUID) : DetailEvent
     data class AddElementComment(val parentId: UUID, val comment: String) : DetailEvent
     data class ToggleElementReaction(val parentId: UUID, val reaction: String) : DetailEvent
     data class BlockElementComment(val elementId: UUID, val id: UUID) : DetailEvent
