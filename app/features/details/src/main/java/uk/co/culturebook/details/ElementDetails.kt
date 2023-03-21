@@ -29,7 +29,7 @@ import uk.co.culturebook.nav.DeepLinks
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LargeDynamicRoundedTextField
-import uk.co.culturebook.ui.theme.molecules.OutlinedSurface
+import uk.co.culturebook.ui.theme.molecules.OutlinedColumnSurface
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
 import uk.co.culturebook.ui.theme.molecules.TitleType
 import uk.co.culturebook.ui.utils.prettyPrint
@@ -39,11 +39,15 @@ import java.util.*
 @Composable
 fun ElementDetailScreen(
     modifier: Modifier,
+    comments: List<Comment>,
     element: Element,
     onCommentBlocked: (UUID) -> Unit,
     onCommentSent: (String) -> Unit,
     onContributionsClicked: (UUID) -> Unit,
-    onAddReaction: (String) -> Unit
+    onAddReaction: (String) -> Unit,
+    onDeleteComment: (UUID) -> Unit,
+    onDeleteReaction: (String) -> Unit,
+    onGetComments: (UUID) -> Unit
 ) {
     with(element) {
         DetailScreen(
@@ -62,7 +66,10 @@ fun ElementDetailScreen(
             onCommentSent = onCommentSent,
             onContributionsClicked = onContributionsClicked,
             onReactionSelected = onAddReaction,
-            isVerified = true
+            isVerified = isVerified,
+            onDeleteComment = onDeleteComment,
+            onDeleteReaction = onDeleteReaction,
+            onGetComments = onGetComments
         )
     }
 }
@@ -70,10 +77,14 @@ fun ElementDetailScreen(
 @Composable
 fun ContributionDetailScreen(
     modifier: Modifier,
+    comments: List<Comment>,
     contribution: Contribution,
     onCommentBlocked: (UUID) -> Unit,
     onCommentSent: (String) -> Unit,
-    onAddReaction: (String) -> Unit
+    onAddReaction: (String) -> Unit,
+    onDeleteComment: (UUID) -> Unit,
+    onDeleteReaction: (String) -> Unit,
+    onGetComments: (UUID) -> Unit
 ) {
     with(contribution) {
         DetailScreen(
@@ -92,7 +103,10 @@ fun ContributionDetailScreen(
             onCommentBlocked = onCommentBlocked,
             onCommentSent = onCommentSent,
             onReactionSelected = onAddReaction,
-            isVerified = isVerified
+            isVerified = isVerified,
+            onDeleteComment = onDeleteComment,
+            onDeleteReaction = onDeleteReaction,
+            onGetComments = onGetComments,
         )
     }
 }
@@ -114,8 +128,11 @@ fun DetailScreen(
     comments: List<Comment> = emptyList(),
     onCommentSent: (String) -> Unit = {},
     onCommentBlocked: (UUID) -> Unit,
+    onDeleteComment: (UUID) -> Unit,
+    onDeleteReaction: (String) -> Unit,
     onContributionsClicked: ((UUID) -> Unit)? = null,
-    isVerified: Boolean = true
+    isVerified: Boolean = true,
+    onGetComments: (UUID) -> Unit = {},
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -238,7 +255,7 @@ fun DetailScreen(
             if (eventType != null) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     if (eventType.startDateTime != LocalDateTime.MIN) {
-                        OutlinedSurface(
+                        OutlinedColumnSurface(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(.5f)
@@ -348,7 +365,8 @@ fun DetailScreen(
                         is BlockOptionsState.Hide -> onCommentBlocked(it.id)
                         is BlockOptionsState.Report -> onCommentBlocked(it.id)
                     }
-                }
+                },
+                onDeleteComment = onDeleteComment
             )
         }
 
@@ -374,6 +392,10 @@ fun DetailScreen(
                         onEmojiSelected = {
                             showReactionPopup = false
                             onReactionSelected(it)
+                        },
+                        onDelete = {
+                            showReactionPopup = false
+                            onDeleteReaction(it)
                         }
                     )
                 }
@@ -384,9 +406,11 @@ fun DetailScreen(
                     .padding(horizontal = xsSize)
                     .weight(0.33f),
                 shape = buttonInside,
-                onClick = { showCommentSheet = true }) {
+                onClick = {
+                    showCommentSheet = true
+                    onGetComments(id)
+                }) {
                 Icon(painter = AppIcon.Comment.getPainter(), contentDescription = "comments")
-                Text(modifier = Modifier.padding(start = smallSize), text = "${comments.size}")
             }
 
             Button(

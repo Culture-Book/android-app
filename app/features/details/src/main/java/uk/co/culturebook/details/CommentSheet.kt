@@ -16,7 +16,9 @@ import uk.co.culturebook.data.models.cultural.Comment
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.ModalBottomSheet
+import uk.co.culturebook.ui.theme.molecules.OutlinedRowSurface
 import uk.co.culturebook.ui.theme.molecules.SecondarySurfaceWithIcon
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,7 +26,8 @@ fun CommentSheet(
     onDismiss: () -> Unit,
     listComments: List<Comment>,
     onCommentSent: (String) -> Unit,
-    onOptionSelected: (BlockOptionsState) -> Unit
+    onOptionSelected: (BlockOptionsState) -> Unit,
+    onDeleteComment: (UUID) -> Unit
 ) {
     var comment by remember { mutableStateOf("") }
     val localConfig = LocalConfiguration.current
@@ -68,40 +71,72 @@ fun CommentSheet(
             } else {
                 items(listComments) {
                     var expanded by remember { mutableStateOf(false) }
-                    SecondarySurfaceWithIcon(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = smallSize),
-                        title = it.comment,
-                        icon = {
-                            Icon(
-                                painter = AppIcon.MoreVert.getPainter(),
-                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                                contentDescription = "block comment"
-                            )
-
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }) {
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionSelected(BlockOptionsState.Hide(id = it.id))
-                                }, text = { Text(stringResource(R.string.hide)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionSelected(BlockOptionsState.Report(id = it.id))
-                                }, text = { Text(stringResource(R.string.report)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionSelected(BlockOptionsState.Block(id = it.id))
-                                }, text = { Text(stringResource(R.string.block)) })
+                    if (it.isMine) {
+                        SecondarySurfaceWithIcon(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = smallSize),
+                            title = it.comment,
+                            maxLines = Int.MAX_VALUE,
+                            icon = {
+                                IconButton(onClick = { expanded = true }) {
+                                    Icon(
+                                        painter = AppIcon.MoreVert.getPainter(),
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        contentDescription = "block comment"
+                                    )
+                                    DropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }) {
+                                        DropdownMenuItem(onClick = {
+                                            expanded = false
+                                            onDeleteComment(it.id)
+                                        }, text = { Text(stringResource(R.string.delete)) })
+                                    }
+                                }
+                            },
+                            onButtonClicked = {
+                                expanded = true
                             }
-
-                        },
-                        onButtonClicked = {
-                            expanded = true
-                        }
-                    )
+                        )
+                    } else {
+                        OutlinedRowSurface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = smallSize),
+                            icon = {
+                                IconButton(
+                                    onClick = {
+                                        expanded = true
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = AppIcon.MoreVert.getPainter(),
+                                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        contentDescription = "block comment"
+                                    )
+                                    DropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }) {
+                                        DropdownMenuItem(onClick = {
+                                            expanded = false
+                                            onOptionSelected(BlockOptionsState.Hide(id = it.id))
+                                        }, text = { Text(stringResource(R.string.hide)) })
+                                        DropdownMenuItem(onClick = {
+                                            expanded = false
+                                            onOptionSelected(BlockOptionsState.Report(id = it.id))
+                                        }, text = { Text(stringResource(R.string.report)) })
+                                        DropdownMenuItem(onClick = {
+                                            expanded = false
+                                            onOptionSelected(BlockOptionsState.Block(id = it.id))
+                                        }, text = { Text(stringResource(R.string.block)) })
+                                    }
+                                }
+                            },
+                            title = it.comment,
+                            maxLines = Int.MAX_VALUE
+                        )
+                    }
                 }
             }
         }

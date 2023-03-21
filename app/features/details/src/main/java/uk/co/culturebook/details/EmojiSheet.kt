@@ -80,7 +80,8 @@ fun EmojiPopUp(
     emojis: Map<Reaction, Int> = Emoji.emojis.map { Reaction(it) }.associateWith { 0 },
     onDismiss: () -> Unit = {},
     onEmojiSelected: (String) -> Unit = {},
-    onAddCustomEmoji: () -> Unit = {}
+    onAddCustomEmoji: () -> Unit = {},
+    onDelete: (String) -> Unit = {}
 ) {
     val emojiSize = MaterialTheme.typography.bodyLarge.fontSize.value
 
@@ -109,7 +110,7 @@ fun EmojiPopUp(
                     emoji = emoji.reaction,
                     color = background,
                     emojiSize = emojiSize,
-                    onEmojiSelected = onEmojiSelected,
+                    onEmojiSelected = { if(emoji.isMine) onDelete(it) else onEmojiSelected(it) },
                     number = emojis[emoji]
                 )
             }

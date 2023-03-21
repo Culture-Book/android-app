@@ -39,6 +39,11 @@ sealed interface Route {
         const val isContribution = "is_contribution"
         override val route = "details"
 
+        object ShowContributions : Route {
+            const val elementId = "element_id"
+            override val route = "show_contributions"
+        }
+
         val args = listOf(
             navArgument(id) { defaultValue = "" },
             navArgument(isContribution) {

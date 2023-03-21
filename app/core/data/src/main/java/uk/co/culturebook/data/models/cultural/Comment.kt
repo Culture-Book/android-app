@@ -8,6 +8,6 @@ import java.util.*
 data class Comment(
     @Serializable(with = UUIDSerializer::class)
     val id: UUID = UUID.randomUUID(),
-    val comment: String,
+    val comment: String = "",
     val isMine: Boolean = false
 )

@@ -95,7 +95,7 @@ fun SubmitScreenComposable(
                 if (addNewState.eventType != null) {
                     Row(modifier = Modifier.fillMaxWidth()) {
                         if (addNewState.eventType?.startDateTime != LocalDateTime.MIN) {
-                            OutlinedSurface(
+                            OutlinedColumnSurface(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .weight(.5f)

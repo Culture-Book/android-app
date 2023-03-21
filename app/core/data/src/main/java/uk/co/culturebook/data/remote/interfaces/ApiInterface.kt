@@ -91,4 +91,42 @@ interface ApiInterface {
 
     @POST("nearby/v1/favourite/culture")
     suspend fun favouriteCulture(@Body favouriteElement: FavouriteElement): ApiResponse<Void>
+
+    @GET("v1/elements/comments")
+    suspend fun getElementComments(@Query("elementId") elementId: UUID): ApiResponse<List<Comment>>
+
+    @POST("v1/elements/reactions")
+    suspend fun toggleElementReaction(@Body reaction: RequestReaction): ApiResponse<Boolean>
+
+    @POST("v1/elements/comments")
+    suspend fun addElementComment(@Body comment: RequestComment): ApiResponse<Comment>
+
+    @POST("v1/elements/comments/block")
+    suspend fun blockElementComment(@Body comment: RequestComment): ApiResponse<Void>
+
+    @DELETE("v1/elements/comments")
+    suspend fun deleteElementComment(
+        @Query("isContribution") isContribution: Boolean = false,
+        @Query("commentId") commentId: UUID
+    ): ApiResponse<Void>
+
+    @GET("v1/contributions/comments")
+    suspend fun getContributionComments(@Query("contributionId") contributionId: UUID): ApiResponse<List<Comment>>
+
+    @POST("v1/contributions/reactions")
+    suspend fun toggleContributionReaction(@Body reaction: RequestReaction): ApiResponse<Boolean>
+
+    @POST("v1/contributions/comments")
+    suspend fun addContributionComment(@Body comment: RequestComment): ApiResponse<Comment>
+
+    @POST("v1/contributions/comments/block")
+    suspend fun blockContributionComment(@Body comment: RequestComment): ApiResponse<Void>
+
+    @DELETE("v1/contributions/comments")
+    suspend fun deleteContributionComment(
+        @Query("isContribution") isContribution: Boolean = true,
+        @Query("commentId") commentId: UUID
+    ): ApiResponse<Void>
+
+
 }

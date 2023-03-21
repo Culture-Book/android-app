@@ -13,6 +13,7 @@ import uk.co.culturebook.auth.composables.LoginRoute
 import uk.co.culturebook.auth.composables.RegistrationRoute
 import uk.co.culturebook.data.remote_config.RemoteConfig
 import uk.co.culturebook.details.DetailsScreenRoute
+import uk.co.culturebook.details.ShowContributionsRoute
 import uk.co.culturebook.home.composables.homeGraph
 import uk.co.culturebook.nav.DeepLinks
 import uk.co.culturebook.nav.Route
@@ -62,6 +63,12 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
             deepLinks = DeepLinks.detailsDeepLink
         ) {
             DetailsScreenRoute(navController)
+        }
+        composable(
+            Route.Details.ShowContributions.route + "?" + Route.Details.ShowContributions.elementId + "=" +
+                    "{${Route.Details.ShowContributions.elementId}}"
+        ) {
+            ShowContributionsRoute(navController)
         }
     }
 }

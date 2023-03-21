@@ -107,6 +107,7 @@
     <string name="add_files">Add File</string>
     <string name="invalid_file">Invalid file type, or file is corrupt</string>
     <string name="files_Size">The total files size exceeds 50MB.</string>
+    <string name="show_contributions">Contributions</string>
 
     <string name="review_submit">Review and submit</string>
     <string name="type">Type</string>
@@ -129,6 +130,7 @@
     <string name="hide">Hide</string>
     <string name="report">Report</string>
     <string name="block">Block</string>
+    <string name="delete">Delete</string>
 
     <string name="page_num">Page %d</string>
 
