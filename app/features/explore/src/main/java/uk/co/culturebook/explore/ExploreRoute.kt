@@ -1,4 +1,4 @@
-package uk.co.culturebook.home.explore
+package uk.co.culturebook.explore
 
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon

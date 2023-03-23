@@ -54,4 +54,12 @@ sealed interface PrefKey {
     object Files : PrefKey {
         override val key = "files"
     }
+
+    object UserProfileUri : PrefKey {
+        override val key = "user_profile_uri"
+    }
+
+    object UserDisplayName : PrefKey {
+        override val key = "user_display_name"
+    }
 }

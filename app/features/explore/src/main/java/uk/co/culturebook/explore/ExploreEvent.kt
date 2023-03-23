@@ -1,4 +1,4 @@
-package uk.co.culturebook.home.explore
+package uk.co.culturebook.explore
 
 import uk.co.culturebook.data.models.cultural.Contribution
 import uk.co.culturebook.data.models.cultural.Element

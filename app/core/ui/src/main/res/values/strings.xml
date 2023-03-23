@@ -133,6 +133,11 @@
     <string name="delete">Delete</string>
 
     <string name="page_num">Page %d</string>
+    <string name="hey_name">Hey, %s</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="favourites">Favourites</string>
 
     <!--    Element Types-->
     <string name="elements">Elements</string>

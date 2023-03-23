@@ -5,6 +5,7 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -53,13 +54,13 @@ import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
-fun rememberImageLoader(): ImageLoader {
+fun rememberImageLoader(@DrawableRes errorImage: Int = AppIcon.BrokenImage.icon): ImageLoader {
     val context = LocalContext.current
     return remember {
         context.imageLoader.newBuilder()
             .okHttpClient(imageLoaderClient)
             .crossfade(true)
-            .error(AppIcon.BrokenImage.icon)
+            .error(errorImage)
             .memoryCache {
                 MemoryCache.Builder(context)
                     .maxSizePercent(0.25)

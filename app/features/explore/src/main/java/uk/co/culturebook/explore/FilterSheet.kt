@@ -1,4 +1,4 @@
-package uk.co.culturebook.home.explore
+package uk.co.culturebook.explore
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

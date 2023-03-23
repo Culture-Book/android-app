@@ -44,7 +44,12 @@ class UserRepository(context: Context) {
             is ApiResponse.Success.Empty -> ApiResponse.Success.Empty()
         }
 
-    suspend fun getUser(): ApiResponse<User> = apiInterface.getUser()
+    suspend fun getUser(): ApiResponse<User> = apiInterface.getUser().also {
+        if (it is ApiResponse.Success) {
+            sharedPrefs.put(PrefKey.UserProfileUri, it.data.profileUri.toString())
+            sharedPrefs.put(PrefKey.UserDisplayName, it.data.displayName)
+        }
+    }
 
     suspend fun updateTos(): ApiResponse<Void> = apiInterface.updateTos()
 

@@ -8,7 +8,7 @@ android {
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {
-        namespace "uk.co.culturebook.home"
+        namespace "uk.co.culturebook.account"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
 
@@ -52,6 +52,4 @@ android {
 
 dependencies {
     implementation project(":app:core:common")
-    api project(path: ':app:features:explore')
-    api project(path: ':app:features:account')
 }

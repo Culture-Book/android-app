@@ -22,3 +22,5 @@ include ":app:features:home"
 include ':app:features:add_new'
 include ':app:features:details'
 include ':app:core:common'
+include ':app:features:account'
+include ':app:features:explore'

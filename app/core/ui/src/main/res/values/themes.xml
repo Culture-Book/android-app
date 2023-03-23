@@ -2,38 +2,38 @@
 <resources>
 
     <style name="Widget.DatePicker" parent="android:Widget.Material.DatePicker">
-        <item name="android:headerBackground">@color/surfaceVariant</item>
-        <item name="android:calendarTextColor">@color/onSurface</item>
+        <item name="android:headerBackground">@color/_surface_variant</item>
+        <item name="android:calendarTextColor">@color/_on_surface_variant</item>
     </style>
 
     <style name="Theme_DatePicker.Light" parent="android:Theme.Material.Light">
         <item name="android:datePickerStyle">@style/Widget.DatePicker</item>
-        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:colorAccent">@color/_primary</item>
     </style>
 
     <style name="Theme_TimePicker.Light" parent="android:Theme.Material.Light">
         <item name="android:timePickerStyle">@style/Widget.TimePicker</item>
-        <item name="android:textColorPrimary">@color/onSurface</item>
-        <item name="android:textColorSecondary">@color/onSurfaceVariant</item>
+        <item name="android:textColorPrimary">@color/_on_surface</item>
+        <item name="android:textColorSecondary">@color/_on_surface_variant</item>
     </style>
 
     <style name="Theme_DatePicker.Dark" parent="android:Theme.Material">
         <item name="android:datePickerStyle">@style/Widget.DatePicker</item>
-        <item name="android:colorAccent">@color/primary</item>
+        <item name="android:colorAccent">@color/_primary</item>
     </style>
 
     <style name="Theme_TimePicker.Dark" parent="android:Theme.Material">
         <item name="android:timePickerStyle">@style/Widget.TimePicker</item>
-        <item name="android:textColorPrimary">@color/onSurface</item>
-        <item name="android:textColorSecondary">@color/onSurfaceVariant</item>
+        <item name="android:textColorPrimary">@color/_on_surface</item>
+        <item name="android:textColorSecondary">@color/_on_surface_variant</item>
     </style>
 
     <style name="Widget.TimePicker" parent="@android:style/Widget.Material.TimePicker">
-        <item name="android:numbersTextColor">@color/onSurface</item>
-        <item name="android:numbersInnerTextColor">@color/onSurfaceVariant</item>
-        <item name="android:numbersSelectorColor">@color/primary</item>
-        <item name="android:numbersBackgroundColor">@color/surface</item>
-        <item name="android:headerBackground">@color/surfaceVariant</item>
+        <item name="android:numbersTextColor">@color/_on_surface</item>
+        <item name="android:numbersInnerTextColor">@color/_on_surface_variant</item>
+        <item name="android:numbersSelectorColor">@color/_primary</item>
+        <item name="android:numbersBackgroundColor">@color/_surface</item>
+        <item name="android:headerBackground">@color/_surface_variant</item>
     </style>
 
 </resources>

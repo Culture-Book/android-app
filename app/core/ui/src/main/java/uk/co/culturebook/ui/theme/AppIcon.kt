@@ -241,6 +241,27 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = R.drawable.ic_sparkle.getPainter()
     }
+
+    object AccountCircle : AppIcon {
+        val icon = R.drawable.ic_account_circle
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Settings : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.Settings.getPainter()
+    }
+
+    object About : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.Info.getPainter()
+    }
+
+    object Logout : AppIcon {
+        @Composable
+        override fun getPainter() = Icons.Default.ExitToApp.getPainter()
+    }
 }
 
 @Composable
