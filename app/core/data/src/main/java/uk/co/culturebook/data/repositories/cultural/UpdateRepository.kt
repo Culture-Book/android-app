@@ -11,9 +11,7 @@ class UpdateRepository(context: Context) {
     private val apiInterface: ApiInterface = Singletons.getApiInterface(context)
 
     suspend fun blockElement(uuid: UUID?) = uuid?.let {
-        apiInterface.blockElement(
-            BlockedElement(it)
-        )
+        apiInterface.blockElement(BlockedElement(it))
     }
 
     suspend fun blockContribution(uuid: UUID?) = uuid?.let {
@@ -23,6 +21,14 @@ class UpdateRepository(context: Context) {
     suspend fun blockCulture(uuid: UUID?) = uuid?.let {
         apiInterface.blockCulture(BlockedElement(it))
     }
+
+    suspend fun unblockElement(uuid: UUID) =apiInterface.unblockElement(uuid)
+
+    suspend fun unblockContribution(uuid: UUID) = apiInterface.unblockContribution(uuid)
+
+    suspend fun unblockCulture(uuid: UUID) = apiInterface.unblockCulture(uuid)
+
+    suspend fun getBlockedList() = apiInterface.getBlockedList()
 
     suspend fun favouriteElement(uuid: UUID?) = uuid?.let {
         apiInterface.favouriteElement(

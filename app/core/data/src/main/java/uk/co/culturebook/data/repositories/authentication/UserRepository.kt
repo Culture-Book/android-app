@@ -1,10 +1,16 @@
 package uk.co.culturebook.data.repositories.authentication
 
 import android.content.Context
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import okhttp3.MultipartBody
 import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.encoders.encrypt
+import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.models.authentication.*
+import uk.co.culturebook.data.models.cultural.MediaFile
+import uk.co.culturebook.data.models.cultural.toRequestBody
 import uk.co.culturebook.data.put
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
@@ -12,13 +18,21 @@ import uk.co.culturebook.data.remote.interfaces.AuthInterface
 import uk.co.culturebook.data.sharedPreferences
 import java.util.*
 
-class UserRepository(context: Context) {
+class UserRepository(private val context: Context) {
     private val authInterface: AuthInterface = Singletons.getAuthInterface()
     private val apiInterface: ApiInterface = Singletons.getApiInterface(context)
     private val sharedPrefs = context.sharedPreferences
 
     private suspend fun getPublicOauthKey(): ApiResponse<PublicJWT> =
-        authInterface.getPublicOauthKey()
+        sharedPrefs.getString(PrefKey.PublicKey.key, null)?.let {
+            ApiResponse.Success(PublicJWT(it))
+        } ?: run {
+            authInterface.getPublicOauthKey().also {
+                if (it is ApiResponse.Success) {
+                    sharedPrefs.put(PrefKey.PublicKey, it.data.jwt)
+                }
+            }
+        }
 
     suspend fun register(user: User): ApiResponse<UserSession> =
         when (val keyResponse = getPublicOauthKey()) {
@@ -46,8 +60,7 @@ class UserRepository(context: Context) {
 
     suspend fun getUser(): ApiResponse<User> = apiInterface.getUser().also {
         if (it is ApiResponse.Success) {
-            sharedPrefs.put(PrefKey.UserProfileUri, it.data.profileUri.toString())
-            sharedPrefs.put(PrefKey.UserDisplayName, it.data.displayName)
+            sharedPrefs.put(PrefKey.User, Json.encodeToString(it.data))
         }
     }
 
@@ -81,6 +94,44 @@ class UserRepository(context: Context) {
                         token = token
                     )
                 )
+        }
+
+    suspend fun updatePassword(oldPassword: String, newPassword: String) =
+        when (val keyResponse = getPublicOauthKey()) {
+            is ApiResponse.Exception -> ApiResponse.Exception(keyResponse.throwable)
+            is ApiResponse.Failure -> ApiResponse.Failure(keyResponse.code, keyResponse.message)
+            is ApiResponse.Success.Empty -> ApiResponse.Success.Empty()
+            is ApiResponse.Success ->
+                apiInterface.updatePassword(
+                    PasswordUpdateRequest(
+                        oldPassword.encrypt(keyResponse.data.jwt),
+                        newPassword.encrypt(keyResponse.data.jwt)
+                    )
+                )
+        }
+
+    suspend fun updateUser(user: User) = apiInterface.updateUser(user)
+
+    suspend fun deleteAccount() = apiInterface.deleteUser().also {
+        if (it is ApiResponse.Success) {
+            EventBus.logout()
+        }
+    }
+
+    suspend fun updateProfilePicture(image: MediaFile) =
+        image.toRequestBody(context).let {
+            apiInterface.updateProfilePicture(MultipartBody.Part.createFormData("", "", it))
+        }
+
+    suspend fun removeProfilePicture() = apiInterface.deleteProfilePicture()
+
+    suspend fun requestVerificationStatus(reason: String) =
+        apiInterface.requestVerificationStatus(
+            VerificationStatusRequest(reason)
+        ).also {
+            if (it is ApiResponse.Success) {
+                sharedPrefs.put(PrefKey.User, Json.encodeToString(it.data))
+            }
         }
 
     fun saveUserToken(userSession: UserSession) {

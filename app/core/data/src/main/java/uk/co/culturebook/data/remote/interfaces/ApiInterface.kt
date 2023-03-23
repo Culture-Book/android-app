@@ -2,13 +2,14 @@ package uk.co.culturebook.data.remote.interfaces
 
 import okhttp3.MultipartBody
 import retrofit2.http.*
+import uk.co.culturebook.data.models.authentication.PasswordUpdateRequest
 import uk.co.culturebook.data.models.authentication.User
+import uk.co.culturebook.data.models.authentication.VerificationStatusRequest
+import uk.co.culturebook.data.models.authentication.enums.VerificationStatus
 import uk.co.culturebook.data.models.cultural.*
 import java.util.*
 
 interface ApiInterface {
-    @GET("/auth/v1/user")
-    suspend fun getUser(): ApiResponse<User>
 
     @POST("/auth/v1/tos")
     suspend fun updateTos(): ApiResponse<Void>
@@ -24,6 +25,31 @@ interface ApiInterface {
         @Query("name") name: String,
         @Query("type") type: String
     ): ApiResponse<List<Element>>
+
+    @POST("/auth/v1/update/password")
+    suspend fun updatePassword(
+        @Body passwordUpdate: PasswordUpdateRequest
+    ): ApiResponse<Void>
+
+    @GET("/auth/v1/user")
+    suspend fun getUser(): ApiResponse<User>
+
+    @PUT("/auth/v1/user")
+    suspend fun updateUser(@Body user: User): ApiResponse<User>
+
+    @DELETE("/auth/v1/user")
+    suspend fun deleteUser(): ApiResponse<Void>
+
+    @DELETE("/auth/v1/user/profile_picture")
+    suspend fun deleteProfilePicture(): ApiResponse<Void>
+
+    @PUT("/auth/v1/user/profile_picture")
+    @Streaming
+    @Multipart
+    suspend fun updateProfilePicture(@Part profilePicture: MultipartBody.Part): ApiResponse<Void>
+
+    @POST("/auth/v1/user/verification_status")
+    suspend fun requestVerificationStatus(@Body request: VerificationStatusRequest): ApiResponse<User>
 
     @Streaming
     @Multipart
@@ -82,6 +108,18 @@ interface ApiInterface {
 
     @POST("nearby/v1/block/culture")
     suspend fun blockCulture(@Body blockedElement: BlockedElement): ApiResponse<Void>
+
+    @DELETE("nearby/v1/block/element")
+    suspend fun unblockElement(@Query("id") id: UUID): ApiResponse<Void>
+
+    @DELETE("nearby/v1/block/contribution")
+    suspend fun unblockContribution(@Query("id") id: UUID): ApiResponse<Void>
+
+    @DELETE("nearby/v1/block/culture")
+    suspend fun unblockCulture(@Query("id") id: UUID): ApiResponse<Void>
+
+    @GET("nearby/v1/block")
+    suspend fun getBlockedList(): ApiResponse<BlockedList>
 
     @POST("nearby/v1/favourite/element")
     suspend fun favouriteElement(@Body favouriteElement: FavouriteElement): ApiResponse<Void>

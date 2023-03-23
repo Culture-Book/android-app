@@ -15,6 +15,27 @@
     <string name="verified">This content is verified.</string>
     <string name="title">Title</string>
 
+    <string name="save">Save</string>
+    <string name="upload_picture">Upload picture</string>
+    <string name="remove_picture">Remove picture</string>
+    <string name="password_change">Update password</string>
+    <string name="request_verification">Request verification status</string>
+    <string name="verification_verified">You are already verified</string>
+    <string name="verification_requested">Verification status requested</string>
+    <string name="verified_user">Verified user</string>
+    <string name="verified_text">As a verified user, your posts will have a special flare indicating your status.\n\n
+        The verified status is held for users that are credible sources of information.
+        \n\nThe verification process is manual, so please help us by telling us in a sentence why you\’d like to apply and we’ll be in touch on your user email.</string>
+    <string name="verification_reason">Reason</string>
+    <string name="verification_reason_empty">No reason was given, request not sent.</string>
+    <string name="password_updated">Password updated successfully.</string>
+    <string name="profile_picture_added">Profile picture added</string>
+    <string name="profile_picture_removed">Profile picture removed.</string>
+    <string name="user_updated">Details updated successfully.</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_confirmation">Are you sure you want to delete your account? This CANNOT be undone.</string>
+    <string name="blocked_elements">Review blocked elements</string>
+
     <string name="tos">Terms and Conditions</string>
     <string name="read_tos">Read the terms and conditions</string>
     <string name="privacy">Privacy Notice</string>
@@ -153,4 +174,5 @@
     <string name="add_comment">Add a comment</string>
     <string name="no_comments">No comments found.</string>
     <string name="share_string">Check this cultural element out!</string>
+    <string name="about_string">Culturebook is a dissertation submitted in partial fulfilment of the requirements for the degree of Bachelor of Science of the University of Portsmouth. \n\nThe vector used in the app logo is the \"The Icon Z\" \'s Historical building [Accessed: 2022–11–10]. https://thenounproject.com/browse/icons/term/historical-building</string>
 </resources>

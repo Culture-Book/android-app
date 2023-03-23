@@ -212,8 +212,8 @@ fun FilterSheet(
 
         Column(
             modifier = Modifier.heightIn(
-                min = localConfig.screenHeightDp.dp / 3,
-                max = localConfig.screenHeightDp.dp * 10
+                min = 0.dp,
+                max = localConfig.screenHeightDp.dp * .9f
             )
         ) {
 

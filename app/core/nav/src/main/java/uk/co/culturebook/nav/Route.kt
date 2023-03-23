@@ -34,6 +34,38 @@ sealed interface Route {
         override val route = "home"
     }
 
+    object Explore : Route {
+        override val route = "explore"
+    }
+
+    object Account : Route {
+        override val route = "account"
+
+        object Home : Route {
+            override val route = "${Route.Account.route}/home"
+        }
+
+        object Favourites : Route {
+            override val route = "${Route.Account.route}/favourites"
+        }
+
+        object Profile : Route {
+            override val route = "${Route.Account.route}/profile"
+        }
+
+        object Elements : Route {
+            override val route = "${Route.Account.route}/elements"
+        }
+
+        object About : Route {
+            override val route = "${Route.Account.route}/about"
+        }
+
+        object Settings : Route {
+            override val route = "${Route.Account.route}/settings"
+        }
+    }
+
     object Details : Route {
         const val id = "id"
         const val isContribution = "is_contribution"

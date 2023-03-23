@@ -262,6 +262,11 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = Icons.Default.ExitToApp.getPainter()
     }
+
+    object Verify : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.verified_user.getPainter()
+    }
 }
 
 @Composable

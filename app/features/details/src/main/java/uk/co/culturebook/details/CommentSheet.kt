@@ -62,8 +62,8 @@ fun CommentSheet(
     {
         LazyColumn(
             modifier = Modifier.heightIn(
-                min = localConfig.screenHeightDp.dp * 0.3f,
-                max = localConfig.screenHeightDp.dp * 0.9f
+                min = 0.dp,
+                max = localConfig.screenHeightDp.dp * .9f
             )
         ) {
             if (listComments.isEmpty()) {

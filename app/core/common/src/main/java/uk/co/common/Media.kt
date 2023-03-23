@@ -47,6 +47,7 @@ import coil.memory.MemoryCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uk.co.culturebook.data.logD
+import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.remote.retrofit.imageLoaderClient
 import uk.co.culturebook.data.utils.isValidContent
 import uk.co.culturebook.data.utils.isValidHttp
@@ -57,22 +58,32 @@ import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 fun rememberImageLoader(@DrawableRes errorImage: Int = AppIcon.BrokenImage.icon): ImageLoader {
     val context = LocalContext.current
     return remember {
-        context.imageLoader.newBuilder()
-            .okHttpClient(imageLoaderClient)
-            .crossfade(true)
-            .error(errorImage)
-            .memoryCache {
-                MemoryCache.Builder(context)
-                    .maxSizePercent(0.25)
-                    .build()
-            }
-            .diskCache {
-                DiskCache.Builder()
-                    .directory(context.cacheDir.resolve("image_cache"))
-                    .maxSizePercent(0.02)
-                    .build()
-            }
-            .build()
+        try {
+            context.imageLoader.newBuilder()
+                .okHttpClient(imageLoaderClient)
+                .crossfade(true)
+                .error(errorImage)
+                .memoryCache {
+                    MemoryCache.Builder(context)
+                        .maxSizePercent(0.25)
+                        .build()
+                }
+                .diskCache {
+                    DiskCache.Builder()
+                        .directory(context.cacheDir.resolve("image_cache"))
+                        .maxSizePercent(0.02)
+                        .build()
+                }
+                .build()
+        } catch (e: Exception) {
+            e.logE()
+            context.imageLoader
+                .newBuilder()
+                .okHttpClient(imageLoaderClient)
+                .crossfade(true)
+                .error(errorImage)
+                .build()
+        }
     }
 }
 
@@ -103,15 +114,44 @@ private fun Context.getVideoMediaSource(uri: Uri, headers: Map<String, String> =
             .createMediaSource(MediaItem.fromUri(uri))
     }
 
+@OptIn(androidx.media3.common.util.UnstableApi::class)
+private fun Context.getAudioMediaSource(uri: Uri, headers: Map<String, String> = mapOf()) =
+    if (uri.isValidHttp()) {
+        val httpDataFactory = DefaultHttpDataSource.Factory()
+            .setReadTimeoutMs(60000)
+            .setConnectTimeoutMs(60000)
+            .setDefaultRequestProperties(headers)
+
+        val dataSourceFactory = CacheDataSource.Factory()
+            .setUpstreamDataSourceFactory(httpDataFactory)
+            .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+
+        ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(MediaItem.fromUri(uri))
+    } else {
+        val defaultDataSourceFactory = DefaultDataSource.Factory(this)
+        val dataSourceFactory = DefaultDataSource.Factory(this, defaultDataSourceFactory)
+        ProgressiveMediaSource.Factory(dataSourceFactory)
+            .createMediaSource(MediaItem.fromUri(uri))
+    }
+
+
 @Composable
 @OptIn(UnstableApi::class)
-private fun getExoPlayer(uri: Uri, headers: Map<String, String> = mapOf()): ExoPlayer {
+private fun getExoPlayer(
+    uri: Uri,
+    headers: Map<String, String> = mapOf(),
+    isAudio: Boolean
+): ExoPlayer {
     val context = LocalContext.current
     return remember {
         ExoPlayer.Builder(context)
             .build()
             .apply {
-                val source = context.getVideoMediaSource(uri, headers)
+                val source = if (!isAudio) context.getVideoMediaSource(
+                    uri,
+                    headers
+                ) else context.getAudioMediaSource(uri, headers)
                 setMediaSource(source)
                 prepare()
             }
@@ -123,9 +163,10 @@ private fun getExoPlayer(uri: Uri, headers: Map<String, String> = mapOf()): ExoP
 fun MediaPlayer(
     modifier: Modifier = Modifier,
     uri: Uri,
-    headers: Map<String, String> = mapOf()
+    headers: Map<String, String> = mapOf(),
+    isAudio: Boolean = false,
 ) {
-    val exoPlayer = getExoPlayer(uri = uri, headers)
+    val exoPlayer = getExoPlayer(uri = uri, headers, isAudio)
 
     exoPlayer.playWhenReady = true
     exoPlayer.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
@@ -325,7 +366,7 @@ fun AudioComposable(
                 modifier = Modifier
                     .height(xxxxlSize * 3)
             ) {
-                MediaPlayer(uri = uri, headers = headers)
+                MediaPlayer(uri = uri, headers = headers, isAudio = true)
             }
         }
     }
