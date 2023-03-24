@@ -13,7 +13,7 @@ import uk.co.common.BlockOptionsState
 import uk.co.common.PageInformation
 import uk.co.common.ShowContributions
 import uk.co.culturebook.data.repositories.cultural.DetailsRepository
-import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.data.utils.toUUID
 import uk.co.culturebook.nav.Route
@@ -29,7 +29,7 @@ fun ShowContributionsRoute(navController: NavController) {
         val app = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
 
         DetailsViewModel(
-            NearbyRepository(app),
+            ElementsRepository(app),
             UpdateRepository(app),
             DetailsRepository(app),
         )

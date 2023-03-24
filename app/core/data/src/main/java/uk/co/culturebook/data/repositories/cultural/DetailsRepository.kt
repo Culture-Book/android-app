@@ -6,7 +6,6 @@ import uk.co.culturebook.data.models.cultural.Comment
 import uk.co.culturebook.data.models.cultural.Reaction
 import uk.co.culturebook.data.models.cultural.RequestComment
 import uk.co.culturebook.data.models.cultural.RequestReaction
-import uk.co.culturebook.data.utils.toUUID
 import java.util.*
 
 class DetailsRepository(context: Context) {

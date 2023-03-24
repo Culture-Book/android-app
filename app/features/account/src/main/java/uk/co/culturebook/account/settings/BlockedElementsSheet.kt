@@ -2,7 +2,6 @@ package uk.co.culturebook.account.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -10,12 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import uk.co.common.TypeFilters
 import uk.co.culturebook.data.models.cultural.BlockedContribution
 import uk.co.culturebook.data.models.cultural.BlockedCulture
 import uk.co.culturebook.data.models.cultural.BlockedElement
+import uk.co.culturebook.data.models.cultural.SearchType
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
-import uk.co.culturebook.ui.theme.largeRoundedShape
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.ModalBottomSheet
 import uk.co.culturebook.ui.theme.molecules.SecondarySurfaceWithIcon
@@ -28,9 +28,9 @@ fun BlockedElementsSheet(
     listOfElements: List<BlockedElement> = emptyList(),
     listOfContributions: List<BlockedContribution> = emptyList(),
     listOfCultures: List<BlockedCulture> = emptyList(),
-    onUnblock: (UUID, Type) -> Unit
+    onUnblock: (UUID, SearchType) -> Unit
 ) {
-    var type by remember { mutableStateOf<Type>(Type.Elements) }
+    var type by remember { mutableStateOf<SearchType>(SearchType.Element) }
 
     ModalBottomSheet(
         onDismiss = onDismiss,
@@ -46,46 +46,24 @@ fun BlockedElementsSheet(
             }
         }
     ) {
-        LazyRow(
-            modifier = Modifier.padding(vertical = mediumSize).fillMaxWidth()
-        ) {
-            item {
-                FilterChip(
-                    selected = type == Type.Elements,
-                    onClick = { type = Type.Elements },
-                    label = { Text(stringResource(R.string.elements)) },
-                    shape = largeRoundedShape
-                )
-            }
-            item {
-                FilterChip(
-                    modifier = Modifier.padding(horizontal = mediumSize),
-                    selected = type == Type.Contributions,
-                    onClick = { type = Type.Contributions },
-                    label = { Text(stringResource(R.string.contributions)) },
-                    shape = largeRoundedShape
-                )
-            }
-            item {
-                FilterChip(
-                    selected = type == Type.Cultures,
-                    onClick = { type = Type.Cultures },
-                    label = { Text(stringResource(R.string.cultures)) },
-                    shape = largeRoundedShape
-                )
-            }
-        }
+        TypeFilters(
+            modifier = Modifier
+                .padding(vertical = mediumSize)
+                .fillMaxWidth(),
+            type = type,
+            onTypeChanged = { type = it }
+        )
 
         when (type) {
-            Type.Elements -> BlockedElementsList(
+            SearchType.Element -> BlockedElementsList(
                 listOfElements = listOfElements,
                 onUnblock = onUnblock
             )
-            Type.Contributions -> BlockedContributionsList(
+            SearchType.Contribution -> BlockedContributionsList(
                 listOfContributions = listOfContributions,
                 onUnblock = onUnblock
             )
-            Type.Cultures -> BlockedCulturesList(
+            SearchType.Culture -> BlockedCulturesList(
                 listOfCultures = listOfCultures,
                 onUnblock = onUnblock
             )
@@ -97,7 +75,7 @@ fun BlockedElementsSheet(
 fun BlockedElementsList(
     modifier: Modifier = Modifier,
     listOfElements: List<BlockedElement>,
-    onUnblock: (UUID, Type) -> Unit
+    onUnblock: (UUID, SearchType) -> Unit
 ) {
     val localConfig = LocalConfiguration.current
     LazyColumn(
@@ -117,7 +95,7 @@ fun BlockedElementsList(
                         contentDescription = "culture icon"
                     )
                 },
-                onButtonClicked = { onUnblock(listOfElements[index].uuid, Type.Elements) }
+                onButtonClicked = { onUnblock(listOfElements[index].uuid, SearchType.Element) }
             )
         }
     }
@@ -127,7 +105,7 @@ fun BlockedElementsList(
 fun BlockedContributionsList(
     modifier: Modifier = Modifier,
     listOfContributions: List<BlockedContribution>,
-    onUnblock: (UUID, Type) -> Unit
+    onUnblock: (UUID, SearchType) -> Unit
 ) {
     val localConfig = LocalConfiguration.current
     LazyColumn(
@@ -147,7 +125,12 @@ fun BlockedContributionsList(
                         contentDescription = "culture icon"
                     )
                 },
-                onButtonClicked = { onUnblock(listOfContributions[index].uuid, Type.Contributions) }
+                onButtonClicked = {
+                    onUnblock(
+                        listOfContributions[index].uuid,
+                        SearchType.Contribution
+                    )
+                }
             )
         }
     }
@@ -157,7 +140,7 @@ fun BlockedContributionsList(
 fun BlockedCulturesList(
     modifier: Modifier = Modifier,
     listOfCultures: List<BlockedCulture>,
-    onUnblock: (UUID, Type) -> Unit
+    onUnblock: (UUID, SearchType) -> Unit
 ) {
     val localConfig = LocalConfiguration.current
     LazyColumn(
@@ -177,15 +160,8 @@ fun BlockedCulturesList(
                         contentDescription = "culture icon"
                     )
                 },
-                onButtonClicked = { onUnblock(listOfCultures[index].uuid, Type.Cultures) }
+                onButtonClicked = { onUnblock(listOfCultures[index].uuid, SearchType.Culture) }
             )
         }
     }
-}
-
-
-sealed interface Type {
-    object Elements : Type
-    object Contributions : Type
-    object Cultures : Type
 }

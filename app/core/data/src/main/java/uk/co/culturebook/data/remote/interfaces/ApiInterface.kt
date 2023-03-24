@@ -5,7 +5,6 @@ import retrofit2.http.*
 import uk.co.culturebook.data.models.authentication.PasswordUpdateRequest
 import uk.co.culturebook.data.models.authentication.User
 import uk.co.culturebook.data.models.authentication.VerificationStatusRequest
-import uk.co.culturebook.data.models.authentication.enums.VerificationStatus
 import uk.co.culturebook.data.models.cultural.*
 import java.util.*
 
@@ -78,8 +77,18 @@ interface ApiInterface {
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Element>>
 
+    @POST("nearby/v1/elements/user")
+    suspend fun getUserElements(
+        @Body searchCriteria: SearchCriteria
+    ): ApiResponse<List<Element>>
+
     @POST("nearby/v1/cultures")
     suspend fun getCultures(
+        @Body searchCriteria: SearchCriteria
+    ): ApiResponse<List<Culture>>
+
+    @POST("nearby/v1/cultures/user")
+    suspend fun getUserCultures(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Culture>>
 
@@ -90,6 +99,41 @@ interface ApiInterface {
     suspend fun getContributions(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Contribution>>
+
+    @DELETE("nearby/v1/contributions")
+    suspend fun deleteContribution(
+        @Query("id") id: UUID
+    ): ApiResponse<Void>
+
+    @DELETE("nearby/v1/elements")
+    suspend fun deleteCulture(
+        @Query("id") id: UUID
+    ): ApiResponse<Void>
+
+    @DELETE("nearby/v1/cultures")
+    suspend fun deleteElement(
+        @Query("id") id: UUID
+    ): ApiResponse<Void>
+
+    @POST("nearby/v1/contributions/user")
+    suspend fun getUserContributions(
+        @Body searchCriteria: SearchCriteria
+    ): ApiResponse<List<Contribution>>
+
+    @POST("nearby/v1/contributions/favourite")
+    suspend fun getFavouriteContributions(
+        @Body searchCriteria: SearchCriteria
+    ): ApiResponse<List<Contribution>>
+
+    @POST("nearby/v1/cultures/favourite")
+    suspend fun getFavouriteCultures(
+        @Body searchCriteria: SearchCriteria
+    ): ApiResponse<List<Culture>>
+
+    @POST("nearby/v1/elements/favourite")
+    suspend fun getFavouriteElements(
+        @Body searchCriteria: SearchCriteria
+    ): ApiResponse<List<Element>>
 
     @GET("nearby/v1/contributions/media")
     suspend fun getContributionsMedia(@Query("contribution_id") contributionId: UUID): ApiResponse<List<Media>>

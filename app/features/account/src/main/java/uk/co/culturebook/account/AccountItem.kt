@@ -15,14 +15,34 @@ import uk.co.culturebook.ui.theme.*
 
 sealed interface AccountItem {
     val icon: AppIcon
-    @get:StringRes val titleId: Int
+
+    @get:StringRes
+    val titleId: Int
     val route: String
 
-    data class Profile(override val icon: AppIcon, @StringRes override val titleId: Int, override val route: String): AccountItem
-    data class Favourites(override val icon: AppIcon, @StringRes override val titleId: Int, override val route: String): AccountItem
-    data class Settings(override val icon: AppIcon, @StringRes override val titleId: Int, override val route: String): AccountItem
-    data class About(override val icon: AppIcon, @StringRes override val titleId: Int, override val route: String): AccountItem
-    data class Elements(override val icon: AppIcon, @StringRes override val titleId: Int, override val route: String): AccountItem
+    data class Profile(
+        override val icon: AppIcon,
+        @StringRes override val titleId: Int,
+        override val route: String
+    ) : AccountItem
+
+    data class Settings(
+        override val icon: AppIcon,
+        @StringRes override val titleId: Int,
+        override val route: String
+    ) : AccountItem
+
+    data class About(
+        override val icon: AppIcon,
+        @StringRes override val titleId: Int,
+        override val route: String
+    ) : AccountItem
+
+    data class Elements(
+        override val icon: AppIcon,
+        @StringRes override val titleId: Int,
+        override val route: String
+    ) : AccountItem
 }
 
 
@@ -54,7 +74,6 @@ fun AccountItemComposable(icon: AppIcon, title: String, onClick: () -> Unit = {}
 val AllAccountItems: List<AccountItem>
     get() = listOf(
         AccountItem.Profile(AppIcon.Account, R.string.profile, Route.Account.Profile.route),
-        AccountItem.Favourites(AppIcon.FavouriteFilled, R.string.favourites, Route.Account.Favourites.route),
         AccountItem.Settings(AppIcon.Settings, R.string.settings, Route.Account.Settings.route),
         AccountItem.Elements(AppIcon.Castle, R.string.elements, Route.Account.Elements.route),
         AccountItem.About(AppIcon.About, R.string.about, Route.Account.About.route),

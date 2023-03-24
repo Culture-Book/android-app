@@ -1,6 +1,6 @@
 package uk.co.culturebook.account.settings
 
-import java.util.UUID
+import java.util.*
 
 sealed interface SettingsEvent {
     object Idle : SettingsEvent

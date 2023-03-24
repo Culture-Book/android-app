@@ -22,7 +22,7 @@ class UpdateRepository(context: Context) {
         apiInterface.blockCulture(BlockedElement(it))
     }
 
-    suspend fun unblockElement(uuid: UUID) =apiInterface.unblockElement(uuid)
+    suspend fun unblockElement(uuid: UUID) = apiInterface.unblockElement(uuid)
 
     suspend fun unblockContribution(uuid: UUID) = apiInterface.unblockContribution(uuid)
 

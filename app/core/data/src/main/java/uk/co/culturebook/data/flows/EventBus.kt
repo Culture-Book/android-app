@@ -16,6 +16,10 @@ object EventBus {
         _userSessionFlow.value = UserSessionState.LoggedOut
     }
 
+    fun login() {
+        _userSessionFlow.value = UserSessionState.Idle
+    }
+
     fun registerRunningWorker(id: UUID) {
         _workerFlow.value = id
     }

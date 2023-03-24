@@ -35,7 +35,10 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                 is ProfileEvent.AddProfilePicture -> addProfilePicture(event.profilePicture)
                 is ProfileEvent.UpdateUser -> updateUser(event.user)
                 is ProfileEvent.RequestVerificationStatus -> requestVerificationStatus(event.reason)
-                is ProfileEvent.UpdatePassword -> updatePassword(event.oldPassword, event.newPassword)
+                is ProfileEvent.UpdatePassword -> updatePassword(
+                    event.oldPassword,
+                    event.newPassword
+                )
             }
         }
     }

@@ -244,6 +244,7 @@ sealed interface AppIcon {
 
     object AccountCircle : AppIcon {
         val icon = R.drawable.ic_account_circle
+
         @Composable
         override fun getPainter() = icon.getPainter()
     }

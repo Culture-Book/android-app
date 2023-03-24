@@ -59,7 +59,7 @@ sealed interface PrefKey {
         override val key = "user"
     }
 
-    object PublicKey: PrefKey {
+    object PublicKey : PrefKey {
         override val key = "public_key"
     }
 }

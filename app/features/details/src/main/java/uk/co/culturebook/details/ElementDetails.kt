@@ -192,6 +192,10 @@ fun DetailScreen(
                 modifier = Modifier
                     .size(height = xxxxlSize, width = xxxxlSize * 1.5f),
                 uri = localMedia.uri.toUri(),
+                headers = mapOf(
+                    Constants.AuthorizationHeader to Constants.getBearerValue(token),
+                    Constants.ApiKeyHeader to apiKey
+                )
             )
         }
 
@@ -299,7 +303,7 @@ fun DetailScreen(
                             modifier = Modifier
                                 .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
                                 .padding(end = mediumSize),
-                            uri = it.uri.toUri(),
+                            uri = it.uri.toUri()
                         )
                     } else if (it.isVideo()) {
                         VideoComposable(
@@ -308,9 +312,7 @@ fun DetailScreen(
                                 .padding(end = mediumSize),
                             uri = it.uri.toUri(),
                             headers = mapOf(
-                                Constants.AuthorizationHeader to Constants.getBearerValue(
-                                    token
-                                ),
+                                Constants.AuthorizationHeader to Constants.getBearerValue(token),
                                 Constants.ApiKeyHeader to apiKey
                             )
                         )
@@ -320,6 +322,10 @@ fun DetailScreen(
                                 .size(height = xxxxlSize, width = xxxxlSize * 1.5f)
                                 .padding(end = mediumSize),
                             uri = it.uri.toUri(),
+                            headers = mapOf(
+                                Constants.AuthorizationHeader to Constants.getBearerValue(token),
+                                Constants.ApiKeyHeader to apiKey
+                            )
                         )
                     }
                 }

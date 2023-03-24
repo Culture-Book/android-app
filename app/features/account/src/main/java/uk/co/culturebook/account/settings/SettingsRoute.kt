@@ -13,6 +13,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
 import uk.co.culturebook.data.models.cultural.BlockedList
+import uk.co.culturebook.data.models.cultural.SearchType
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.ui.R
@@ -58,9 +59,13 @@ fun SettingsRoute(navController: NavController) {
             onDismiss = { showBlockedElements = false },
             onUnblock = { uuid, type ->
                 when (type) {
-                    Type.Elements -> viewModel.postEvent(SettingsEvent.UnblockElement(uuid))
-                    Type.Contributions -> viewModel.postEvent(SettingsEvent.UnblockContribution(uuid))
-                    Type.Cultures -> viewModel.postEvent(SettingsEvent.UnblockCulture(uuid))
+                    SearchType.Element -> viewModel.postEvent(SettingsEvent.UnblockElement(uuid))
+                    SearchType.Contribution -> viewModel.postEvent(
+                        SettingsEvent.UnblockContribution(
+                            uuid
+                        )
+                    )
+                    SearchType.Culture -> viewModel.postEvent(SettingsEvent.UnblockCulture(uuid))
                 }
             }
         )

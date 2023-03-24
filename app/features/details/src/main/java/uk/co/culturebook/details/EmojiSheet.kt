@@ -110,7 +110,7 @@ fun EmojiPopUp(
                     emoji = emoji.reaction,
                     color = background,
                     emojiSize = emojiSize,
-                    onEmojiSelected = { if(emoji.isMine) onDelete(it) else onEmojiSelected(it) },
+                    onEmojiSelected = { if (emoji.isMine) onDelete(it) else onEmojiSelected(it) },
                     number = emojis[emoji]
                 )
             }

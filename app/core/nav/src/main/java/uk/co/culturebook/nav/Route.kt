@@ -45,10 +45,6 @@ sealed interface Route {
             override val route = "${Route.Account.route}/home"
         }
 
-        object Favourites : Route {
-            override val route = "${Route.Account.route}/favourites"
-        }
-
         object Profile : Route {
             override val route = "${Route.Account.route}/profile"
         }

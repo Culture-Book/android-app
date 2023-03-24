@@ -12,13 +12,13 @@ import uk.co.culturebook.data.models.cultural.Element
 import uk.co.culturebook.data.models.cultural.SearchCriteria
 import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
-import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import java.util.*
 
 class LinkElementsViewModel(
     initialSelectedElements: List<Element> = emptyList(),
-    private val nearbyRepository: NearbyRepository,
+    private val elementsRepository: ElementsRepository,
     private val updateRepository: UpdateRepository
 ) : ViewModel() {
     private val _linkState = MutableStateFlow<LinkState>(LinkState.Idle)
@@ -40,17 +40,17 @@ class LinkElementsViewModel(
     }
 
     private fun toggleSelection(element: Element) {
-        if (selectedElements.contains(element)) {
-            selectedElements -= element
+        selectedElements = if (selectedElements.contains(element)) {
+            selectedElements - element
         } else {
-            selectedElements += element
+            selectedElements + element
         }
     }
 
     private suspend fun fetchElements(searchCriteria: SearchCriteria) {
         _linkState.emit(LinkState.Loading)
 
-        val state = when (val response = nearbyRepository.getElements(searchCriteria)) {
+        val state = when (val response = elementsRepository.getElements(searchCriteria)) {
             is ApiResponse.Success.Empty,
             is ApiResponse.Exception,
             is ApiResponse.Failure -> LinkState.Error

@@ -122,11 +122,7 @@ private fun Context.getAudioMediaSource(uri: Uri, headers: Map<String, String> =
             .setConnectTimeoutMs(60000)
             .setDefaultRequestProperties(headers)
 
-        val dataSourceFactory = CacheDataSource.Factory()
-            .setUpstreamDataSourceFactory(httpDataFactory)
-            .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
-
-        ProgressiveMediaSource.Factory(dataSourceFactory)
+        ProgressiveMediaSource.Factory(httpDataFactory)
             .createMediaSource(MediaItem.fromUri(uri))
     } else {
         val defaultDataSourceFactory = DefaultDataSource.Factory(this)

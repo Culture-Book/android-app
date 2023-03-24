@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumRoundedShape

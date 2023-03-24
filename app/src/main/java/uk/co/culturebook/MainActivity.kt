@@ -4,10 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
@@ -16,20 +13,20 @@ import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import uk.co.culturebook.composables.App
 import uk.co.culturebook.composables.ManageWorkerState
-import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.models.authentication.UserSessionState
 import uk.co.culturebook.data.remote_config.getRemoteConfig
-import uk.co.culturebook.data.remove
 import uk.co.culturebook.data.sharedPreferences
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.states.AppState
 import uk.co.culturebook.states.rememberAppState
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
+    private var loggingOut by mutableStateOf(false)
 
     private fun initializeFirebase() {
         FirebaseApp.initializeApp(this) ?: "Firebase not Initialised".logD().also { return }
@@ -55,7 +52,11 @@ class MainActivity : AppCompatActivity() {
 
             AppEventBus(navController, appState)
 
-            App(appState, navController)
+            if (loggingOut) {
+                LoadingComposable()
+            } else {
+                App(appState, navController)
+            }
         }
     }
 
@@ -68,10 +69,16 @@ class MainActivity : AppCompatActivity() {
 
         DisposableEffect(userSessionState) {
             if (userSessionState is UserSessionState.LoggedOut) {
-                sharedPreferences.remove(PrefKey.AccessToken)
+                // Clear all data on logout
+                sharedPreferences.edit().clear().apply()
+                cacheDir.listFiles()?.forEach { it.delete() }
+
                 navController.navigateTop(Route.Login)
+                EventBus.login() // Reset the state after we are done with logging out
             }
-            onDispose {}
+            onDispose {
+                loggingOut = false
+            }
         }
     }
 

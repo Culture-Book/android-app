@@ -33,9 +33,10 @@ fun ShowElements(
     elements: List<Element> = emptyList(),
     selectedElements: List<Element> = emptyList(),
     showTitle: Boolean = true,
+    onEditClicked: ((Element) -> Unit)? = null,
     onElementClicked: (Element) -> Unit = {},
-    onOptionsClicked: (BlockOptionsState) -> Unit,
-    onFavouriteClicked: (UUID) -> Unit,
+    onOptionsClicked: ((BlockOptionsState) -> Unit)? = null,
+    onFavouriteClicked: ((UUID) -> Unit)? = null,
     lastComposable: @Composable () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
@@ -68,7 +69,8 @@ fun ShowElements(
                     onElementClicked = onElementClicked,
                     onOptionsClicked = onOptionsClicked,
                     onFavouriteClicked = onFavouriteClicked,
-                    isSelected = isSelected
+                    isSelected = isSelected,
+                    onEditClicked = onEditClicked
                 )
             }
         }
@@ -83,9 +85,10 @@ fun ShowContributions(
     modifier: Modifier = Modifier,
     contributions: List<Contribution>,
     onClicked: (Contribution) -> Unit,
-    onOptionsClicked: (BlockOptionsState) -> Unit,
-    onFavouriteClicked: (UUID) -> Unit,
-    lastComposable: @Composable () -> Unit
+    onEditClicked: ((Contribution) -> Unit)? = null,
+    onOptionsClicked: ((BlockOptionsState) -> Unit)? = null,
+    onFavouriteClicked: ((UUID) -> Unit)? = null,
+    lastComposable: (@Composable () -> Unit)? = null
 ) {
     LazyColumn(modifier = modifier) {
         item {
@@ -113,12 +116,13 @@ fun ShowContributions(
                     contribution = it,
                     onClicked = onClicked,
                     onOptionsClicked = onOptionsClicked,
-                    onFavouriteClicked = onFavouriteClicked
+                    onFavouriteClicked = onFavouriteClicked,
+                    onEditClicked = onEditClicked
                 )
             }
         }
         item {
-            lastComposable()
+            lastComposable?.invoke()
         }
     }
 }
@@ -128,8 +132,9 @@ fun ShowCultures(
     modifier: Modifier = Modifier,
     cultures: List<Culture>,
     onClicked: (Culture) -> Unit,
-    onOptionsClicked: (BlockOptionsState) -> Unit,
-    onFavouriteClicked: (UUID) -> Unit,
+    onEditClicked: ((Culture) -> Unit)? = null,
+    onOptionsClicked: ((BlockOptionsState) -> Unit)? = null,
+    onFavouriteClicked: ((UUID) -> Unit)? = null,
     lastComposable: @Composable () -> Unit
 ) {
     LazyColumn(modifier = modifier) {
@@ -158,7 +163,8 @@ fun ShowCultures(
                     culture = it,
                     onClicked = onClicked,
                     onOptionsClicked = onOptionsClicked,
-                    onFavouriteClicked = onFavouriteClicked
+                    onFavouriteClicked = onFavouriteClicked,
+                    onEditClicked = onEditClicked
                 )
             }
         }
@@ -175,8 +181,9 @@ fun ElementComposable(
     element: Element,
     isSelected: Boolean = false,
     onElementClicked: (Element) -> Unit,
-    onFavouriteClicked: (UUID) -> Unit = {},
-    onOptionsClicked: (BlockOptionsState) -> Unit
+    onEditClicked: ((Element) -> Unit)? = null,
+    onFavouriteClicked: ((UUID) -> Unit)? = null,
+    onOptionsClicked: ((BlockOptionsState) -> Unit)? = null
 ) {
     Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onElementClicked(element) }) {
         val media = element.media.firstOrNull()
@@ -256,36 +263,56 @@ fun ElementComposable(
                         var expanded by remember { mutableStateOf(false) }
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                                IconButton(onClick = { onFavouriteClicked(element.id!!) }) {
-                                    if (element.favourite) {
+                                if (onEditClicked != null) {
+                                    IconButton(onClick = { onEditClicked(element) }) {
                                         Icon(
-                                            AppIcon.FavouriteFilled.getPainter(),
-                                            contentDescription = "fav"
-                                        )
-                                    } else {
-                                        Icon(
-                                            AppIcon.FavouriteOutline.getPainter(),
-                                            contentDescription = "fav"
+                                            AppIcon.Bin.getPainter(),
+                                            contentDescription = "Bin"
                                         )
                                     }
                                 }
-                                IconButton(onClick = { expanded = true }) {
-                                    Icon(AppIcon.MoreVert.getPainter(), contentDescription = "options")
+
+                                if (onFavouriteClicked != null) {
+                                    IconButton(onClick = { onFavouriteClicked(element.id!!) }) {
+                                        if (element.favourite) {
+                                            Icon(
+                                                AppIcon.FavouriteFilled.getPainter(),
+                                                contentDescription = "fav"
+                                            )
+                                        } else {
+                                            Icon(
+                                                AppIcon.FavouriteOutline.getPainter(),
+                                                contentDescription = "fav"
+                                            )
+                                        }
+                                    }
+                                }
+                                if (onOptionsClicked != null) {
+                                    IconButton(onClick = { expanded = true }) {
+                                        Icon(
+                                            AppIcon.MoreVert.getPainter(),
+                                            contentDescription = "options"
+                                        )
+                                    }
                                 }
                             }
-                            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Hide(id = element.id!!))
-                                }, text = { Text(stringResource(R.string.hide)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Report(id = element.id!!))
-                                }, text = { Text(stringResource(R.string.report)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Block(id = element.id!!))
-                                }, text = { Text(stringResource(R.string.block)) })
+                            if (onOptionsClicked != null) {
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }) {
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Hide(id = element.id!!))
+                                    }, text = { Text(stringResource(R.string.hide)) })
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Report(id = element.id!!))
+                                    }, text = { Text(stringResource(R.string.report)) })
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Block(id = element.id!!))
+                                    }, text = { Text(stringResource(R.string.block)) })
+                                }
                             }
                         }
                     })
@@ -311,8 +338,9 @@ fun ContributionComposable(
     modifier: Modifier = Modifier,
     contribution: Contribution,
     onClicked: (Contribution) -> Unit,
-    onFavouriteClicked: (UUID) -> Unit = {},
-    onOptionsClicked: (BlockOptionsState) -> Unit
+    onEditClicked: ((Contribution) -> Unit)? = null,
+    onFavouriteClicked: ((UUID) -> Unit)? = null,
+    onOptionsClicked: ((BlockOptionsState) -> Unit)? = null
 ) {
     Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onClicked(contribution) }) {
         val media = contribution.media.firstOrNull()
@@ -377,36 +405,56 @@ fun ContributionComposable(
                         var expanded by remember { mutableStateOf(false) }
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                                IconButton(onClick = { onFavouriteClicked(contribution.id!!) }) {
-                                    if (contribution.favourite) {
+                                if (onEditClicked != null) {
+                                    IconButton(onClick = { onEditClicked(contribution) }) {
                                         Icon(
-                                            AppIcon.FavouriteFilled.getPainter(),
-                                            contentDescription = "fav"
-                                        )
-                                    } else {
-                                        Icon(
-                                            AppIcon.FavouriteOutline.getPainter(),
-                                            contentDescription = "fav"
+                                            AppIcon.Bin.getPainter(),
+                                            contentDescription = "Bin"
                                         )
                                     }
                                 }
-                                IconButton(onClick = { expanded = true }) {
-                                    Icon(AppIcon.MoreVert.getPainter(), contentDescription = "options")
+
+                                if (onFavouriteClicked != null) {
+                                    IconButton(onClick = { onFavouriteClicked(contribution.id!!) }) {
+                                        if (contribution.favourite) {
+                                            Icon(
+                                                AppIcon.FavouriteFilled.getPainter(),
+                                                contentDescription = "fav"
+                                            )
+                                        } else {
+                                            Icon(
+                                                AppIcon.FavouriteOutline.getPainter(),
+                                                contentDescription = "fav"
+                                            )
+                                        }
+                                    }
+                                }
+                                if (onOptionsClicked != null) {
+                                    IconButton(onClick = { expanded = true }) {
+                                        Icon(
+                                            AppIcon.MoreVert.getPainter(),
+                                            contentDescription = "options"
+                                        )
+                                    }
                                 }
                             }
-                            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Hide(id = contribution.id!!))
-                                }, text = { Text(stringResource(R.string.hide)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Report(id = contribution.id!!))
-                                }, text = { Text(stringResource(R.string.report)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Block(id = contribution.id!!))
-                                }, text = { Text(stringResource(R.string.block)) })
+                            if (onOptionsClicked != null) {
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }) {
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Hide(id = contribution.id!!))
+                                    }, text = { Text(stringResource(R.string.hide)) })
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Report(id = contribution.id!!))
+                                    }, text = { Text(stringResource(R.string.report)) })
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Block(id = contribution.id!!))
+                                    }, text = { Text(stringResource(R.string.block)) })
+                                }
                             }
                         }
                     })
@@ -432,8 +480,9 @@ fun CultureComposable(
     modifier: Modifier = Modifier,
     culture: Culture,
     onClicked: (Culture) -> Unit,
-    onFavouriteClicked: (UUID) -> Unit = {},
-    onOptionsClicked: (BlockOptionsState) -> Unit
+    onEditClicked: ((Culture) -> Unit)? = null,
+    onFavouriteClicked: ((UUID) -> Unit)? = null,
+    onOptionsClicked: ((BlockOptionsState) -> Unit)? = null
 ) {
     Card(modifier = modifier, shape = mediumRoundedShape, onClick = { onClicked(culture) }) {
         Surface(modifier = Modifier.fillMaxWidth(), tonalElevation = xsSize) {
@@ -445,46 +494,54 @@ fun CultureComposable(
                     Row(
                         modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
                     ) {
-                        IconButton(onClick = { onFavouriteClicked(culture.id!!) }) {
-                            if (culture.favourite) {
+                        if (onEditClicked != null) {
+                            IconButton(onClick = { onEditClicked(culture) }) {
                                 Icon(
-                                    AppIcon.FavouriteFilled.getPainter(), contentDescription = "fav"
-                                )
-                            } else {
-                                Icon(
-                                    AppIcon.FavouriteOutline.getPainter(),
-                                    contentDescription = "fav"
+                                    AppIcon.Bin.getPainter(),
+                                    contentDescription = "Bin"
                                 )
                             }
                         }
 
-                        IconButton(onClick = { expanded = true }) {
-                            Icon(AppIcon.MoreVert.getPainter(), contentDescription = "options")
+                        if (onFavouriteClicked != null) {
+                            IconButton(onClick = { onFavouriteClicked(culture.id!!) }) {
+                                if (culture.favourite) {
+                                    Icon(
+                                        AppIcon.FavouriteFilled.getPainter(),
+                                        contentDescription = "fav"
+                                    )
+                                } else {
+                                    Icon(
+                                        AppIcon.FavouriteOutline.getPainter(),
+                                        contentDescription = "fav"
+                                    )
+                                }
+                            }
+                        }
 
-                            DropdownMenu(expanded = expanded,
-                                onDismissRequest = { expanded = false }) {
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Hide(id = culture.id!!))
-                                }, text = { Text(stringResource(R.string.hide)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Report(id = culture.id!!))
-                                }, text = { Text(stringResource(R.string.report)) })
-                                DropdownMenuItem(onClick = {
-                                    expanded = false
-                                    onOptionsClicked(BlockOptionsState.Block(id = culture.id!!))
-                                }, text = { Text(stringResource(R.string.block)) })
+                        if (onOptionsClicked != null) {
+                            IconButton(onClick = { expanded = true }) {
+                                Icon(AppIcon.MoreVert.getPainter(), contentDescription = "options")
+
+                                DropdownMenu(expanded = expanded,
+                                    onDismissRequest = { expanded = false }) {
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Hide(id = culture.id!!))
+                                    }, text = { Text(stringResource(R.string.hide)) })
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Report(id = culture.id!!))
+                                    }, text = { Text(stringResource(R.string.report)) })
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        onOptionsClicked(BlockOptionsState.Block(id = culture.id!!))
+                                    }, text = { Text(stringResource(R.string.block)) })
+                                }
                             }
                         }
                     }
                 })
         }
     }
-}
-
-sealed interface BlockOptionsState {
-    data class Hide(val id: UUID) : BlockOptionsState
-    data class Report(val id: UUID) : BlockOptionsState
-    data class Block(val id: UUID) : BlockOptionsState
 }

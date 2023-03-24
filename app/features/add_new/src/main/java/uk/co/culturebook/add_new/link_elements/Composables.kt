@@ -17,7 +17,7 @@ import uk.co.common.PageInformation
 import uk.co.common.ShowElements
 import uk.co.culturebook.data.models.cultural.Element
 import uk.co.culturebook.data.models.cultural.SearchCriteriaState
-import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
@@ -35,7 +35,7 @@ fun LinkElementsRoute(
 ) {
     val viewModel = viewModel {
         val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
-        LinkElementsViewModel(elements, NearbyRepository(app), UpdateRepository(app))
+        LinkElementsViewModel(elements, ElementsRepository(app), UpdateRepository(app))
     }
     val searchCriteria = viewModel.searchCriteria
     val state by viewModel.linkState.collectAsState()

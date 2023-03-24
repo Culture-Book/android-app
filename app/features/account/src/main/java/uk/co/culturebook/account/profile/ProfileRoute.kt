@@ -23,6 +23,7 @@ import uk.co.culturebook.data.utils.getFileName
 import uk.co.culturebook.data.utils.getFileSize
 import uk.co.culturebook.data.utils.getMimeType
 import uk.co.culturebook.ui.R
+import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.DisplayNameField
 import uk.co.culturebook.ui.theme.molecules.EmailField
@@ -171,14 +172,20 @@ fun ProfileContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(onClick = onUpdateProfilePicture) {
-                    Text(stringResource(id = R.string.upload_picture))
+                FilledTonalIconButton(onClick = onUpdateProfilePicture) {
+                    Icon(
+                        painter = AppIcon.Add.getPainter(),
+                        contentDescription = stringResource(id = R.string.upload_picture)
+                    )
                 }
 
                 ProfilePicture()
 
-                TextButton(onClick = onRemoveProfilePicture) {
-                    Text(stringResource(id = R.string.remove_picture))
+                FilledTonalIconButton(onClick = onRemoveProfilePicture) {
+                    Icon(
+                        painter = AppIcon.Bin.getPainter(),
+                        contentDescription = stringResource(id = R.string.remove_picture)
+                    )
                 }
             }
         }

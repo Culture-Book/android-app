@@ -2,15 +2,20 @@ package uk.co.culturebook.ui.theme.molecules
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import uk.co.culturebook.ui.theme.*
+import uk.co.culturebook.ui.theme.mediumRoundedShape
+import uk.co.culturebook.ui.theme.mediumSize
+import uk.co.culturebook.ui.theme.smallSize
+import uk.co.culturebook.ui.theme.xxsSize
 
 
 @Composable

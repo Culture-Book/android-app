@@ -1,6 +1,5 @@
 package uk.co.culturebook.account.settings
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,12 +10,12 @@ import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
-import java.util.UUID
+import java.util.*
 
 class SettingsViewModel(
     private val userRepository: UserRepository,
     private val updateRepository: UpdateRepository
-): ViewModel() {
+) : ViewModel() {
     private val _state = MutableStateFlow<SettingsState>(SettingsState.Idle)
     val state get() = _state.asStateFlow()
 
@@ -90,7 +89,11 @@ class SettingsViewModel(
         when (val response = updateRepository.getBlockedList()) {
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> {
-                updateState(SettingsState.BlockedListFetched(response.getDataOrNull() ?: BlockedList()))
+                updateState(
+                    SettingsState.BlockedListFetched(
+                        response.getDataOrNull() ?: BlockedList()
+                    )
+                )
             }
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {

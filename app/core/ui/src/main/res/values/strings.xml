@@ -35,6 +35,8 @@
     <string name="delete_account">Delete account</string>
     <string name="delete_account_confirmation">Are you sure you want to delete your account? This CANNOT be undone.</string>
     <string name="blocked_elements">Review blocked elements</string>
+    <string name="delete_element">Delete element</string>
+    <string name="delete_element_text">Are you sure you want to delete this element? Related content such as comments and reactions will be deleted as well.</string>
 
     <string name="tos">Terms and Conditions</string>
     <string name="read_tos">Read the terms and conditions</string>
@@ -105,6 +107,7 @@
     <string name="select_type_message">Select the cultural element type this tradition falls under.</string>
 
     <string name="select_title">What is the name of this element?</string>
+    <string name="select_title_short">Change title</string>
     <string name="select_title_message">Add the name that best describes this tradition.</string>
     <string name="name">Name</string>
     <string name="next">Next</string>

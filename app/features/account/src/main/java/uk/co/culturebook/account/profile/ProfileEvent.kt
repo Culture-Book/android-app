@@ -1,6 +1,5 @@
 package uk.co.culturebook.account.profile
 
-import android.net.Uri
 import uk.co.culturebook.data.models.authentication.User
 import uk.co.culturebook.data.models.cultural.MediaFile
 

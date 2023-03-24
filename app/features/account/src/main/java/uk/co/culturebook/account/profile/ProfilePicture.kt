@@ -24,6 +24,7 @@ import uk.co.common.rememberImageLoader
 import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.models.authentication.User
 import uk.co.culturebook.data.sharedPreferences
+import uk.co.culturebook.data.utils.toUri
 import uk.co.culturebook.nav.fromJsonString
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
@@ -44,7 +45,7 @@ fun ProfilePicture(modifier: Modifier = Modifier, onProfileTapped: () -> Unit = 
             context.sharedPreferences.getString(PrefKey.User.key, null)?.fromJsonString<User>()
         }
         val displayName = user?.displayName
-        val uri = user?.profileUri
+        val uri = user?.profileUri?.toUri()
         val imageLoader = rememberImageLoader(AppIcon.AccountCircle.icon)
         if (uri != null) {
             var isSuccess by remember { mutableStateOf(false) }

@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import uk.co.common.*
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.cultural.DetailsRepository
-import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.data.utils.toUUID
 import uk.co.culturebook.nav.Route
@@ -34,9 +34,9 @@ fun DetailsScreenRoute(navController: NavController) {
     val viewModel = viewModel {
         val app = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
         val updateRepository = UpdateRepository(app)
-        val nearbyRepository = NearbyRepository(app)
+        val elementsRepository = ElementsRepository(app)
         val detailsRepository = DetailsRepository(app)
-        DetailsViewModel(nearbyRepository, updateRepository, detailsRepository)
+        DetailsViewModel(elementsRepository, updateRepository, detailsRepository)
     }
     val snackbarState = remember { SnackbarHostState() }
     val state by viewModel.detailStateFlow.collectAsState()

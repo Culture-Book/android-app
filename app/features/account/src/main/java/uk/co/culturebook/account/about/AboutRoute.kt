@@ -1,6 +1,5 @@
 package uk.co.culturebook.account.about
 
-import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,14 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.mediumSize
-import uk.co.culturebook.ui.theme.molecules.LargeDynamicRoundedTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

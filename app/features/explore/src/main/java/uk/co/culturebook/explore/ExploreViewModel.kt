@@ -11,7 +11,7 @@ import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
-import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.ui.R
 import java.util.*
@@ -19,7 +19,7 @@ import java.util.*
 class ExploreViewModel(
     private val userRepository: UserRepository,
     private val updateRepository: UpdateRepository,
-    private val nearbyRepository: NearbyRepository
+    private val elementsRepository: ElementsRepository
 ) : ViewModel() {
 
     private val _exploreState = MutableStateFlow<ExploreState>(ExploreState.Idle)
@@ -93,11 +93,11 @@ class ExploreViewModel(
 
     private fun getElements(searchCriteriaState: SearchCriteriaState) {
         viewModelScope.launch {
-            val response = nearbyRepository.getElements(searchCriteriaState.toSearchCriteria())
+            val response = elementsRepository.getElements(searchCriteriaState.toSearchCriteria())
             when (response) {
                 is ApiResponse.Success -> {
                     val elements = response.data.map { element ->
-                        val media = nearbyRepository.getElementMedia(element.id)?.getDataOrNull()
+                        val media = elementsRepository.getElementMedia(element.id)?.getDataOrNull()
                             ?: emptyList()
                         element.copy(media = media)
                     }
@@ -110,12 +110,14 @@ class ExploreViewModel(
 
     private fun getContributions(searchCriteriaState: SearchCriteriaState) {
         viewModelScope.launch {
-            val response = nearbyRepository.getContributions(searchCriteriaState.toSearchCriteria())
+            val response =
+                elementsRepository.getContributions(searchCriteriaState.toSearchCriteria())
             when (response) {
                 is ApiResponse.Success -> {
                     val contributions = response.data.map { contribution ->
                         val media =
-                            nearbyRepository.getContributionMedia(contribution.id)?.getDataOrNull()
+                            elementsRepository.getContributionMedia(contribution.id)
+                                ?.getDataOrNull()
                                 ?: emptyList()
                         contribution.copy(media = media)
                     }
@@ -128,7 +130,7 @@ class ExploreViewModel(
 
     private fun getCultures(searchCriteriaState: SearchCriteriaState) {
         viewModelScope.launch {
-            val response = nearbyRepository.getCultures(searchCriteriaState.toSearchCriteria())
+            val response = elementsRepository.getCultures(searchCriteriaState.toSearchCriteria())
             when (response) {
                 is ApiResponse.Success -> {
                     _exploreState.emit(ExploreState.Success.CulturesReceived(response.data))

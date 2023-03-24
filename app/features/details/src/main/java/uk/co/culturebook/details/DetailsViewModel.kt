@@ -9,14 +9,14 @@ import uk.co.culturebook.data.models.cultural.Comment
 import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.cultural.DetailsRepository
-import uk.co.culturebook.data.repositories.cultural.NearbyRepository
+import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.ui.R
 import java.util.*
 
 // Todo break apart the show contributions logic.
 class DetailsViewModel(
-    private val nearbyRepository: NearbyRepository,
+    private val elementsRepository: ElementsRepository,
     private val updateRepository: UpdateRepository,
     private val detailsRepository: DetailsRepository
 ) : ViewModel() {
@@ -69,14 +69,20 @@ class DetailsViewModel(
                 )
                 is DetailEvent.GetContributionComments -> getContributionComments(event.contributionId)
                 is DetailEvent.GetElementComments -> getElementComments(event.elementId)
-                is DetailEvent.FavouriteFromShowContributions -> favouriteContribution(event.contributionId, event.elementId)
-                is DetailEvent.BlockFromShowContributions -> blockContributionFromShowContributions(event.contributionId, event.elementId)
+                is DetailEvent.FavouriteFromShowContributions -> favouriteContribution(
+                    event.contributionId,
+                    event.elementId
+                )
+                is DetailEvent.BlockFromShowContributions -> blockContributionFromShowContributions(
+                    event.contributionId,
+                    event.elementId
+                )
             }
         }
     }
 
     private suspend fun getElement(uuid: UUID?) {
-        when (val response = nearbyRepository.getElement(uuid)) {
+        when (val response = elementsRepository.getElement(uuid)) {
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ElementReceived(response.data)
             )
@@ -85,7 +91,7 @@ class DetailsViewModel(
     }
 
     private suspend fun getContribution(uuid: UUID?) {
-        when (val response = nearbyRepository.getContribution(uuid)) {
+        when (val response = elementsRepository.getContribution(uuid)) {
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ContributionReceived(response.data)
             )
@@ -225,7 +231,8 @@ class DetailsViewModel(
 
     private suspend fun getContributions(uuid: UUID?) {
         searchCriteria.elementId = uuid
-        when (val response = nearbyRepository.getContributions(searchCriteria.toSearchCriteria())) {
+        when (val response =
+            elementsRepository.getContributions(searchCriteria.toSearchCriteria())) {
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ContributionsReceived(response.data)
             )

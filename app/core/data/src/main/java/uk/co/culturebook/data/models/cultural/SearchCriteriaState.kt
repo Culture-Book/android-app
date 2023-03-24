@@ -14,6 +14,7 @@ enum class SearchType {
 @Stable
 class SearchCriteriaState {
     var location: Location? by mutableStateOf(null)
+    var getFavourites: Boolean by mutableStateOf(false)
     var searchString: String? by mutableStateOf(null)
     var elementId: UUID? by mutableStateOf(null)
     var contributionId: UUID? by mutableStateOf(null)
@@ -34,6 +35,7 @@ class SearchCriteriaState {
 
     fun copy(
         _location: Location? = location,
+        _getFavourites: Boolean = getFavourites,
         _searchString: String? = searchString,
         _elementId: UUID? = elementId,
         _contributionId: UUID? = contributionId,
@@ -43,6 +45,7 @@ class SearchCriteriaState {
         _searchType: SearchType = searchType
     ) = SearchCriteriaState().apply {
         location = _location
+        getFavourites = _getFavourites
         searchString = _searchString
         elementId = _elementId
         contributionId = _contributionId
@@ -54,6 +57,7 @@ class SearchCriteriaState {
 
     fun apply(searchCriteriaState: SearchCriteriaState) {
         location = searchCriteriaState.location
+        getFavourites = searchCriteriaState.getFavourites
         searchString = searchCriteriaState.searchString
         elementId = searchCriteriaState.elementId
         contributionId = searchCriteriaState.contributionId
