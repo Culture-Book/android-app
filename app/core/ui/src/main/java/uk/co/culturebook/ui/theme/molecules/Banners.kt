@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.zIndex
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.smallSize
@@ -36,7 +37,7 @@ fun Banner(
     }
 
     Surface(
-        modifier = modifier,
+        modifier = modifier.zIndex(1f),
         onClick = onClick,
         color = bannerColor,
         contentColor = bannerContentColor
