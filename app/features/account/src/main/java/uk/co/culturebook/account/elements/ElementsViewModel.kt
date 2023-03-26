@@ -28,11 +28,8 @@ class ElementsViewModel(
                 is ElementsEvent.ConfirmDeleteContribution -> deleteContribution(event.uuid)
                 is ElementsEvent.ConfirmDeleteCulture -> deleteCulture(event.uuid)
                 is ElementsEvent.ConfirmDeleteElement -> deleteElement(event.uuid)
-                is ElementsEvent.DeleteContribution -> updateState(
-                    ElementsState.DeleteContribution(
-                        event.uuid
-                    )
-                )
+                is ElementsEvent.DeleteContribution ->
+                    updateState(ElementsState.DeleteContribution(event.uuid))
                 is ElementsEvent.DeleteCulture -> updateState(ElementsState.DeleteCulture(event.uuid))
                 is ElementsEvent.DeleteElement -> updateState(ElementsState.DeleteElement(event.uuid))
             }
@@ -130,7 +127,7 @@ class ElementsViewModel(
     private suspend fun deleteElement(uuid: UUID) {
         when (elementsRepository.deleteElement(uuid)) {
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
-                updateState(ElementsState.Idle)
+                postEvent(ElementsEvent.FetchElements)
             }
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
@@ -141,7 +138,7 @@ class ElementsViewModel(
     private suspend fun deleteContribution(uuid: UUID) {
         when (elementsRepository.deleteContribution(uuid)) {
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
-                updateState(ElementsState.Idle)
+                postEvent(ElementsEvent.FetchContributions)
             }
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
@@ -152,7 +149,7 @@ class ElementsViewModel(
     private suspend fun deleteCulture(uuid: UUID) {
         when (elementsRepository.deleteCulture(uuid)) {
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
-                updateState(ElementsState.Idle)
+                postEvent(ElementsEvent.FetchCultures)
             }
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())

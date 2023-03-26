@@ -56,14 +56,17 @@ fun BlockedElementsSheet(
 
         when (type) {
             SearchType.Element -> BlockedElementsList(
+                modifier = Modifier.fillMaxWidth(),
                 listOfElements = listOfElements,
                 onUnblock = onUnblock
             )
             SearchType.Contribution -> BlockedContributionsList(
+                modifier = Modifier.fillMaxWidth(),
                 listOfContributions = listOfContributions,
                 onUnblock = onUnblock
             )
             SearchType.Culture -> BlockedCulturesList(
+                modifier = Modifier.fillMaxWidth(),
                 listOfCultures = listOfCultures,
                 onUnblock = onUnblock
             )
@@ -79,10 +82,12 @@ fun BlockedElementsList(
 ) {
     val localConfig = LocalConfiguration.current
     LazyColumn(
-        modifier = Modifier.heightIn(
-            min = 0.dp,
-            max = localConfig.screenHeightDp.dp * .9f
-        )
+        modifier = Modifier
+            .heightIn(
+                min = 0.dp,
+                max = localConfig.screenHeightDp.dp * .9f
+            )
+            .fillMaxWidth()
     ) {
         items(listOfElements.size) { index ->
             SecondarySurfaceWithIcon(
@@ -109,10 +114,12 @@ fun BlockedContributionsList(
 ) {
     val localConfig = LocalConfiguration.current
     LazyColumn(
-        modifier = Modifier.heightIn(
-            min = 0.dp,
-            max = localConfig.screenHeightDp.dp * .9f
-        )
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(
+                min = 0.dp,
+                max = localConfig.screenHeightDp.dp * .9f
+            )
     ) {
         items(listOfContributions.size) { index ->
             SecondarySurfaceWithIcon(
@@ -144,10 +151,12 @@ fun BlockedCulturesList(
 ) {
     val localConfig = LocalConfiguration.current
     LazyColumn(
-        modifier = Modifier.heightIn(
-            min = 0.dp,
-            max = localConfig.screenHeightDp.dp * .9f
-        )
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(
+                min = 0.dp,
+                max = localConfig.screenHeightDp.dp * .9f
+            )
     ) {
         items(listOfCultures.size) { index ->
             SecondarySurfaceWithIcon(

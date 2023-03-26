@@ -51,6 +51,7 @@ class SettingsViewModel(
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> {
                 updateState(SettingsState.ElementUnblocked)
+                postEvent(SettingsEvent.FetchBlockedList)
             }
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {
@@ -64,6 +65,7 @@ class SettingsViewModel(
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> {
                 updateState(SettingsState.ElementUnblocked)
+                postEvent(SettingsEvent.FetchBlockedList)
             }
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {
@@ -77,6 +79,7 @@ class SettingsViewModel(
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> {
                 updateState(SettingsState.ElementUnblocked)
+                postEvent(SettingsEvent.FetchBlockedList)
             }
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {

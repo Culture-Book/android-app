@@ -15,6 +15,7 @@ import uk.co.common.*
 import uk.co.culturebook.account.SimpleBackAppBar
 import uk.co.culturebook.data.models.cultural.SearchType
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
+import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
@@ -54,7 +55,7 @@ fun ElementsRoute(navController: NavController) {
         is ElementsState.DeleteContribution -> {
             AlertDialog(
                 onDismissRequest = { viewModel.postEvent(ElementsEvent.Idle) },
-                title = { Text(text = stringResource(id = R.string.delete_element)) },
+                title = { Text(text = stringResource(id = R.string.delete_contribution)) },
                 text = { Text(text = stringResource(id = R.string.delete_element_text)) },
                 confirmButton = {
                     FilledTonalButton(onClick = {
@@ -64,7 +65,7 @@ fun ElementsRoute(navController: NavController) {
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { viewModel.postEvent(ElementsEvent.Idle) }) {
+                    TextButton(onClick = { viewModel.postEvent(ElementsEvent.FetchContributions) }) {
                         Text(text = stringResource(id = R.string.cancel))
                     }
                 }
@@ -72,8 +73,8 @@ fun ElementsRoute(navController: NavController) {
         }
         is ElementsState.DeleteCulture -> {
             AlertDialog(
-                onDismissRequest = { viewModel.postEvent(ElementsEvent.Idle) },
-                title = { Text(text = stringResource(id = R.string.delete_element)) },
+                onDismissRequest = { viewModel.postEvent(ElementsEvent.FetchCultures) },
+                title = { Text(text = stringResource(id = R.string.delete_culture)) },
                 text = { Text(text = stringResource(id = R.string.delete_element_text)) },
                 confirmButton = {
                     FilledTonalButton(onClick = {
@@ -102,7 +103,7 @@ fun ElementsRoute(navController: NavController) {
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { viewModel.postEvent(ElementsEvent.Idle) }) {
+                    TextButton(onClick = { viewModel.postEvent(ElementsEvent.FetchElements) }) {
                         Text(text = stringResource(id = R.string.cancel))
                     }
                 }
@@ -119,9 +120,11 @@ fun ElementsRoute(navController: NavController) {
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
-        Column(modifier = Modifier
-            .padding(padding)
-            .padding(mediumSize)) {
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .padding(mediumSize)
+        ) {
             TypeFilters(
                 type = viewModel.searchCriteriaState.searchType,
                 onTypeChanged = {
@@ -132,80 +135,109 @@ fun ElementsRoute(navController: NavController) {
             )
             when (state) {
                 is ElementsState.Loading -> LoadingComposable(padding)
-                is ElementsState.ContributionsFetched ->
+                is ElementsState.ContributionsFetched -> {
+                    val contributions = (state as ElementsState.ContributionsFetched).contributions
                     ShowContributions(
-                        contributions = (state as ElementsState.ContributionsFetched).contributions,
-                        onClicked = { navController.navigate("") },
+                        contributions = contributions,
+                        onClicked = {
+                            val route =
+                                Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
+                                        "${Route.Details.isContribution}=true"
+                            navController.navigate(route)
+                        },
                         onEditClicked = { viewModel.postEvent(ElementsEvent.DeleteContribution(it.id!!)) }
                     ) {
                         PageInformation(
                             modifier = Modifier.fillMaxWidth(),
-                            items = (state as ElementsState.ContributionsFetched).contributions,
+                            items = contributions,
                             onNextPage = { viewModel.searchCriteriaState.page++ },
                             onPreviousPage = { viewModel.searchCriteriaState.page-- },
                         )
                     }
+                }
                 is ElementsState.CulturesFetched -> {
+                    val cultures = (state as ElementsState.CulturesFetched).cultures
                     ShowCultures(
-                        cultures = (state as ElementsState.CulturesFetched).cultures,
-                        onClicked = { navController.navigate("") },
+                        cultures = cultures,
+                        onClicked = { },
                         onEditClicked = { viewModel.postEvent(ElementsEvent.DeleteCulture(it.id!!)) }
                     ) {
                         PageInformation(
                             modifier = Modifier.fillMaxWidth(),
-                            items = (state as ElementsState.CulturesFetched).cultures,
+                            items = cultures,
                             onNextPage = { viewModel.searchCriteriaState.page++ },
                             onPreviousPage = { viewModel.searchCriteriaState.page-- },
                         )
                     }
                 }
                 is ElementsState.ElementsFetched -> {
+                    val elements = (state as ElementsState.ElementsFetched).elements
                     ShowElements(
-                        elements = (state as ElementsState.ElementsFetched).elements,
-                        onElementClicked = { navController.navigate("") },
+                        elements = elements,
+                        onElementClicked = {
+                            val route =
+                                Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
+                                        "${Route.Details.isContribution}=false"
+                            navController.navigate(route)
+                        },
                         onEditClicked = { viewModel.postEvent(ElementsEvent.DeleteElement(it.id!!)) }
                     ) {
                         PageInformation(
                             modifier = Modifier.fillMaxWidth(),
-                            items = (state as ElementsState.ElementsFetched).elements,
+                            items = elements,
                             onNextPage = { viewModel.searchCriteriaState.page++ },
                             onPreviousPage = { viewModel.searchCriteriaState.page-- },
                         )
                     }
                 }
-                is ElementsState.FavouriteContributionsFetched ->
+                is ElementsState.FavouriteContributionsFetched -> {
+                    val contributions =
+                        (state as ElementsState.FavouriteContributionsFetched).contributions
                     ShowContributions(
-                        contributions = (state as ElementsState.FavouriteContributionsFetched).contributions,
-                        onClicked = { navController.navigate("") },
+                        contributions = contributions,
+                        onClicked = {
+                            val route =
+                                Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
+                                        "${Route.Details.isContribution}=true"
+                            navController.navigate(route)
+                        },
                     ) {
                         PageInformation(
                             modifier = Modifier.fillMaxWidth(),
-                            items = (state as ElementsState.FavouriteContributionsFetched).contributions,
+                            items = contributions,
                             onNextPage = { viewModel.searchCriteriaState.page++ },
                             onPreviousPage = { viewModel.searchCriteriaState.page-- },
                         )
                     }
+                }
                 is ElementsState.FavouriteCulturesFetched -> {
+                    val cultures = (state as ElementsState.FavouriteCulturesFetched).cultures
                     ShowCultures(
-                        cultures = (state as ElementsState.FavouriteCulturesFetched).cultures,
-                        onClicked = { navController.navigate("") },
+                        cultures = cultures,
+                        onClicked = { },
                     ) {
                         PageInformation(
                             modifier = Modifier.fillMaxWidth(),
-                            items = (state as ElementsState.FavouriteCulturesFetched).cultures,
+                            items = cultures,
                             onNextPage = { viewModel.searchCriteriaState.page++ },
                             onPreviousPage = { viewModel.searchCriteriaState.page-- },
                         )
                     }
                 }
                 is ElementsState.FavouriteElementsFetched -> {
+                    val elements = (state as ElementsState.FavouriteElementsFetched).elements
                     ShowElements(
-                        elements = (state as ElementsState.FavouriteElementsFetched).elements,
-                        onElementClicked = { navController.navigate("") },
+                        elements = elements,
+                        onElementClicked = {
+                            val route =
+                                Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
+                                        "${Route.Details.isContribution}=false"
+                            navController.navigate(route)
+                        },
                     ) {
                         PageInformation(
                             modifier = Modifier.fillMaxWidth(),
-                            items = (state as ElementsState.FavouriteElementsFetched).elements,
+                            items = elements,
                             onNextPage = { viewModel.searchCriteriaState.page++ },
                             onPreviousPage = { viewModel.searchCriteriaState.page-- },
                         )

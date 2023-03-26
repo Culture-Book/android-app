@@ -16,15 +16,7 @@ import uk.co.culturebook.data.utils.toUri
 class ProfileViewModel(private val userRepository: UserRepository) : ViewModel() {
     private val _state = MutableStateFlow<ProfileState>(ProfileState.Idle)
     val state = _state.asStateFlow()
-    val uiState = ProfileUIState().apply {
-        viewModelScope.launch {
-            val user = userRepository.getUser().getDataOrNull() ?: return@launch
-            displayName = user.displayName ?: ""
-            email = user.email
-            verificationStatus = user.verificationStatus.toVerificationStatus()
-            profilePicture = user.profileUri?.toUri()
-        }
-    }
+    val uiState = ProfileUIState()
 
     fun postEvent(event: ProfileEvent) {
         updateState(ProfileState.Loading)
@@ -39,6 +31,16 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                     event.oldPassword,
                     event.newPassword
                 )
+                ProfileEvent.FetchProfile -> {
+                    userRepository.getUser().getDataOrNull()?.let { user ->
+                        uiState.displayName = user.displayName ?: ""
+                        uiState.email = user.email
+                        uiState.verificationStatus = user.verificationStatus.toVerificationStatus()
+                        uiState.profilePicture = user.profileUri?.toUri()
+                    }
+
+                    updateState(ProfileState.ProfileFetched)
+                }
             }
         }
     }

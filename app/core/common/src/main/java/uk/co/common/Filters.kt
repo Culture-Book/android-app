@@ -39,7 +39,7 @@ fun TypeFilters(
                     modifier = Modifier.padding(horizontal = mediumSize),
                     selected = showFavourites,
                     onClick = { onShowFavourites(!showFavourites) },
-                    label = { Text(stringResource(R.string.favourites)) },
+                    label = { Text(stringResource(R.string.show_favourites)) },
                     shape = smallRoundedShape
                 )
             }

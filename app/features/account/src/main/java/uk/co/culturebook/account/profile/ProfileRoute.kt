@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
+import uk.co.culturebook.account.settings.SettingsState
 import uk.co.culturebook.data.models.authentication.enums.VerificationStatus
 import uk.co.culturebook.data.models.cultural.MediaFile
 import uk.co.culturebook.data.repositories.authentication.UserRepository
@@ -55,48 +56,48 @@ fun ProfileRoute(navController: NavController) {
     val state by viewModel.state.collectAsState()
     val snackbarState = remember { SnackbarHostState() }
 
+    LaunchedEffect(state) {
+        if (state is ProfileState.Idle) {
+            viewModel.postEvent(ProfileEvent.FetchProfile)
+        }
+    }
+
     when (state) {
         is ProfileState.Error -> {
             ShowSnackbar(
                 stringId = (state as ProfileState.Error).messageId,
-                snackbarState = snackbarState
+                snackbarState = snackbarState,
             )
-            viewModel.postEvent(ProfileEvent.Idle)
         }
         is ProfileState.VerificationRequested -> {
             ShowSnackbar(
                 stringId = R.string.verification_requested,
-                snackbarState = snackbarState
+                snackbarState = snackbarState,
             )
-            viewModel.postEvent(ProfileEvent.Idle)
         }
         is ProfileState.PasswordUpdated -> {
             ShowSnackbar(
                 stringId = R.string.password_updated,
-                snackbarState = snackbarState
+                snackbarState = snackbarState,
             )
-            viewModel.postEvent(ProfileEvent.Idle)
         }
         is ProfileState.ProfilePictureAdded -> {
             ShowSnackbar(
                 stringId = R.string.profile_picture_added,
-                snackbarState = snackbarState
+                snackbarState = snackbarState,
             )
-            viewModel.postEvent(ProfileEvent.Idle)
         }
         is ProfileState.ProfilePictureRemoved -> {
             ShowSnackbar(
                 stringId = R.string.profile_picture_removed,
-                snackbarState = snackbarState
+                snackbarState = snackbarState,
             )
-            viewModel.postEvent(ProfileEvent.Idle)
         }
         is ProfileState.UserUpdated -> {
             ShowSnackbar(
                 stringId = R.string.user_updated,
-                snackbarState = snackbarState
+                snackbarState = snackbarState,
             )
-            viewModel.postEvent(ProfileEvent.Idle)
         }
         else -> {}
     }

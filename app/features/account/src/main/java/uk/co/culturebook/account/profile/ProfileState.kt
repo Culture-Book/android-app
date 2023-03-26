@@ -15,6 +15,7 @@ import java.net.URI
 sealed interface ProfileState {
     object Idle : ProfileState
     object Loading : ProfileState
+    object ProfileFetched : ProfileState
     object ProfilePictureRemoved : ProfileState
     object PasswordUpdated : ProfileState
     data class VerificationRequested(val user: User) : ProfileState

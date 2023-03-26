@@ -1,6 +1,7 @@
 package uk.co.culturebook.ui.theme.molecules
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -48,7 +49,9 @@ fun SecondarySurfaceWithIcon(
                 )
             }
 
-            icon()
+            Box(modifier = Modifier.clickable { onButtonClicked() }) {
+                icon()
+            }
         }
     }
 }

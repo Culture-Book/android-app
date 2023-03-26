@@ -25,7 +25,7 @@ interface ApiInterface {
         @Query("type") type: String
     ): ApiResponse<List<Element>>
 
-    @POST("/auth/v1/update/password")
+    @POST("/auth/v1/user/password")
     suspend fun updatePassword(
         @Body passwordUpdate: PasswordUpdateRequest
     ): ApiResponse<Void>
@@ -42,7 +42,7 @@ interface ApiInterface {
     @DELETE("/auth/v1/user/profile_picture")
     suspend fun deleteProfilePicture(): ApiResponse<Void>
 
-    @PUT("/auth/v1/user/profile_picture")
+    @POST("/auth/v1/user/profile_picture")
     @Streaming
     @Multipart
     suspend fun updateProfilePicture(@Part profilePicture: MultipartBody.Part): ApiResponse<Void>
@@ -72,106 +72,106 @@ interface ApiInterface {
         @Part files: List<MultipartBody.Part>
     ): ApiResponse<Contribution>
 
-    @POST("nearby/v1/elements")
+    @POST("elements/v1/elements")
     suspend fun getElements(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Element>>
 
-    @POST("nearby/v1/elements/user")
+    @POST("elements/v1/elements/user")
     suspend fun getUserElements(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Element>>
 
-    @POST("nearby/v1/cultures")
+    @POST("elements/v1/cultures")
     suspend fun getCultures(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Culture>>
 
-    @POST("nearby/v1/cultures/user")
+    @POST("elements/v1/cultures/user")
     suspend fun getUserCultures(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Culture>>
 
-    @GET("nearby/v1/elements/media")
+    @GET("elements/v1/elements/media")
     suspend fun getElementsMedia(@Query("element_id") elementId: UUID): ApiResponse<List<Media>>
 
-    @POST("nearby/v1/contributions")
+    @POST("elements/v1/contributions")
     suspend fun getContributions(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Contribution>>
 
-    @DELETE("nearby/v1/contributions")
+    @DELETE("elements/v1/contributions")
     suspend fun deleteContribution(
-        @Query("id") id: UUID
+        @Query("contribution_id") id: UUID
     ): ApiResponse<Void>
 
-    @DELETE("nearby/v1/elements")
+    @DELETE("elements/v1/cultures")
     suspend fun deleteCulture(
-        @Query("id") id: UUID
+        @Query("culture_id") id: UUID
     ): ApiResponse<Void>
 
-    @DELETE("nearby/v1/cultures")
+    @DELETE("elements/v1/element")
     suspend fun deleteElement(
-        @Query("id") id: UUID
+        @Query("element_id") id: UUID
     ): ApiResponse<Void>
 
-    @POST("nearby/v1/contributions/user")
+    @POST("elements/v1/contributions/user")
     suspend fun getUserContributions(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Contribution>>
 
-    @POST("nearby/v1/contributions/favourite")
+    @POST("elements/v1/contributions/favourite")
     suspend fun getFavouriteContributions(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Contribution>>
 
-    @POST("nearby/v1/cultures/favourite")
+    @POST("elements/v1/cultures/favourite")
     suspend fun getFavouriteCultures(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Culture>>
 
-    @POST("nearby/v1/elements/favourite")
+    @POST("elements/v1/elements/favourite")
     suspend fun getFavouriteElements(
         @Body searchCriteria: SearchCriteria
     ): ApiResponse<List<Element>>
 
-    @GET("nearby/v1/contributions/media")
+    @GET("elements/v1/contributions/media")
     suspend fun getContributionsMedia(@Query("contribution_id") contributionId: UUID): ApiResponse<List<Media>>
 
-    @GET("nearby/v1/element")
+    @GET("elements/v1/element")
     suspend fun getElement(@Query("element_id") elementId: UUID): ApiResponse<Element>
 
-    @GET("nearby/v1/contribution")
+    @GET("elements/v1/contribution")
     suspend fun getContribution(@Query("contribution_id") contributionId: UUID): ApiResponse<Contribution>
 
-    @POST("nearby/v1/block/element")
+    @POST("elements/v1/block/element")
     suspend fun blockElement(@Body blockedElement: BlockedElement): ApiResponse<Void>
 
-    @POST("nearby/v1/block/contribution")
+    @POST("elements/v1/block/contribution")
     suspend fun blockContribution(@Body blockedElement: BlockedElement): ApiResponse<Void>
 
-    @POST("nearby/v1/block/culture")
+    @POST("elements/v1/block/culture")
     suspend fun blockCulture(@Body blockedElement: BlockedElement): ApiResponse<Void>
 
-    @DELETE("nearby/v1/block/element")
-    suspend fun unblockElement(@Query("id") id: UUID): ApiResponse<Void>
+    @DELETE("elements/v1/block/element")
+    suspend fun unblockElement(@Query("element_id") id: UUID): ApiResponse<Void>
 
-    @DELETE("nearby/v1/block/contribution")
-    suspend fun unblockContribution(@Query("id") id: UUID): ApiResponse<Void>
+    @DELETE("elements/v1/block/contribution")
+    suspend fun unblockContribution(@Query("contribution_id") id: UUID): ApiResponse<Void>
 
-    @DELETE("nearby/v1/block/culture")
-    suspend fun unblockCulture(@Query("id") id: UUID): ApiResponse<Void>
+    @DELETE("elements/v1/block/culture")
+    suspend fun unblockCulture(@Query("culture_id") id: UUID): ApiResponse<Void>
 
-    @GET("nearby/v1/block")
+    @GET("elements/v1/block")
     suspend fun getBlockedList(): ApiResponse<BlockedList>
 
-    @POST("nearby/v1/favourite/element")
+    @POST("elements/v1/favourite/element")
     suspend fun favouriteElement(@Body favouriteElement: FavouriteElement): ApiResponse<Void>
 
-    @POST("nearby/v1/favourite/contribution")
+    @POST("elements/v1/favourite/contribution")
     suspend fun favouriteContribution(@Body favouriteElement: FavouriteElement): ApiResponse<Void>
 
-    @POST("nearby/v1/favourite/culture")
+    @POST("elements/v1/favourite/culture")
     suspend fun favouriteCulture(@Body favouriteElement: FavouriteElement): ApiResponse<Void>
 
     @GET("v1/elements/comments")

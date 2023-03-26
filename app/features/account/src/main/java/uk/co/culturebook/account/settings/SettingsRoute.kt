@@ -12,12 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
-import uk.co.culturebook.data.models.cultural.BlockedList
-import uk.co.culturebook.data.models.cultural.SearchType
+import uk.co.culturebook.data.flows.EventBus
+import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.mediumSize
+import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +31,9 @@ fun SettingsRoute(navController: NavController) {
     val snackbarState = remember { SnackbarHostState() }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showBlockedElements by remember { mutableStateOf(false) }
-    var blockedList by remember { mutableStateOf(BlockedList()) }
+    var blockedElementList by remember { mutableStateOf(emptyList<BlockedElement>()) }
+    var blockedCultureList by remember { mutableStateOf(emptyList<BlockedCulture>()) }
+    var blockedContributionList by remember { mutableStateOf(emptyList<BlockedContribution>()) }
     val state by viewModel.state.collectAsState()
 
     if (showDeleteDialog) {
@@ -57,15 +60,20 @@ fun SettingsRoute(navController: NavController) {
     if (showBlockedElements) {
         BlockedElementsSheet(
             onDismiss = { showBlockedElements = false },
+            listOfContributions = blockedContributionList,
+            listOfElements = blockedElementList,
+            listOfCultures = blockedCultureList,
             onUnblock = { uuid, type ->
                 when (type) {
-                    SearchType.Element -> viewModel.postEvent(SettingsEvent.UnblockElement(uuid))
-                    SearchType.Contribution -> viewModel.postEvent(
-                        SettingsEvent.UnblockContribution(
-                            uuid
-                        )
-                    )
-                    SearchType.Culture -> viewModel.postEvent(SettingsEvent.UnblockCulture(uuid))
+                    SearchType.Element -> {
+                        viewModel.postEvent(SettingsEvent.UnblockElement(uuid))
+                    }
+                    SearchType.Contribution -> {
+                        viewModel.postEvent(SettingsEvent.UnblockContribution(uuid))
+                    }
+                    SearchType.Culture -> {
+                        viewModel.postEvent(SettingsEvent.UnblockCulture(uuid))
+                    }
                 }
             }
         )
@@ -73,11 +81,19 @@ fun SettingsRoute(navController: NavController) {
 
     LaunchedEffect(state) {
         when (state) {
-            is SettingsState.AccountDeleted -> navController.navigateUp()
+            is SettingsState.AccountDeleted -> EventBus.logout()
             is SettingsState.ElementUnblocked -> showBlockedElements = true
-            is SettingsState.BlockedListFetched -> blockedList =
-                (state as SettingsState.BlockedListFetched).blockedList
-            else -> {}
+            is SettingsState.BlockedListFetched -> {
+                val blockedList = (state as SettingsState.BlockedListFetched).blockedList
+                blockedElementList = blockedList.blockedElement
+                blockedCultureList = blockedList.blockedCulture
+                blockedContributionList = blockedList.blockedContribution
+            }
+            else -> {
+                blockedElementList = emptyList()
+                blockedCultureList = emptyList()
+                blockedContributionList = emptyList()
+            }
         }
     }
 
@@ -97,26 +113,30 @@ fun SettingsRoute(navController: NavController) {
         },
         snackbarHost = { SnackbarHost(snackbarState) }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(horizontal = mediumSize)
-        ) {
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    showBlockedElements = true
-                    viewModel.postEvent(SettingsEvent.FetchBlockedList)
-                }) {
-                Text(text = stringResource(id = R.string.blocked_elements))
-            }
-
-            FilledTonalButton(
+        if (state is SettingsState.Loading) {
+            LoadingComposable(padding)
+        } else {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = mediumSize),
-                onClick = { showDeleteDialog = true }) {
-                Text(text = stringResource(id = R.string.delete_account))
+                    .padding(padding)
+                    .padding(horizontal = mediumSize)
+            ) {
+                Button(
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        showBlockedElements = true
+                        viewModel.postEvent(SettingsEvent.FetchBlockedList)
+                    }) {
+                    Text(text = stringResource(id = R.string.blocked_elements))
+                }
+
+                FilledTonalButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = mediumSize),
+                    onClick = { showDeleteDialog = true }) {
+                    Text(text = stringResource(id = R.string.delete_account))
+                }
             }
         }
     }
