@@ -45,7 +45,7 @@ android {
 }
 
 dependencies {
-    def emoji2_version = "1.2.0"
+    def emoji2_version = "1.4.0-beta01"
 
     api project(":app:core:ui")
     api project(":app:core:data")

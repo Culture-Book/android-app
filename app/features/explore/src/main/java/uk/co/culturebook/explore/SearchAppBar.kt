@@ -18,22 +18,19 @@ import uk.co.culturebook.ui.theme.largeRoundedShape
 @Composable
 @Preview
 fun SearchAppBar(
-    modifier: Modifier = Modifier,
     searchString: String = "",
-    searchType: SearchType = SearchType.Element,
-    onSearchType: (SearchType) -> Unit = {},
     onFiltersClicked: () -> Unit = {},
     onSearchClicked: (String) -> Unit = {}
 ) {
-    var _searchString by remember { mutableStateOf(searchString) }
+    var localSearchString by remember { mutableStateOf(searchString) }
     TopAppBar(
         windowInsets = WindowInsets.statusBars,
         title = {
-            SearchField(value = _searchString) { _searchString = it }
+            SearchField(value = localSearchString) { localSearchString = it }
         },
         actions = {
-            if (_searchString.isNotBlank()) {
-                IconButton(onClick = { onSearchClicked(_searchString) }) {
+            if (localSearchString.isNotBlank()) {
+                IconButton(onClick = { onSearchClicked(localSearchString) }) {
                     Icon(
                         painter = AppIcon.Tick.getPainter(),
                         contentDescription = "search icon"
