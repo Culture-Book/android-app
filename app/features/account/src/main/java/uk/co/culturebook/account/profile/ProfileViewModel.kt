@@ -76,8 +76,8 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
 
     private suspend fun requestVerificationStatus(reason: String) {
         when (userRepository.requestVerificationStatus(reason)) {
-            is ApiResponse.Success -> updateState(ProfileState.VerificationRequested)
             is ApiResponse.Success.Empty,
+            is ApiResponse.Success -> updateState(ProfileState.VerificationRequested)
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())
         }
