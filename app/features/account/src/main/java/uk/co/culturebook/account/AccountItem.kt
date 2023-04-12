@@ -75,6 +75,6 @@ val AllAccountItems: List<AccountItem>
     get() = listOf(
         AccountItem.Profile(AppIcon.Account, R.string.profile, Route.Account.Profile.route),
         AccountItem.Settings(AppIcon.Settings, R.string.settings, Route.Account.Settings.route),
-        AccountItem.Elements(AppIcon.Castle, R.string.elements, Route.Account.Elements.route),
+        AccountItem.Elements(AppIcon.Vase, R.string.elements, Route.Account.Elements.route),
         AccountItem.About(AppIcon.About, R.string.about, Route.Account.About.route),
     )

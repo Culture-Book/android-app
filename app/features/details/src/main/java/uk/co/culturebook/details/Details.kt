@@ -7,15 +7,14 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.common.*
+import uk.co.culturebook.common.VerifiedComposable
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.cultural.DetailsRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
@@ -98,6 +97,7 @@ fun DetailsScreenRoute(navController: NavController) {
                     navigateBack = { navController.navigateUp() },
                     showActions = true,
                     isFavourite = element?.favourite ?: false,
+                    isVerified = element?.isVerified ?: false,
                     onFavouriteClicked = {
                         element?.let { viewModel.postEvent(DetailEvent.FavouriteElement(it)) }
                     },
@@ -116,6 +116,7 @@ fun DetailsScreenRoute(navController: NavController) {
                     navigateBack = { navController.navigateUp() },
                     showActions = true,
                     isFavourite = contribution?.favourite ?: false,
+                    isVerified = contribution?.isVerified ?: false,
                     onFavouriteClicked = {
                         contribution?.let { viewModel.postEvent(DetailEvent.FavouriteContribution(it.id!!)) }
                     },
@@ -268,6 +269,8 @@ fun DetailsAppbar(
     navigateBack: () -> Unit = {},
     onFavouriteClicked: () -> Unit = {},
     isFavourite: Boolean = false,
+    isMine: Boolean = false,
+    isVerified: Boolean = false,
     onHide: () -> Unit = {},
     onBlock: () -> Unit = {},
     onReport: () -> Unit = {}
@@ -283,6 +286,9 @@ fun DetailsAppbar(
                         Icon(AppIcon.FavouriteOutline.getPainter(), contentDescription = "fav")
                     }
                 }
+                if (isVerified) {
+                    VerifiedComposable()
+                }
                 Box(
                     modifier = Modifier
                         .wrapContentSize(Alignment.TopStart)
@@ -290,31 +296,33 @@ fun DetailsAppbar(
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "options")
                     }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            onClick = {
-                                expanded = false
-                                onHide()
-                            },
-                            text = { Text(stringResource(R.string.hide)) }
-                        )
-                        DropdownMenuItem(
-                            onClick = {
-                                expanded = false
-                                onReport()
-                            },
-                            text = { Text(stringResource(R.string.report)) }
-                        )
-                        DropdownMenuItem(
-                            onClick = {
-                                expanded = false
-                                onBlock()
-                            },
-                            text = { Text(stringResource(R.string.block)) }
-                        )
+                    if (!isMine) {
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    onHide()
+                                },
+                                text = { Text(stringResource(R.string.hide)) }
+                            )
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    onReport()
+                                },
+                                text = { Text(stringResource(R.string.report)) }
+                            )
+                            DropdownMenuItem(
+                                onClick = {
+                                    expanded = false
+                                    onBlock()
+                                },
+                                text = { Text(stringResource(R.string.block)) }
+                            )
+                        }
                     }
                 }
             }

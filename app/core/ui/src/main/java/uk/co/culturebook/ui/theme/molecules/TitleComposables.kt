@@ -57,6 +57,7 @@ fun TitleAndSubtitle(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+                Spacer(modifier = Modifier.weight(1.0f))
                 titleContent?.invoke()
             }
         } else {

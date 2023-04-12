@@ -34,7 +34,7 @@ interface ApiInterface {
     suspend fun getUser(): ApiResponse<User>
 
     @PUT("/auth/v1/user")
-    suspend fun updateUser(@Body user: User): ApiResponse<User>
+    suspend fun updateUser(@Body user: User): ApiResponse<Void>
 
     @DELETE("/auth/v1/user")
     suspend fun deleteUser(): ApiResponse<Void>
@@ -48,7 +48,7 @@ interface ApiInterface {
     suspend fun updateProfilePicture(@Part profilePicture: MultipartBody.Part): ApiResponse<Void>
 
     @POST("/auth/v1/user/verification_status")
-    suspend fun requestVerificationStatus(@Body request: VerificationStatusRequest): ApiResponse<User>
+    suspend fun requestVerificationStatus(@Body request: VerificationStatusRequest): ApiResponse<Void>
 
     @Streaming
     @Multipart

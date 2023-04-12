@@ -1,4 +1,4 @@
-package uk.co.culturebook.composables
+package uk.co.culturebook.composables.app_state_handlers
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -26,7 +26,7 @@ import java.util.*
 
 
 @Composable
-fun ManageWorkerState(workId: UUID?, appState: AppState) {
+fun HandleWorkerState(workId: UUID?, appState: AppState) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val workManager = remember { WorkManager.getInstance(context) }

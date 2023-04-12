@@ -67,36 +67,42 @@ fun ProfileRoute(navController: NavController) {
             ShowSnackbar(
                 stringId = (state as ProfileState.Error).messageId,
                 snackbarState = snackbarState,
+                onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
         is ProfileState.VerificationRequested -> {
             ShowSnackbar(
                 stringId = R.string.verification_requested,
                 snackbarState = snackbarState,
+                onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
         is ProfileState.PasswordUpdated -> {
             ShowSnackbar(
                 stringId = R.string.password_updated,
                 snackbarState = snackbarState,
+                onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
         is ProfileState.ProfilePictureAdded -> {
             ShowSnackbar(
                 stringId = R.string.profile_picture_added,
                 snackbarState = snackbarState,
+                onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
         is ProfileState.ProfilePictureRemoved -> {
             ShowSnackbar(
                 stringId = R.string.profile_picture_removed,
                 snackbarState = snackbarState,
+                onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
         is ProfileState.UserUpdated -> {
             ShowSnackbar(
                 stringId = R.string.user_updated,
                 snackbarState = snackbarState,
+                onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
         else -> {}

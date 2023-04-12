@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import uk.co.culturebook.common.VerifiedComposable
 import uk.co.culturebook.data.models.cultural.Culture
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
@@ -49,7 +50,12 @@ fun ShowCultures(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(modifier = Modifier.padding(16.dp), text = culture.name)
+                        Row {
+                            if (culture.isVerified) {
+                                VerifiedComposable()
+                            }
+                            Text(modifier = Modifier.padding(16.dp), text = culture.name)
+                        }
                         if (selectedCulture?.id == culture.id) {
                             Icon(
                                 modifier = Modifier.padding(16.dp),

@@ -66,17 +66,17 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
     }
 
     private suspend fun updateUser(user: User) {
-        when (val response = userRepository.updateUser(user)) {
-            is ApiResponse.Success -> updateState(ProfileState.UserUpdated(response.data))
+        when (userRepository.updateUser(user)) {
             is ApiResponse.Success.Empty,
+            is ApiResponse.Success -> updateState(ProfileState.UserUpdated)
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())
         }
     }
 
     private suspend fun requestVerificationStatus(reason: String) {
-        when (val response = userRepository.requestVerificationStatus(reason)) {
-            is ApiResponse.Success -> updateState(ProfileState.VerificationRequested(response.data))
+        when (userRepository.requestVerificationStatus(reason)) {
+            is ApiResponse.Success -> updateState(ProfileState.VerificationRequested)
             is ApiResponse.Success.Empty,
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())

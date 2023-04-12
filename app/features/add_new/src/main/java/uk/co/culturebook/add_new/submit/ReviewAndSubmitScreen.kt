@@ -15,6 +15,9 @@ import androidx.compose.ui.res.stringResource
 import uk.co.common.*
 import uk.co.common.choose_location.LocationBody
 import uk.co.culturebook.add_new.data.AddNewState
+import uk.co.culturebook.common.AudioComposable
+import uk.co.culturebook.common.ImageComposable
+import uk.co.culturebook.common.VideoComposable
 import uk.co.culturebook.data.models.cultural.ElementType
 import uk.co.culturebook.data.models.cultural.isNotEmpty
 import uk.co.culturebook.ui.R
@@ -54,7 +57,7 @@ fun SubmitScreenComposable(
                 )
                 Icon(
                     modifier = Modifier.padding(horizontal = smallSize),
-                    painter = addNewState.type?.icon ?: AppIcon.BrokenImage.getPainter(),
+                    painter = addNewState.type?.icon ?: AppIcon.Culture1.getPainter(),
                     contentDescription = "type icon"
                 )
                 Text(

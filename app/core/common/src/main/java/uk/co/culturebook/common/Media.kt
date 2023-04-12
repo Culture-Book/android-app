@@ -1,4 +1,4 @@
-package uk.co.common
+package uk.co.culturebook.common
 
 import android.content.Context
 import android.media.MediaMetadataRetriever
@@ -55,7 +55,7 @@ import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
-fun rememberImageLoader(@DrawableRes errorImage: Int = AppIcon.BrokenImage.icon): ImageLoader {
+fun rememberImageLoader(@DrawableRes errorImage: Int = AppIcon.Culture1.icon): ImageLoader {
     val context = LocalContext.current
     return remember {
         try {
@@ -339,7 +339,7 @@ fun VideoComposable(
         } else {
             Icon(
                 modifier = Modifier.align(Alignment.Center),
-                painter = AppIcon.BrokenImage.getPainter(),
+                painter = AppIcon.Culture3.getPainter(),
                 contentDescription = "broken image"
             )
         }

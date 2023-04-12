@@ -268,6 +268,44 @@ sealed interface AppIcon {
         @Composable
         override fun getPainter() = R.drawable.verified_user.getPainter()
     }
+
+    object Culture1 : AppIcon {
+        val icon = R.drawable.ic_culture_1
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Culture2 : AppIcon {
+        val icon = R.drawable.ic_culture_2
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object Culture3 : AppIcon {
+        val icon = R.drawable.ic_culture_3
+        @Composable
+        override fun getPainter() = icon.getPainter()
+    }
+
+    object NoElements : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_no_elements.getPainter()
+    }
+
+    object Vase : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_vase.getPainter()
+    }
+
+    object CultureBook : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_culture_book.getPainter()
+    }
+
+    object Wreath : AppIcon {
+        @Composable
+        override fun getPainter() = R.drawable.ic_wreath.getPainter()
+    }
 }
 
 @Composable

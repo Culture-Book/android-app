@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
@@ -16,6 +17,9 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import uk.co.culturebook.common.VerifiedComposable
+import uk.co.culturebook.common.rememberImageLoader
+import uk.co.culturebook.common.rememberVideoThumbnail
 import uk.co.culturebook.data.Constants
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.remote_config.RemoteConfig
@@ -24,7 +28,6 @@ import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle
-import uk.co.culturebook.ui.theme.molecules.TitleType
 import java.util.*
 
 @Composable
@@ -55,8 +58,15 @@ fun ShowElements(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    Icon(
+                        modifier = Modifier.padding(mediumSize),
+                        painter = AppIcon.NoElements.getPainter(),
+                        contentDescription = "No elements found",
+                        tint = Color.Unspecified
+                    )
                     Text(
-                        modifier = Modifier.padding(mediumSize), text = "No elements found"
+                        modifier = Modifier.padding(mediumSize),
+                        text = stringResource(id = R.string.no_elements_found)
                     )
                 }
             }
@@ -104,8 +114,15 @@ fun ShowContributions(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    Icon(
+                        modifier = Modifier.padding(mediumSize),
+                        painter = AppIcon.NoElements.getPainter(),
+                        contentDescription = "No contributions found",
+                        tint = Color.Unspecified
+                    )
                     Text(
-                        modifier = Modifier.padding(mediumSize), text = "No contributions found"
+                        modifier = Modifier.padding(mediumSize),
+                        text = stringResource(id = R.string.no_contributions_found)
                     )
                 }
             }
@@ -151,8 +168,15 @@ fun ShowCultures(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    Icon(
+                        modifier = Modifier.padding(mediumSize),
+                        painter = AppIcon.NoElements.getPainter(),
+                        contentDescription = "No cultures found",
+                        tint = Color.Unspecified
+                    )
                     Text(
-                        modifier = Modifier.padding(mediumSize), text = "No cultures found"
+                        modifier = Modifier.padding(mediumSize),
+                        text = stringResource(id = R.string.no_cultures_found)
                     )
                 }
             }
@@ -261,41 +285,45 @@ fun ElementComposable(
                     },
                     titleContent = {
                         var expanded by remember { mutableStateOf(false) }
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                                if (onEditClicked != null) {
-                                    IconButton(onClick = { onEditClicked(element) }) {
-                                        Icon(
-                                            AppIcon.Bin.getPainter(),
-                                            contentDescription = "Bin"
-                                        )
-                                    }
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            if (onEditClicked != null) {
+                                IconButton(onClick = { onEditClicked(element) }) {
+                                    Icon(
+                                        AppIcon.Bin.getPainter(),
+                                        contentDescription = "Bin"
+                                    )
                                 }
+                            }
 
-                                if (onFavouriteClicked != null) {
-                                    IconButton(onClick = { onFavouriteClicked(element.id!!) }) {
-                                        if (element.favourite) {
-                                            Icon(
-                                                AppIcon.FavouriteFilled.getPainter(),
-                                                contentDescription = "fav"
-                                            )
-                                        } else {
-                                            Icon(
-                                                AppIcon.FavouriteOutline.getPainter(),
-                                                contentDescription = "fav"
-                                            )
-                                        }
-                                    }
-                                }
-                                if (onOptionsClicked != null) {
-                                    IconButton(onClick = { expanded = true }) {
+                            if (element.isVerified) {
+                                VerifiedComposable()
+                            }
+
+                            if (onFavouriteClicked != null) {
+                                IconButton(onClick = { onFavouriteClicked(element.id!!) }) {
+                                    if (element.favourite) {
                                         Icon(
-                                            AppIcon.MoreVert.getPainter(),
-                                            contentDescription = "options"
+                                            AppIcon.FavouriteFilled.getPainter(),
+                                            contentDescription = "fav"
+                                        )
+                                    } else {
+                                        Icon(
+                                            AppIcon.FavouriteOutline.getPainter(),
+                                            contentDescription = "fav"
                                         )
                                     }
                                 }
                             }
+
+                            if (onOptionsClicked != null) {
+                                IconButton(onClick = { expanded = true }) {
+                                    Icon(
+                                        AppIcon.MoreVert.getPainter(),
+                                        contentDescription = "options"
+                                    )
+                                }
+                            }
+
                             if (onOptionsClicked != null) {
                                 DropdownMenu(
                                     expanded = expanded,
@@ -317,17 +345,7 @@ fun ElementComposable(
                         }
                     })
 
-                if (element.isVerified) {
-                    TitleAndSubtitle(
-                        modifier = Modifier.padding(top = smallSize),
-                        title = stringResource(R.string.verified),
-                        titleType = TitleType.Medium,
-                        leadingTitleContent = {
-                            Icon(AppIcon.Sparkle.getPainter(), "verified")
-                        })
-                }
             }
-
         }
     }
 }
@@ -403,41 +421,45 @@ fun ContributionComposable(
                     },
                     titleContent = {
                         var expanded by remember { mutableStateOf(false) }
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                                if (onEditClicked != null) {
-                                    IconButton(onClick = { onEditClicked(contribution) }) {
-                                        Icon(
-                                            AppIcon.Bin.getPainter(),
-                                            contentDescription = "Bin"
-                                        )
-                                    }
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            if (onEditClicked != null) {
+                                IconButton(onClick = { onEditClicked(contribution) }) {
+                                    Icon(
+                                        AppIcon.Bin.getPainter(),
+                                        contentDescription = "Bin"
+                                    )
                                 }
+                            }
 
-                                if (onFavouriteClicked != null) {
-                                    IconButton(onClick = { onFavouriteClicked(contribution.id!!) }) {
-                                        if (contribution.favourite) {
-                                            Icon(
-                                                AppIcon.FavouriteFilled.getPainter(),
-                                                contentDescription = "fav"
-                                            )
-                                        } else {
-                                            Icon(
-                                                AppIcon.FavouriteOutline.getPainter(),
-                                                contentDescription = "fav"
-                                            )
-                                        }
-                                    }
-                                }
-                                if (onOptionsClicked != null) {
-                                    IconButton(onClick = { expanded = true }) {
+                            if (contribution.isVerified) {
+                                VerifiedComposable()
+                            }
+
+                            if (onFavouriteClicked != null) {
+                                IconButton(onClick = { onFavouriteClicked(contribution.id!!) }) {
+                                    if (contribution.favourite) {
                                         Icon(
-                                            AppIcon.MoreVert.getPainter(),
-                                            contentDescription = "options"
+                                            AppIcon.FavouriteFilled.getPainter(),
+                                            contentDescription = "fav"
+                                        )
+                                    } else {
+                                        Icon(
+                                            AppIcon.FavouriteOutline.getPainter(),
+                                            contentDescription = "fav"
                                         )
                                     }
                                 }
                             }
+
+                            if (onOptionsClicked != null) {
+                                IconButton(onClick = { expanded = true }) {
+                                    Icon(
+                                        AppIcon.MoreVert.getPainter(),
+                                        contentDescription = "options"
+                                    )
+                                }
+                            }
+
                             if (onOptionsClicked != null) {
                                 DropdownMenu(
                                     expanded = expanded,
@@ -456,20 +478,10 @@ fun ContributionComposable(
                                     }, text = { Text(stringResource(R.string.block)) })
                                 }
                             }
+
                         }
                     })
-
-                if (contribution.isVerified) {
-                    TitleAndSubtitle(
-                        modifier = Modifier.padding(top = smallSize),
-                        title = stringResource(R.string.verified),
-                        titleType = TitleType.Medium,
-                        leadingTitleContent = {
-                            Icon(AppIcon.Sparkle.getPainter(), "verified")
-                        })
-                }
             }
-
         }
     }
 }
@@ -501,6 +513,10 @@ fun CultureComposable(
                                     contentDescription = "Bin"
                                 )
                             }
+                        }
+
+                        if (culture.isVerified) {
+                            VerifiedComposable()
                         }
 
                         if (onFavouriteClicked != null) {

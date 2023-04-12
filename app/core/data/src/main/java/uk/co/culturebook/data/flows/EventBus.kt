@@ -9,6 +9,8 @@ import java.util.*
 object EventBus {
     private val _userSessionFlow = MutableStateFlow<UserSessionState>(UserSessionState.Idle)
     private val _workerFlow = MutableStateFlow<UUID?>(null)
+    private val _materialYouFlow = MutableStateFlow<Boolean?>(null)
+    val materialYouFlow = _materialYouFlow.asStateFlow()
     val userSessionFlow = _userSessionFlow.asSharedFlow()
     val workerFlow = _workerFlow.asStateFlow()
 
@@ -22,5 +24,9 @@ object EventBus {
 
     fun registerRunningWorker(id: UUID) {
         _workerFlow.value = id
+    }
+
+    fun toggleMaterialYou(value: Boolean) {
+        _materialYouFlow.value = value
     }
 }

@@ -1,14 +1,12 @@
 package uk.co.culturebook.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -78,13 +76,17 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun AppTheme(
+    isMaterialYou: Boolean = false,
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (!useDarkTheme) {
-        LightColors
-    } else {
-        DarkColors
+    val context = LocalContext.current
+
+    val colors = when {
+        isMaterialYou && useDarkTheme -> dynamicDarkColorScheme(context)
+        isMaterialYou && !useDarkTheme -> dynamicLightColorScheme(context)
+        useDarkTheme -> DarkColors
+        else -> LightColors
     }
 
     MaterialTheme(

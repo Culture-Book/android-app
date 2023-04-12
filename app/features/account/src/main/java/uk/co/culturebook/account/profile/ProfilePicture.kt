@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import uk.co.common.rememberImageLoader
+import uk.co.culturebook.common.rememberImageLoader
 import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.models.authentication.User
 import uk.co.culturebook.data.sharedPreferences

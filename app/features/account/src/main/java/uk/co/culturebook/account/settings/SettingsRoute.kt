@@ -3,22 +3,31 @@ package uk.co.culturebook.account.settings
 import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
+import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
+import uk.co.culturebook.data.sharedPreferences
 import uk.co.culturebook.ui.R
+import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
+import uk.co.culturebook.ui.theme.molecules.SecondarySurfaceWithIcon
+import uk.co.culturebook.ui.theme.molecules.TertiarySwitchSurface
+import uk.co.culturebook.ui.theme.xxxxlSize
 import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,6 +44,7 @@ fun SettingsRoute(navController: NavController) {
     var blockedCultureList by remember { mutableStateOf(emptyList<BlockedCulture>()) }
     var blockedContributionList by remember { mutableStateOf(emptyList<BlockedContribution>()) }
     val state by viewModel.state.collectAsState()
+    val isMaterialYou by EventBus.materialYouFlow.collectAsState()
 
     if (showDeleteDialog) {
         AlertDialog(
@@ -121,6 +131,18 @@ fun SettingsRoute(navController: NavController) {
                     .padding(padding)
                     .padding(horizontal = mediumSize)
             ) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    TertiarySwitchSurface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = mediumSize),
+                        checked = isMaterialYou == true,
+                        onSwitchChanged = { EventBus.toggleMaterialYou(it) },
+                        title = stringResource(id = R.string.material_you),
+                        subtitle = stringResource(id = R.string.material_you_message)
+                    )
+                }
+
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
@@ -137,6 +159,16 @@ fun SettingsRoute(navController: NavController) {
                     onClick = { showDeleteDialog = true }) {
                     Text(text = stringResource(id = R.string.delete_account))
                 }
+
+                Icon(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(xxxxlSize)
+                        .padding(bottom = mediumSize),
+                    painter = AppIcon.Culture2.getPainter(),
+                    contentDescription = "Culture Icon 2",
+                    tint = Color.Unspecified
+                )
             }
         }
     }

@@ -128,11 +128,7 @@ class UserRepository(private val context: Context) {
     suspend fun requestVerificationStatus(reason: String) =
         apiInterface.requestVerificationStatus(
             VerificationStatusRequest(reason)
-        ).also {
-            if (it is ApiResponse.Success) {
-                sharedPrefs.put(PrefKey.User, Json.encodeToString(it.data))
-            }
-        }
+        )
 
     fun saveUserToken(userSession: UserSession) {
         sharedPrefs.put(PrefKey.AccessToken, userSession.jwt)

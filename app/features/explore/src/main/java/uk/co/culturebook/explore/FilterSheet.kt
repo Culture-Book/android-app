@@ -16,6 +16,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -65,8 +66,9 @@ fun FilterSheet(
                             contentDescription = "Tick"
                         ) else Icon(
                             modifier = Modifier.padding(smallSize),
-                            painter = AppIcon.Castle.getPainter(),
-                            contentDescription = "Castle icon"
+                            painter = AppIcon.Vase.getPainter(),
+                            tint = Color.Unspecified,
+                            contentDescription = "Vase icon"
                         )
                     },
                 )
@@ -91,8 +93,9 @@ fun FilterSheet(
                             contentDescription = "Tick"
                         ) else Icon(
                             modifier = Modifier.padding(smallSize),
-                            painter = AppIcon.Castle.getPainter(),
-                            contentDescription = "Castle icon"
+                            painter = AppIcon.Wreath.getPainter(),
+                            tint = Color.Unspecified,
+                            contentDescription = "Wreath icon"
                         )
                     },
                 )
@@ -117,8 +120,9 @@ fun FilterSheet(
                             contentDescription = "Tick"
                         ) else Icon(
                             modifier = Modifier.padding(smallSize),
-                            painter = AppIcon.Castle.getPainter(),
-                            contentDescription = "Castle icon"
+                            painter = AppIcon.CultureBook.getPainter(),
+                            tint = Color.Unspecified,
+                            contentDescription = "Culture Book icon"
                         )
                     },
                 )
@@ -148,8 +152,9 @@ fun FilterSheet(
                                 contentDescription = "Tick"
                             ) else Icon(
                                 modifier = Modifier.padding(smallSize),
-                                painter = AppIcon.Castle.getPainter(),
-                                contentDescription = "Castle icon"
+                                painter = AppIcon.Vase.getPainter(),
+                                tint = Color.Unspecified,
+                                contentDescription = "Vase icon"
                             )
                         },
                     )
@@ -174,8 +179,9 @@ fun FilterSheet(
                                 contentDescription = "Tick"
                             ) else Icon(
                                 modifier = Modifier.padding(smallSize),
-                                painter = AppIcon.Castle.getPainter(),
-                                contentDescription = "Castle icon"
+                                painter = AppIcon.Wreath.getPainter(),
+                                tint = Color.Unspecified,
+                                contentDescription = "Wreath icon"
                             )
                         },
                     )
@@ -200,8 +206,9 @@ fun FilterSheet(
                                 contentDescription = "Tick"
                             ) else Icon(
                                 modifier = Modifier.padding(smallSize),
-                                painter = AppIcon.Castle.getPainter(),
-                                contentDescription = "Castle icon"
+                                painter = AppIcon.CultureBook.getPainter(),
+                                tint = Color.Unspecified,
+                                contentDescription = "Culture book icon"
                             )
                         },
                     )

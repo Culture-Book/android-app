@@ -3,10 +3,12 @@ package uk.co.culturebook.account.elements
 import android.app.Application
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,8 +19,10 @@ import uk.co.culturebook.data.models.cultural.SearchType
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
+import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
+import uk.co.culturebook.ui.theme.xxxxlSize
 import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,8 +127,14 @@ fun ElementsRoute(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(mediumSize)
         ) {
+            Icon(
+                modifier = Modifier.fillMaxWidth().height(xxxxlSize).padding(bottom = mediumSize),
+                painter = AppIcon.Culture1.getPainter(),
+                contentDescription = "Culture Icon 1",
+                tint = Color.Unspecified
+            )
+
             TypeFilters(
                 type = viewModel.searchCriteriaState.searchType,
                 onTypeChanged = {

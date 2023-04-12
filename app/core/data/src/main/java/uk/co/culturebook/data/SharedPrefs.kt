@@ -62,4 +62,8 @@ sealed interface PrefKey {
     object PublicKey : PrefKey {
         override val key = "public_key"
     }
+
+    object MaterialYou : PrefKey {
+        override val key = "material_you"
+    }
 }

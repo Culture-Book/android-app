@@ -241,7 +241,7 @@ fun LargeDynamicRoundedTextField(
         )
 
         if (currentMaxHeight - 0.5.dp > xxxxlSize) {
-            IconButton(
+            FilledTonalIconButton(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(mediumSize),

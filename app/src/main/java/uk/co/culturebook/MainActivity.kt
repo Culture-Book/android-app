@@ -12,10 +12,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.FirebaseApp
 import uk.co.culturebook.composables.App
-import uk.co.culturebook.composables.ManageWorkerState
+import uk.co.culturebook.composables.app_state_handlers.HandleWorkerState
+import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.models.authentication.UserSessionState
+import uk.co.culturebook.data.put
 import uk.co.culturebook.data.remote_config.getRemoteConfig
 import uk.co.culturebook.data.sharedPreferences
 import uk.co.culturebook.nav.Route
@@ -64,8 +66,16 @@ class MainActivity : AppCompatActivity() {
     fun AppEventBus(navController: NavController, appState: AppState) {
         val userSessionState by EventBus.userSessionFlow.collectAsState(UserSessionState.Idle)
         val currentlyRunningWorkerId by EventBus.workerFlow.collectAsState()
+        val materialYou by EventBus.materialYouFlow.collectAsState()
 
-        ManageWorkerState(workId = currentlyRunningWorkerId, appState = appState)
+        HandleWorkerState(workId = currentlyRunningWorkerId, appState = appState)
+
+        LaunchedEffect(materialYou) {
+            materialYou?.let { materialYou ->
+                appState.materialYou = materialYou
+                sharedPreferences.put(PrefKey.MaterialYou, materialYou)
+            }
+        }
 
         DisposableEffect(userSessionState) {
             if (userSessionState is UserSessionState.LoggedOut) {

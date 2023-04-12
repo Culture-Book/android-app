@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'uk.co.common'
+    namespace 'uk.co.culturebook.common'
     compileSdk "$target_sdk".toInteger()
 
     defaultConfig {

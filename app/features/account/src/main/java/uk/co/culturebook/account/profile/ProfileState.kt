@@ -18,8 +18,8 @@ sealed interface ProfileState {
     object ProfileFetched : ProfileState
     object ProfilePictureRemoved : ProfileState
     object PasswordUpdated : ProfileState
-    data class VerificationRequested(val user: User) : ProfileState
-    data class UserUpdated(val user: User) : ProfileState
+    object VerificationRequested : ProfileState
+    object UserUpdated : ProfileState
     data class ProfilePictureAdded(val profilePicture: MediaFile) : ProfileState
     data class Error(@StringRes val messageId: Int = R.string.generic_sorry) : ProfileState
 }

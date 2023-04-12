@@ -34,10 +34,11 @@ fun CommentSheet(
 
     ModalBottomSheet(
         onDismiss = onDismiss,
-        footer = {
+        header = {
             OutlinedTextField(
                 modifier = Modifier
                     .height(xxxlSize)
+                    .padding(vertical = mediumSize)
                     .fillMaxWidth(),
                 value = comment,
                 onValueChange = { comment = it },
@@ -58,7 +59,8 @@ fun CommentSheet(
                     }
                 }
             )
-        })
+        },
+        footer = {})
     {
         LazyColumn(
             modifier = Modifier.heightIn(

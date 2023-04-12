@@ -146,5 +146,5 @@ val ElementType.icon
         ElementType.Story -> AppIcon.Story.getPainter()
         ElementType.PoI -> AppIcon.PointOfInterest.getPainter()
         ElementType.Event -> AppIcon.Event.getPainter()
-        else -> AppIcon.BrokenImage.getPainter()
+        else -> AppIcon.Vase.getPainter()
     }

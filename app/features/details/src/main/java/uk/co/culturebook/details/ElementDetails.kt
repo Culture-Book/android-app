@@ -15,13 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.ShareCompat
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
 import uk.co.common.*
 import uk.co.common.choose_location.LocationBody
+import uk.co.culturebook.common.AudioComposable
+import uk.co.culturebook.common.ImageComposable
+import uk.co.culturebook.common.VideoComposable
 import uk.co.culturebook.data.Constants
 import uk.co.culturebook.data.models.cultural.*
 import uk.co.culturebook.data.remote_config.RemoteConfig
@@ -36,6 +38,7 @@ import uk.co.culturebook.ui.theme.molecules.TitleType
 import uk.co.culturebook.ui.utils.prettyPrint
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.math.roundToInt
 
 @Composable
 fun ElementDetailScreen(
@@ -333,16 +336,6 @@ fun DetailScreen(
             }
         }
 
-        if (isVerified) {
-            TitleAndSubtitle(
-                modifier = Modifier.padding(top = mediumSize),
-                title = stringResource(R.string.verified),
-                titleType = TitleType.Medium,
-                leadingTitleContent = {
-                    Icon(AppIcon.Sparkle.getPainter(), "verified")
-                })
-        }
-
         val shareString = stringResource(R.string.share_string)
         var showReactionSheet by remember { mutableStateOf(false) }
         var showCommentSheet by remember { mutableStateOf(false) }
@@ -392,8 +385,9 @@ fun DetailScreen(
 
                 if (showReactionPopup) {
                     EmojiPopUp(
-                        emojis = reactions.associateWith { Collections.frequency(reactions, it) },
-                        yOffset = -buttonHeight,
+                        emojis = reactions.associateWith { reaction -> Collections.frequency(reactions, reaction) },
+                        selectedEmoji = reactions.find { it.isMine }?.reaction ?: "",
+                        yOffset = -(buttonHeight * 1.5f).roundToInt(),
                         onDismiss = { showReactionPopup = false },
                         onAddCustomEmoji = { showReactionSheet = true },
                         onEmojiSelected = {

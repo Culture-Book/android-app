@@ -103,6 +103,13 @@ object Emoji {
     private const val BIRTHDAY_CAKE = "&#127874;"
     private const val SHORTCAKE = "&#127856;"
 
+    val defaultEmojis = listOf(
+        THUMBS_UP,
+        RED_HEART,
+        FACE_WITH_TEARS_OF_JOY,
+        CRYING_FACE,
+        ANGRY_FACE
+    )
     val emojis = listOf(
         GRINNING_FACE,
         BEAMING_FACE_WITH_SMILING_EYES,

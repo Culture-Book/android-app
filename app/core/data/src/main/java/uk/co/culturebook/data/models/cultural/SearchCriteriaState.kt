@@ -13,15 +13,71 @@ enum class SearchType {
 
 @Stable
 class SearchCriteriaState {
-    var location: Location? by mutableStateOf(null)
-    var getFavourites: Boolean by mutableStateOf(false)
-    var searchString: String? by mutableStateOf(null)
-    var elementId: UUID? by mutableStateOf(null)
-    var contributionId: UUID? by mutableStateOf(null)
-    var searchType: SearchType by mutableStateOf(SearchType.Element)
-    var types: List<ElementType> by mutableStateOf(allElementTypes)
-    var page: Int by mutableStateOf(1)
-    var radius: Double by mutableStateOf(10.0)
+    private var _location: Location? by mutableStateOf(null)
+    private var _getFavourites: Boolean by mutableStateOf(false)
+    private var _searchString: String? by mutableStateOf(null)
+    private var _elementId: UUID? by mutableStateOf(null)
+    private var _contributionId: UUID? by mutableStateOf(null)
+    private var _searchType: SearchType by mutableStateOf(SearchType.Element)
+    private var _types: List<ElementType> by mutableStateOf(allElementTypes)
+    private var _page: Int by mutableStateOf(1)
+    private var _radius: Double by mutableStateOf(10.0)
+
+    var location
+        get() = _location
+        set(value) {
+            _location = value
+        }
+    var getFavourites
+        get() = _getFavourites
+        set(value) {
+            _getFavourites = value
+        }
+
+    var searchString
+        get() = _searchString
+        set(value) {
+            _searchString = value
+        }
+
+    var elementId
+        get() = _elementId
+        set(value) {
+            _elementId = value
+        }
+
+    var contributionId
+        get() = _contributionId
+        set(value) {
+            _contributionId = value
+        }
+
+    // When the search type changes we reset the page to 1 in order to start a new search, otherwise we'll just fetch the page of the previous search
+    var searchType
+        get() = _searchType
+        set(value) {
+            _page = 1
+            _searchType = value
+        }
+
+    var types
+        get() = _types
+        set(value) {
+            _types = value
+        }
+
+    var page
+        get() = _page
+        set(value) {
+            _page = value
+        }
+
+    var radius
+        get() = _radius
+        set(value) {
+            _radius = value
+        }
+
 
     fun toggleTypesSelection(elementType: ElementType) {
         val types = types.toMutableList()

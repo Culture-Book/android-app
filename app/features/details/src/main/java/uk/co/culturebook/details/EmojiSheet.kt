@@ -11,6 +11,9 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,13 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.EmojiSupportMatch
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Popup
 import androidx.core.text.HtmlCompat
@@ -81,6 +80,7 @@ fun EmojiSheet(
 @Preview
 fun EmojiPopUp(
     yOffset: Int = 0,
+    selectedEmoji: String = "",
     emojis: Map<Reaction, Int> = Emoji.emojis.map { Reaction(it) }.associateWith { 0 },
     onDismiss: () -> Unit = {},
     onEmojiSelected: (String) -> Unit = {},
@@ -88,6 +88,15 @@ fun EmojiPopUp(
     onDelete: (String) -> Unit = {}
 ) {
     val emojiSize = MaterialTheme.typography.bodyLarge.fontSize.value
+    val reactions by remember { derivedStateOf { emojis.toMutableMap() } }
+
+    if (emojis.size < Emoji.defaultEmojis.size) {
+        Emoji.defaultEmojis.subList(0, Emoji.defaultEmojis.size - emojis.size).forEach { emoji ->
+            if (reactions.none { it.key.reaction == emoji }) {
+                reactions[Reaction(emoji, false)] = 0
+            }
+        }
+    }
 
     Popup(
         alignment = Alignment.TopCenter,
@@ -103,8 +112,8 @@ fun EmojiPopUp(
             contentPadding = PaddingValues(xsSize),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            items(emojis.keys.toList()) { emoji ->
-                val background = if (emoji.isMine) surfaceColorAtElevation(
+            items(reactions.keys.toList()) { emoji ->
+                val background = if (emoji.reaction == selectedEmoji) surfaceColorAtElevation(
                     MaterialTheme.colorScheme.surfaceVariant, mediumSize
                 ) else surfaceColorAtElevation(
                     MaterialTheme.colorScheme.surface, mediumSize
@@ -115,13 +124,13 @@ fun EmojiPopUp(
                     color = background,
                     emojiSize = emojiSize,
                     onEmojiSelected = { if (emoji.isMine) onDelete(it) else onEmojiSelected(it) },
-                    number = emojis[emoji]
+                    number = reactions[emoji]
                 )
             }
 
             item {
                 FilledIconButton(
-                    modifier = Modifier.height(largeSize),
+                    modifier = Modifier.height(((emojiSize * 2) + 1).dp),
                     onClick = onAddCustomEmoji
                 ) {
                     Icon(

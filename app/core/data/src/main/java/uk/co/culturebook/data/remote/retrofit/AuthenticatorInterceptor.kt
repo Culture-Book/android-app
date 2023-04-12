@@ -1,5 +1,6 @@
 package uk.co.culturebook.data.remote.retrofit
 
+import androidx.annotation.Keep
 import okhttp3.Interceptor
 import okhttp3.Protocol
 import okhttp3.Response
@@ -7,6 +8,7 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import uk.co.culturebook.data.flows.EventBus
 
 @JvmInline
+@Keep
 value class AuthenticatorInterceptor(private val token: () -> String) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return try {
