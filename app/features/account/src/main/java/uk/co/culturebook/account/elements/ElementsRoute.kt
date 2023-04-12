@@ -129,7 +129,10 @@ fun ElementsRoute(navController: NavController) {
                 .padding(padding)
         ) {
             Icon(
-                modifier = Modifier.fillMaxWidth().height(xxxxlSize).padding(bottom = mediumSize),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(xxxxlSize)
+                    .padding(bottom = mediumSize),
                 painter = AppIcon.Culture1.getPainter(),
                 contentDescription = "Culture Icon 1",
                 tint = Color.Unspecified

@@ -4,7 +4,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.add_new.data.TypeData
 import uk.co.culturebook.add_new.info.composables.AddInfoRoute
 import uk.co.culturebook.add_new.link_elements.LinkElementsRoute
@@ -13,8 +12,8 @@ import uk.co.culturebook.add_new.submit.SubmitRoute
 import uk.co.culturebook.add_new.title_type.composables.TitleAndTypeRoute
 import uk.co.culturebook.nav.Route
 
-fun NavGraphBuilder.addNewGraph(navController: NavController) {
-    val addNewState = AddNewState()
+fun NavGraphBuilder.addNewGraph(navController: NavController, viewModel: AddNewViewModel) {
+    val addNewState = viewModel.state
 
     navigation(
         Route.AddNew.Location.route,

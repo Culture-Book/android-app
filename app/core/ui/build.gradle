@@ -5,7 +5,9 @@ plugins {
 
 android {
     namespace "uk.co.culturebook.ui"
-    compileSdk "$target_sdk".toInteger()
+
+    compileSdk "$compile_sdk".toInteger()
+    compileSdkPreview "$compile_sdk_preview"
 
     defaultConfig {
         minSdk "$min_sdk".toInteger()
@@ -48,12 +50,9 @@ dependencies {
     api "androidx.compose.ui:ui:$compose_version"
     api "androidx.compose.ui:ui-tooling-preview:$compose_version"
     api "androidx.compose.material3:material3:1.0.1"
-    api 'com.google.maps.android:maps-compose:2.10.0'
-    api 'com.google.accompanist:accompanist-pager:0.29.1-alpha'
-    api 'com.google.accompanist:accompanist-pager-indicators:0.29.1-alpha'
-
-    // Coil
-    api "io.coil-kt:coil-compose:2.2.2"
+    api 'com.google.maps.android:maps-compose:2.11.4'
+    api 'com.google.accompanist:accompanist-pager:0.31.0-alpha'
+    api 'com.google.accompanist:accompanist-pager-indicators:0.31.0-alpha'
 
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 

@@ -5,7 +5,9 @@ plugins {
 
 android {
     namespace 'uk.co.culturebook.common'
-    compileSdk "$target_sdk".toInteger()
+
+    compileSdk "$compile_sdk".toInteger()
+    compileSdkPreview "$compile_sdk_preview"
 
     defaultConfig {
         minSdk "$min_sdk".toInteger()

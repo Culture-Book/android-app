@@ -19,8 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.app.ShareCompat
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
-import uk.co.common.*
+import uk.co.common.BlockOptionsState
 import uk.co.common.choose_location.LocationBody
+import uk.co.common.icon
 import uk.co.culturebook.common.AudioComposable
 import uk.co.culturebook.common.ImageComposable
 import uk.co.culturebook.common.VideoComposable
@@ -70,7 +71,6 @@ fun ElementDetailScreen(
             onCommentSent = onCommentSent,
             onContributionsClicked = onContributionsClicked,
             onReactionSelected = onAddReaction,
-            isVerified = isVerified,
             onDeleteComment = onDeleteComment,
             onDeleteReaction = onDeleteReaction,
             onGetComments = onGetComments
@@ -107,7 +107,6 @@ fun ContributionDetailScreen(
             onCommentBlocked = onCommentBlocked,
             onCommentSent = onCommentSent,
             onReactionSelected = onAddReaction,
-            isVerified = isVerified,
             onDeleteComment = onDeleteComment,
             onDeleteReaction = onDeleteReaction,
             onGetComments = onGetComments,
@@ -135,7 +134,6 @@ fun DetailScreen(
     onDeleteComment: (UUID) -> Unit,
     onDeleteReaction: (String) -> Unit,
     onContributionsClicked: ((UUID) -> Unit)? = null,
-    isVerified: Boolean = true,
     onGetComments: (UUID) -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -179,6 +177,7 @@ fun DetailScreen(
                     .height(xxxxlSize * 1.5f)
                     .fillMaxWidth(),
                 uri = localMedia.uri.toUri(),
+                fillBounds = false
             )
         } else if (localMedia?.isVideo() == true) {
             VideoComposable(
@@ -385,7 +384,12 @@ fun DetailScreen(
 
                 if (showReactionPopup) {
                     EmojiPopUp(
-                        emojis = reactions.associateWith { reaction -> Collections.frequency(reactions, reaction) },
+                        emojis = reactions.associateWith { reaction ->
+                            Collections.frequency(
+                                reactions,
+                                reaction
+                            )
+                        },
                         selectedEmoji = reactions.find { it.isMine }?.reaction ?: "",
                         yOffset = -(buttonHeight * 1.5f).roundToInt(),
                         onDismiss = { showReactionPopup = false },

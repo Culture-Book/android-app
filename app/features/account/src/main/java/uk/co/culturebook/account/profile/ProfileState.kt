@@ -36,6 +36,6 @@ class ProfileUIState {
         email = email,
         password = "",
         verificationStatus = verificationStatus.ordinal,
-        profileUri = URI.create(profilePicture.toString())
+        profileUri = profilePicture?.let { URI.create(it.toString()) }
     )
 }

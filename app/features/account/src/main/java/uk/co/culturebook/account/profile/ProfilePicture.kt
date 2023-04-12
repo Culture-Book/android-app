@@ -7,19 +7,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import uk.co.culturebook.common.rememberImageLoader
 import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.models.authentication.User
@@ -46,23 +44,19 @@ fun ProfilePicture(modifier: Modifier = Modifier, onProfileTapped: () -> Unit = 
         }
         val displayName = user?.displayName
         val uri = user?.profileUri?.toUri()
-        val imageLoader = rememberImageLoader(AppIcon.AccountCircle.icon)
-        if (uri != null) {
-            var isSuccess by remember { mutableStateOf(false) }
+        val imageLoader = rememberImageLoader()
+        if (!uri?.toString().isNullOrEmpty()) {
             AsyncImage(
                 model = uri,
                 imageLoader = imageLoader,
                 contentDescription = displayName,
                 contentScale = ContentScale.FillBounds,
-                onState = { state ->
-                    isSuccess = state is AsyncImagePainter.State.Success
-                },
                 modifier = Modifier
                     .size(xxxlSize, xxxlSize)
                     .padding(smallSize)
                     .clip(CircleShape)
                     .clickable { onProfileTapped() },
-                colorFilter = if (isSuccess) null else ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                colorFilter = null
             )
         } else {
             Icon(

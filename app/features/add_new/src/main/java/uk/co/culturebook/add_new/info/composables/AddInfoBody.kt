@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import com.google.maps.android.compose.rememberCameraPositionState
+import uk.co.common.choose_location.LocationBody
+import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.common.AudioComposable
 import uk.co.culturebook.common.ImageComposable
 import uk.co.culturebook.common.VideoComposable
-import uk.co.common.choose_location.LocationBody
-import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.data.models.cultural.ElementType
 import uk.co.culturebook.data.models.cultural.Location
 import uk.co.culturebook.data.models.cultural.MediaFile

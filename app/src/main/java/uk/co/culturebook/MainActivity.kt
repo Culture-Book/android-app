@@ -8,12 +8,17 @@ import androidx.compose.runtime.*
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.annotation.ExperimentalCoilApi
 import com.google.firebase.FirebaseApp
+import kotlinx.coroutines.launch
 import uk.co.culturebook.composables.App
 import uk.co.culturebook.composables.app_state_handlers.HandleWorkerState
 import uk.co.culturebook.data.PrefKey
+import uk.co.culturebook.data.Singletons.getImageLoader
+import uk.co.culturebook.data.Singletons.releaseVideoCache
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.logD
 import uk.co.culturebook.data.models.authentication.UserSessionState
@@ -24,6 +29,7 @@ import uk.co.culturebook.nav.Route
 import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.states.AppState
 import uk.co.culturebook.states.rememberAppState
+import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 class MainActivity : AppCompatActivity() {
@@ -62,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalCoilApi::class)
     @Composable
     fun AppEventBus(navController: NavController, appState: AppState) {
         val userSessionState by EventBus.userSessionFlow.collectAsState(UserSessionState.Idle)
@@ -81,10 +88,16 @@ class MainActivity : AppCompatActivity() {
             if (userSessionState is UserSessionState.LoggedOut) {
                 // Clear all data on logout
                 sharedPreferences.edit().clear().apply()
-                cacheDir.listFiles()?.forEach { it.delete() }
+                lifecycleScope.launch {
+                    releaseVideoCache()
+                    getImageLoader(this@MainActivity, AppIcon.ImageErrors.listOfPlaceholders).let {
+                        it.diskCache?.clear()
+                        it.memoryCache?.clear()
+                    }
 
-                navController.navigateTop(Route.Login)
-                EventBus.login() // Reset the state after we are done with logging out
+                    navController.navigateTop(Route.Login)
+                    EventBus.login() // Reset the state after we are done with logging out
+                }
             }
             onDispose {
                 loggingOut = false

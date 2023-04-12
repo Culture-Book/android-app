@@ -5,7 +5,6 @@ import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -27,13 +26,10 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
-import androidx.media3.datasource.cache.NoOpCacheEvictor
-import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_ZOOM
@@ -41,60 +37,36 @@ import androidx.media3.ui.PlayerView
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.disk.DiskCache
-import coil.imageLoader
-import coil.memory.MemoryCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import uk.co.culturebook.data.Singletons.getImageLoader
+import uk.co.culturebook.data.Singletons.getVideoCache
+import uk.co.culturebook.data.Singletons.releaseImageLoader
 import uk.co.culturebook.data.logD
-import uk.co.culturebook.data.logE
-import uk.co.culturebook.data.remote.retrofit.imageLoaderClient
 import uk.co.culturebook.data.utils.isValidContent
 import uk.co.culturebook.data.utils.isValidHttp
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 
 @Composable
-fun rememberImageLoader(@DrawableRes errorImage: Int = AppIcon.Culture1.icon): ImageLoader {
+fun rememberImageLoader(): ImageLoader {
     val context = LocalContext.current
-    return remember {
-        try {
-            context.imageLoader.newBuilder()
-                .okHttpClient(imageLoaderClient)
-                .crossfade(true)
-                .error(errorImage)
-                .memoryCache {
-                    MemoryCache.Builder(context)
-                        .maxSizePercent(0.25)
-                        .build()
-                }
-                .diskCache {
-                    DiskCache.Builder()
-                        .directory(context.cacheDir.resolve("image_cache"))
-                        .maxSizePercent(0.02)
-                        .build()
-                }
-                .build()
-        } catch (e: Exception) {
-            e.logE()
-            context.imageLoader
-                .newBuilder()
-                .okHttpClient(imageLoaderClient)
-                .crossfade(true)
-                .error(errorImage)
-                .build()
+    val errorImages = AppIcon.ImageErrors.listOfPlaceholders
+    val imageLoader = remember { getImageLoader(context, errorImages) }
+
+    DisposableEffect(imageLoader) {
+        onDispose {
+            releaseImageLoader()
         }
     }
+
+    return imageLoader
 }
 
 @OptIn(androidx.media3.common.util.UnstableApi::class)
 private fun Context.getVideoMediaSource(uri: Uri, headers: Map<String, String> = mapOf()) =
     if (uri.isValidHttp()) {
-        val simpleCache = SimpleCache(
-            cacheDir,
-            NoOpCacheEvictor(),
-            StandaloneDatabaseProvider(this)
-        )
+        val simpleCache = getVideoCache(this)
         val httpDataFactory = DefaultHttpDataSource.Factory()
             .setReadTimeoutMs(60000)
             .setConnectTimeoutMs(60000)
@@ -179,7 +151,9 @@ fun MediaPlayer(
                 }
             })
     ) {
-        onDispose { exoPlayer.release() }
+        onDispose {
+            exoPlayer.release()
+        }
     }
 }
 
@@ -191,6 +165,7 @@ fun ImageComposable(
     onButtonClicked: () -> Unit = {},
     enablePreview: Boolean = true,
     filterQuality: FilterQuality = FilterQuality.High,
+    fillBounds: Boolean = true
 ) {
     var isLoading by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
@@ -204,7 +179,6 @@ fun ImageComposable(
 
             AsyncImage(
                 model = uri,
-                contentScale = ContentScale.Fit,
                 alignment = Alignment.Center,
                 imageLoader = imageLoader,
                 onState = { state -> isLoading = state is AsyncImagePainter.State.Loading },
@@ -238,7 +212,7 @@ fun ImageComposable(
             modifier = Modifier.size(maxWidth, maxHeight),
             model = uri,
             imageLoader = imageLoader,
-            contentScale = ContentScale.FillBounds,
+            contentScale = if (fillBounds) ContentScale.FillBounds else ContentScale.Fit,
             onState = { state -> isLoading = state is AsyncImagePainter.State.Loading },
             filterQuality = FilterQuality.Low,
             contentDescription = "image"

@@ -2,11 +2,13 @@ package uk.co.culturebook.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.remoteconfig.ktx.remoteConfig
+import uk.co.culturebook.add_new.AddNewViewModel
 import uk.co.culturebook.add_new.addNewGraph
 import uk.co.culturebook.auth.composables.ForgotRoute
 import uk.co.culturebook.auth.composables.LoginRoute
@@ -23,13 +25,14 @@ import uk.co.culturebook.ui.theme.molecules.WebViewComposable
 
 @Composable
 fun AppNavHost(modifier: Modifier, navController: NavHostController) {
+    val addNewViewModel: AddNewViewModel = viewModel { AddNewViewModel() }
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = Route.Login.route
     ) {
         homeGraph(navController)
-        addNewGraph(navController)
+        addNewGraph(navController, addNewViewModel)
         composable(Route.Login.route) { LoginRoute(navController) }
         composable(Route.Registration.route) { RegistrationRoute(navController) }
         composable(Route.WebView.ToS.route) {

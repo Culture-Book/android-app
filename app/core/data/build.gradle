@@ -6,7 +6,9 @@ plugins {
 
 android {
     namespace "uk.co.culturebook.data"
-    compileSdk "$target_sdk".toInteger()
+
+    compileSdk "$compile_sdk".toInteger()
+    compileSdkPreview "$compile_sdk_preview"
 
     defaultConfig {
         minSdk "$min_sdk".toInteger()
@@ -43,13 +45,20 @@ android {
 }
 
 dependencies {
+    // Media3 Data Source
+    api "androidx.media3:media3-datasource:1.0.0"
+    api "androidx.media3:media3-database:1.0.0"
+    api "androidx.media3:media3-common:1.0.0"
+
+    // Coil
+    api 'io.coil-kt:coil-compose:2.3.0'
 
     // Kotlin Serialization & Coroutines
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-    api "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+    api 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
 
     // Firebase
-    api platform('com.google.firebase:firebase-bom:31.2.0')
+    api platform('com.google.firebase:firebase-bom:31.4.0')
     api "com.google.firebase:firebase-config-ktx"
     api "com.google.firebase:firebase-analytics-ktx"
     api "com.google.firebase:firebase-crashlytics"

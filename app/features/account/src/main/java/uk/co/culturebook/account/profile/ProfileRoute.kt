@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
-import uk.co.culturebook.account.settings.SettingsState
 import uk.co.culturebook.data.models.authentication.enums.VerificationStatus
 import uk.co.culturebook.data.models.cultural.MediaFile
 import uk.co.culturebook.data.repositories.authentication.UserRepository
@@ -225,7 +224,7 @@ fun ProfileContent(
             ) {
                 val text = when (uiState.verificationStatus) {
                     VerificationStatus.NotVerified -> stringResource(id = R.string.request_verification)
-                    VerificationStatus.Verified -> stringResource(id = R.string.verified)
+                    VerificationStatus.Verified -> stringResource(id = R.string.verified_user)
                     VerificationStatus.Pending -> stringResource(id = R.string.verification_requested)
                 }
                 Text(text)

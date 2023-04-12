@@ -5,7 +5,9 @@ plugins {
 
 android {
     namespace "$app_id"
-    compileSdk "$target_sdk".toInteger()
+
+    compileSdk "$compile_sdk".toInteger()
+    compileSdkPreview "$compile_sdk_preview"
 
     defaultConfig {
         namespace "uk.co.culturebook.details"

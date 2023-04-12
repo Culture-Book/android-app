@@ -271,18 +271,21 @@ sealed interface AppIcon {
 
     object Culture1 : AppIcon {
         val icon = R.drawable.ic_culture_1
+
         @Composable
         override fun getPainter() = icon.getPainter()
     }
 
     object Culture2 : AppIcon {
         val icon = R.drawable.ic_culture_2
+
         @Composable
         override fun getPainter() = icon.getPainter()
     }
 
     object Culture3 : AppIcon {
         val icon = R.drawable.ic_culture_3
+
         @Composable
         override fun getPainter() = icon.getPainter()
     }
@@ -305,6 +308,15 @@ sealed interface AppIcon {
     object Wreath : AppIcon {
         @Composable
         override fun getPainter() = R.drawable.ic_wreath.getPainter()
+    }
+
+    object ImageErrors : AppIcon {
+        val listOfPlaceholders = listOf(
+            Culture1.icon, Culture2.icon, Culture3.icon
+        )
+
+        @Composable
+        override fun getPainter() = listOfPlaceholders.random().getPainter()
     }
 }
 

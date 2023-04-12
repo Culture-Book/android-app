@@ -19,9 +19,9 @@ fun rememberAppState(): AppState {
 }
 
 fun Context.isMaterialYou() = sharedPreferences.getBoolean(
-        PrefKey.MaterialYou.key,
-        false
-    ) && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S
+    PrefKey.MaterialYou.key,
+    false
+) && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S
 
 @Stable
 class AppState(isMaterialYou: Boolean = false) {
