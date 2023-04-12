@@ -15,13 +15,29 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android distribute
+### android distributeDebug
 
 ```sh
-[bundle exec] fastlane android distribute
+[bundle exec] fastlane android distributeDebug
 ```
 
-Lane for distributing app using Firebase App Distributions
+Lane for distributing the app using VS App Center
+
+### android distributeRelease
+
+```sh
+[bundle exec] fastlane android distributeRelease
+```
+
+Lane for distributing the app using VS App Center
+
+### android distributePreRelease
+
+```sh
+[bundle exec] fastlane android distributePreRelease
+```
+
+Lane for distributing the app using VS App Center
 
 ----
 

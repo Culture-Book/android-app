@@ -13,39 +13,36 @@ default_platform(:android)
 
 platform :android do
 
-#     desc "Lane for distributing app using Firebase App Distributions"
-#     lane :distribute do
-#         gradle(task: "bundleDebug")
-#         firebase_app_distribution(
-#             service_credentials_file: "firebase_credentials.json",
-#             app: ENV['FIREBASE_APP_ID'],
-#             android_artifact_type: "AAB",
-#             firebase_cli_token: ENV['FIREBASE_TOKEN'],
-#             debug: true
-#         )
-#     end
-
 desc "Lane for distributing the app using VS App Center"
 lane :distributeDebug do
-    gradle(task: "bundleDebug")
+    gradle(task: "app:bundleDebug")
     appcenter_upload(
-        api_token: ENV["APP_CENTER_TOKEN"],
+        api_token: ENV["APP_CENTER_DEBUG_TOKEN"],
         owner_name: ENV["APP_CENTER_OWNER"],
         owner_type: "user", # Default is user - set to organization for appcenter organizations
         app_name: ENV["APP_CENTER_APP_NAME_DEBUG"],
-        file: ENV["ABB_FILE_PATH_DEBUG"],
         notify_testers: false
     )
 end
 desc "Lane for distributing the app using VS App Center"
 lane :distributeRelease do
-    gradle(task: "bundleRelease")
+    gradle(task: "app:bundleRelease")
     appcenter_upload(
-        api_token: ENV["APP_CENTER_TOKEN"],
+        api_token: ENV["APP_CENTER_RELEASE_TOKEN"],
         owner_name: ENV["APP_CENTER_OWNER"],
         owner_type: "user", # Default is user - set to organization for appcenter organizations
         app_name: ENV["APP_CENTER_APP_NAME_RELEASE"],
-        file: ENV["ABB_FILE_PATH_RELEASE"],
+        notify_testers: false
+    )
+end
+desc "Lane for distributing the app using VS App Center"
+lane :distributePreRelease do
+    gradle(task: "app:bundlePre_release")
+    appcenter_upload(
+        api_token: ENV["APP_CENTER_PRE_RELEASE_TOKEN"],
+        owner_name: ENV["APP_CENTER_OWNER"],
+        owner_type: "user", # Default is user - set to organization for appcenter organizations
+        app_name: ENV["APP_CENTER_APP_NAME_PRE_RELEASE"],
         notify_testers: false
     )
 end

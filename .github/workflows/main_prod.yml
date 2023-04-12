@@ -84,7 +84,9 @@ jobs:
       - name: Deploy to app center
         run: fastlane distributeRelease
         env:
-          ABB_FILE_PATH_DEBUG: ${{ secrets.ABB_FILE_PATH_RELEASE }}
-          APP_CENTER_APP_NAME_DEBUG: ${{ secrets.APP_CENTER_APP_NAME_RELEASE }}
+          ABB_FILE_PATH_RELEASE: ${{ secrets.ABB_FILE_PATH_RELEASE }}
+          APP_CENTER_APP_NAME_RELEASE: ${{ secrets.APP_CENTER_APP_NAME_RELEASE }}
           APP_CENTER_OWNER: ${{ secrets.APP_CENTER_OWNER }}
-          APP_CENTER_TOKEN: ${{ secrets.APP_CENTER_TOKEN }}
+          APP_CENTER_RELEASE_TOKEN: ${{ secrets.APP_CENTER_RELEASE_TOKEN }}
+          RELEASE_PASS: ${{ secrets.RELEASE_PASS }}
+          RELEASE_ALIAS: ${{ secrets.RELEASE_ALIAS }}

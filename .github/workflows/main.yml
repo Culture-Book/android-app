@@ -89,4 +89,4 @@ jobs:
           ABB_FILE_PATH_DEBUG: ${{ secrets.ABB_FILE_PATH_DEBUG }}
           APP_CENTER_APP_NAME_DEBUG: ${{ secrets.APP_CENTER_APP_NAME_DEBUG }}
           APP_CENTER_OWNER: ${{ secrets.APP_CENTER_OWNER }}
-          APP_CENTER_TOKEN: ${{ secrets.APP_CENTER_TOKEN }}
+          APP_CENTER_DEBUG_TOKEN: ${{ secrets.APP_CENTER_DEBUG_TOKEN }}

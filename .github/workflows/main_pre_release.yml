@@ -84,7 +84,9 @@ jobs:
       - name: Deploy to app center
         run: fastlane distributePre_release
         env:
-          ABB_FILE_PATH_DEBUG: ${{ secrets.ABB_FILE_PATH_PRE_RELEASE }}
-          APP_CENTER_APP_NAME_DEBUG: ${{ secrets.APP_CENTER_APP_NAME_PRE_RELEASE }}
+          ABB_FILE_PATH_PRE_RELEASE: ${{ secrets.ABB_FILE_PATH_PRE_RELEASE }}
+          APP_CENTER_APP_NAME_PRE_RELEASE: ${{ secrets.APP_CENTER_APP_NAME_PRE_RELEASE }}
           APP_CENTER_OWNER: ${{ secrets.APP_CENTER_OWNER }}
-          APP_CENTER_TOKEN: ${{ secrets.APP_CENTER_TOKEN }}
+          APP_CENTER_PRE_RELEASE_TOKEN: ${{ secrets.APP_CENTER_PRE_RELEASE_TOKEN }}
+          PRE_RELEASE_ALIAS: ${{ secrets.PRE_RELEASE_ALIAS }}
+          PRE_RELEASE_PASS: ${{ secrets.PRE_RELEASE_PASS }}
