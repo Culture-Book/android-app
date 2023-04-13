@@ -21,7 +21,7 @@ lane :distributeDebug do
         owner_name: ENV["APP_CENTER_OWNER"],
         owner_type: "user", # Default is user - set to organization for appcenter organizations
         app_name: ENV["APP_CENTER_APP_NAME_DEBUG"],
-        file: ENV["ABB_FILE_PATH_DEBUG"]
+        file: ENV["ABB_FILE_PATH_DEBUG"],
         notify_testers: false
     )
 end
@@ -33,7 +33,7 @@ lane :distributeRelease do
         owner_name: ENV["APP_CENTER_OWNER"],
         owner_type: "user", # Default is user - set to organization for appcenter organizations
         app_name: ENV["APP_CENTER_APP_NAME_RELEASE"],
-        file: ENV["ABB_FILE_PATH_RELEASE"]
+        file: ENV["ABB_FILE_PATH_RELEASE"],
         notify_testers: false
     )
 end
@@ -45,7 +45,7 @@ lane :distributePreRelease do
         owner_name: ENV["APP_CENTER_OWNER"],
         owner_type: "user", # Default is user - set to organization for appcenter organizations
         app_name: ENV["APP_CENTER_APP_NAME_PRE_RELEASE"],
-        file: ENV["ABB_FILE_PATH_PRE_RELEASE"]
+        file: ENV["ABB_FILE_PATH_PRE_RELEASE"],
         notify_testers: false
     )
 end
