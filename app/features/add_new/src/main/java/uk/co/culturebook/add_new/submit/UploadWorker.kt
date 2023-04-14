@@ -11,8 +11,8 @@ import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remove
 import uk.co.culturebook.data.repositories.cultural.AddNewRepository
 import uk.co.culturebook.data.sharedPreferences
+import uk.co.culturebook.features.add_new.R
 import uk.co.culturebook.nav.fromJsonString
-import uk.co.culturebook.ui.R
 
 const val UploadWorkerTag = "UploadWorkerTag"
 
@@ -54,10 +54,10 @@ class UploadWorker(
                 ?.fromJsonString<Contribution>()
         val files = applicationContext.sharedPreferences.getString(PrefKey.Files.key, null)
             ?.fromJsonString<List<MediaFile>>()
-            ?: return Result.failure(workDataOf("error" to R.string.generic_sorry))
+            ?: return Result.failure(workDataOf("error" to R.string.worker_error))
 
         if (element == null && contribution == null) return Result.failure(
-            workDataOf("error" to R.string.generic_sorry)
+            workDataOf("error" to R.string.worker_error)
         )
 
         val response = if (element != null) {

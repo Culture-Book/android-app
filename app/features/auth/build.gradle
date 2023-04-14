@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace "$app_id"
+    namespace "uk.co.culturebook.features.auth"
 
     compileSdk "$compile_sdk".toInteger()
     compileSdkPreview "$compile_sdk_preview"
 
     defaultConfig {
-        namespace "uk.co.culturebook.auth"
+        namespace "uk.co.culturebook.features.auth"
         minSdk "$min_sdk".toInteger()
         targetSdk "$target_sdk".toInteger()
 
