@@ -78,6 +78,13 @@ jobs:
     # - run: |
     #     echo "Run, Build Application using script"
     #     ./location_of_script_within_repo/buildscript.sh
+  
+    - name: Decode API keys
+      run: echo -n "$G_SERVICES" | base64 -d > $G_SERVICES_FILE
+      env: 
+        G_SERVICES: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        G_SERVICES_FILE: ${{ secrets.GOOGLE_SERVICES_JSON_FILE }}
+    
     - name: Build Android
       run: ./gradlew app:assembleDebug
 
