@@ -22,7 +22,6 @@ fun uploadElementWorkRequest(): OneTimeWorkRequest =
         .setConstraints(
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresBatteryNotLow(true)
                 .build()
         )
         .addTag(UploadWorkerTag)
@@ -33,7 +32,6 @@ fun uploadContributionWorkRequest(): OneTimeWorkRequest =
         .setConstraints(
             Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresBatteryNotLow(true)
                 .build()
         )
         .addTag(UploadWorkerTag)
