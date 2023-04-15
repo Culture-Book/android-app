@@ -7,10 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
-        android:fullBackupContent="@xml/backup_rules"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,7 +27,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:resizeableActivity="true"
             android:theme="@style/Theme.CultureBook.Splash"
             android:windowSoftInputMode="stateVisible|adjustResize">
@@ -46,12 +45,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="api.culturebook.co.uk"
-                    android:scheme="https" />
-                <data
-                    android:host="api.culturebook.co.uk"
-                    android:scheme="app" />
+                <data android:scheme="https"/>
+                <data android:host="api.culturebook.co.uk"/>
+                <data android:scheme="app"/>
+                <data android:host="api.culturebook.co.uk"/>
             </intent-filter>
         </activity>
     </application>
