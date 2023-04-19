@@ -114,4 +114,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.activity:activity-compose:1.8.0-alpha03'
     implementation 'androidx.activity:activity-ktx:1.8.0-alpha03'
+
+    // Test rules and transitive dependencies:
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    // Needed for createAndroidComposeRule, but not createComposeRule:
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+    androidTestImplementation "androidx.navigation:navigation-testing:2.5.3"
+    androidTestImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.11")
+
 }

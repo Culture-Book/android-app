@@ -10,6 +10,7 @@ import coil.imageLoader
 import coil.memory.MemoryCache
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.remote.interfaces.AuthInterface
+import uk.co.culturebook.data.remote.retrofit.ClientFactory
 import uk.co.culturebook.data.remote.retrofit.getAuthenticatedRetrofitClient
 import uk.co.culturebook.data.remote.retrofit.getAuthenticationRetrofitClient
 import uk.co.culturebook.data.remote.retrofit.imageLoaderClient
@@ -93,10 +94,9 @@ object Singletons {
     fun getAuthInterface(): AuthInterface =
         authInterface.let {
             if (it == null) {
-                getAuthenticationRetrofitClient().also { authInt ->
-                    authInterface = authInt
-                    return authInt
-                }
+                val authInt = getAuthenticationRetrofitClient()
+                authInterface = ClientFactory.getApiInstance(authInt).createService(AuthInterface::class.java)
+                return authInterface!!
             } else {
                 return it
             }
@@ -105,10 +105,9 @@ object Singletons {
     fun getApiInterface(context: Context): ApiInterface =
         apiInterface.let {
             if (it == null) {
-                getAuthenticatedRetrofitClient(context).also { apiInt ->
-                    apiInterface = apiInt
-                    return apiInt
-                }
+                val apiInt = getAuthenticatedRetrofitClient(context)
+                apiInterface = ClientFactory.getApiInstance().createService(ApiInterface::class.java)
+                return apiInterface!!
             } else {
                 return it
             }

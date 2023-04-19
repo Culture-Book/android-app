@@ -16,6 +16,8 @@ buildscript {
         target_sdk = "33"
         compile_sdk = "33"
         compile_sdk_preview = "UpsideDownCake"
+
+        okhttp_version = "5.0.0-alpha.11"
     }
 
     repositories {

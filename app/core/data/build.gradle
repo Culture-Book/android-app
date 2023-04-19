@@ -64,10 +64,10 @@ dependencies {
     api "com.google.firebase:firebase-crashlytics"
 
     // Retrofit
-    implementation "com.squareup.okhttp3:okhttp-urlconnection:5.0.0-alpha.11"
+    implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
-    implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     api 'com.google.android.gms:play-services-maps:18.1.0'
     api 'com.google.android.gms:play-services-location:21.0.1'
@@ -82,7 +82,4 @@ dependencies {
 
     //ViewModels
     api "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
-
-    testApi "junit:junit:4.13.2"
-    androidTestApi "androidx.test.ext:junit-ktx:1.1.5"
 }
