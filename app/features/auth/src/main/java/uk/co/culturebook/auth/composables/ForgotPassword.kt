@@ -8,19 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.culturebook.auth.states.ForgotState
 import uk.co.culturebook.auth.viewModels.ForgotPasswordViewModel
 import uk.co.culturebook.data.repositories.authentication.UserRepository
-import uk.co.culturebook.nav.Route
-import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.*
 import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @Composable
-fun ForgotRoute(navController: NavController, userId: String, token: String) {
+fun ForgotRoute(navigateBack: () -> Unit, userId: String, token: String) {
     val viewModel = viewModel {
         val userRepository = UserRepository(this[APPLICATION_KEY] as Application)
         ForgotPasswordViewModel(userRepository)
@@ -32,10 +29,10 @@ fun ForgotRoute(navController: NavController, userId: String, token: String) {
     if (newPassword) {
         ForgotComposable(
             state,
-            navController = navController,
+            navigateBack,
             requestForgotPassword = { viewModel.passwordReset(userId, it, token) })
     } else {
-        RequestForgotComposable(state, navController, viewModel::requestPasswordReset)
+        RequestForgotComposable(state, navigateBack, viewModel::requestPasswordReset)
     }
 }
 
@@ -43,7 +40,7 @@ fun ForgotRoute(navController: NavController, userId: String, token: String) {
 @Composable
 fun RequestForgotComposable(
     state: ForgotState,
-    navController: NavController,
+    navigateBack: () -> Unit,
     requestForgotPassword: (String) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
@@ -52,7 +49,7 @@ fun RequestForgotComposable(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarState) },
-        topBar = { ForgotAppBar { navController.navigateTop(Route.Login) } }) { padding ->
+        topBar = { ForgotAppBar { navigateBack() } }) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -85,6 +82,7 @@ fun RequestForgotComposable(
 
                     SubmitButtonForgot(email.isValidEmail()) { requestForgotPassword(email) }
                 }
+
                 ForgotState.Loading -> LoadingComposable(padding)
             }
         }
@@ -96,7 +94,7 @@ fun RequestForgotComposable(
 @Composable
 fun ForgotComposable(
     state: ForgotState,
-    navController: NavController,
+    navigateBack: () -> Unit,
     requestForgotPassword: (String) -> Unit
 ) {
     val snackbarState = remember { SnackbarHostState() }
@@ -137,7 +135,7 @@ fun ForgotComposable(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { ForgotAppBar { navController.navigateTop(Route.Login) } },
+        topBar = { ForgotAppBar { navigateBack() } },
         snackbarHost = { SnackbarHost(hostState = snackbarState) }) { padding ->
 
         if (state is ForgotState.Error) {
@@ -147,7 +145,7 @@ fun ForgotComposable(
         if (state is ForgotState.Success) {
             ShowSnackbar(
                 stringId = R.string.new_password_success,
-                onShow = { navController.navigateTop(Route.Login) },
+                onShow = { navigateBack() },
                 snackbarState = snackbarState
             )
         }

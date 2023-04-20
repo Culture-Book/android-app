@@ -9,7 +9,7 @@ import uk.co.culturebook.auth.states.ForgotState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.ui.R
-import java.util.*
+import java.util.UUID
 
 class ForgotPasswordViewModel(
     private val userRepository: UserRepository

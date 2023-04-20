@@ -9,7 +9,7 @@ import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
-import java.util.*
+import java.util.UUID
 
 class ElementsViewModel(
     private val elementsRepository: ElementsRepository
@@ -30,6 +30,7 @@ class ElementsViewModel(
                 is ElementsEvent.ConfirmDeleteElement -> deleteElement(event.uuid)
                 is ElementsEvent.DeleteContribution ->
                     updateState(ElementsState.DeleteContribution(event.uuid))
+
                 is ElementsEvent.DeleteCulture -> updateState(ElementsState.DeleteCulture(event.uuid))
                 is ElementsEvent.DeleteElement -> updateState(ElementsState.DeleteElement(event.uuid))
             }
@@ -42,6 +43,7 @@ class ElementsViewModel(
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
                 updateState(ElementsState.ElementsFetched(response.getDataOrNull() ?: emptyList()))
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -58,6 +60,7 @@ class ElementsViewModel(
                     )
                 )
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -70,6 +73,7 @@ class ElementsViewModel(
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
                 updateState(ElementsState.CulturesFetched(response.getDataOrNull() ?: emptyList()))
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -86,6 +90,7 @@ class ElementsViewModel(
                     )
                 )
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -102,6 +107,7 @@ class ElementsViewModel(
                     )
                 )
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -118,6 +124,7 @@ class ElementsViewModel(
                     )
                 )
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -129,6 +136,7 @@ class ElementsViewModel(
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
                 postEvent(ElementsEvent.FetchElements)
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -140,6 +148,7 @@ class ElementsViewModel(
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
                 postEvent(ElementsEvent.FetchContributions)
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }
@@ -151,6 +160,7 @@ class ElementsViewModel(
             is ApiResponse.Success.Empty, is ApiResponse.Success -> {
                 postEvent(ElementsEvent.FetchCultures)
             }
+
             is ApiResponse.Exception, is ApiResponse.Failure -> {
                 updateState(ElementsState.Error())
             }

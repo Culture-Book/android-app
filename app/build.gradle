@@ -119,7 +119,4 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
     // Needed for createAndroidComposeRule, but not createComposeRule:
     debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
-    androidTestImplementation "androidx.navigation:navigation-testing:2.5.3"
-    androidTestImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.11")
-
 }

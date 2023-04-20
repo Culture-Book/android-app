@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import uk.co.culturebook.data.serializers.URISerializer
 import uk.co.culturebook.data.serializers.UUIDSerializer
 import java.net.URI
-import java.util.*
+import java.util.UUID
 
 @Serializable
 data class Media(

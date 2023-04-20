@@ -17,5 +17,12 @@ fun NavController.navigateTop(route: Route) {
     navigate(route.route)
 }
 
+fun NavController.navigateTop(route: String) {
+    while (backQueue.size > 0) {
+        backQueue.removeLast()
+    }
+    navigate(route)
+}
+
 inline fun <reified T : Any> T.toJsonString() = Json.encodeToString(this)
 inline fun <reified T : Any> String.fromJsonString(): T = Json.decodeFromString(this)

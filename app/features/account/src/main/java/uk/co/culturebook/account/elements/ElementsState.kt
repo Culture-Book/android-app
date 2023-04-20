@@ -5,7 +5,7 @@ import uk.co.culturebook.data.models.cultural.Contribution
 import uk.co.culturebook.data.models.cultural.Culture
 import uk.co.culturebook.data.models.cultural.Element
 import uk.co.culturebook.ui.R
-import java.util.*
+import java.util.UUID
 
 sealed interface ElementsState {
     object Loading : ElementsState

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import java.util.*
+import java.util.UUID
 
 @kotlinx.serialization.Serializable
 enum class SearchType {

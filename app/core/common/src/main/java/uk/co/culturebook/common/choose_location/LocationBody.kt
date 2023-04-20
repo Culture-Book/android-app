@@ -1,10 +1,20 @@
 package uk.co.common.choose_location
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -13,7 +23,11 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.rememberCameraPositionState
 import uk.co.culturebook.data.location.LocationFlow
 import uk.co.culturebook.data.location.LocationStatus
-import uk.co.culturebook.data.models.cultural.*
+import uk.co.culturebook.data.models.cultural.Location
+import uk.co.culturebook.data.models.cultural.isEmpty
+import uk.co.culturebook.data.models.cultural.isNotEmpty
+import uk.co.culturebook.data.models.cultural.latLng
+import uk.co.culturebook.data.models.cultural.location
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.TitleAndSubtitle

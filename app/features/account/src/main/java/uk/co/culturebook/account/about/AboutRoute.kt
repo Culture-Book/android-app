@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
 import uk.co.culturebook.common.getVersionName
 import uk.co.culturebook.nav.Route
@@ -24,12 +23,13 @@ import uk.co.culturebook.ui.theme.xxxxlSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutRoute(navController: NavController) {
+fun AboutRoute(navigate: (String) -> Unit, navigateBack: () -> Unit) {
     Scaffold(
         topBar = {
             SimpleBackAppBar(
                 title = stringResource(id = R.string.about),
-                onBackTapped = { navController.navigateUp() })
+                onBackTapped = navigateBack
+            )
         }
     ) { padding ->
         Column(
@@ -64,14 +64,14 @@ fun AboutRoute(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = mediumSize),
-                onClick = { navController.navigate(Route.WebView.ToS.route) }) {
+                onClick = { navigate(Route.WebView.ToS.route) }) {
                 Text(text = stringResource(id = R.string.tos))
             }
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { navController.navigate(Route.WebView.Privacy.route) }) {
+                onClick = { navigate(Route.WebView.Privacy.route) }) {
                 Text(text = stringResource(id = R.string.privacy))
             }
 

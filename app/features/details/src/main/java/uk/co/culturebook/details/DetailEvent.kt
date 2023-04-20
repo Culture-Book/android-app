@@ -1,7 +1,7 @@
 package uk.co.culturebook.details
 
 import uk.co.culturebook.data.models.cultural.Element
-import java.util.*
+import java.util.UUID
 
 sealed interface DetailEvent {
     object Idle : DetailEvent

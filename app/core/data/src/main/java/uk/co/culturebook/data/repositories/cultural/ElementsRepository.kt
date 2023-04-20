@@ -4,7 +4,7 @@ import android.content.Context
 import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.models.cultural.SearchCriteria
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
-import java.util.*
+import java.util.UUID
 
 class ElementsRepository(context: Context) {
     private val apiInterface: ApiInterface = Singletons.getApiInterface(context)

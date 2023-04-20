@@ -8,7 +8,13 @@ import uk.co.culturebook.data.PrefKey
 import uk.co.culturebook.data.Singletons
 import uk.co.culturebook.data.encoders.encrypt
 import uk.co.culturebook.data.flows.EventBus
-import uk.co.culturebook.data.models.authentication.*
+import uk.co.culturebook.data.models.authentication.PasswordReset
+import uk.co.culturebook.data.models.authentication.PasswordResetRequest
+import uk.co.culturebook.data.models.authentication.PasswordUpdateRequest
+import uk.co.culturebook.data.models.authentication.PublicJWT
+import uk.co.culturebook.data.models.authentication.User
+import uk.co.culturebook.data.models.authentication.UserSession
+import uk.co.culturebook.data.models.authentication.VerificationStatusRequest
 import uk.co.culturebook.data.models.cultural.MediaFile
 import uk.co.culturebook.data.models.cultural.toRequestBody
 import uk.co.culturebook.data.put
@@ -16,7 +22,7 @@ import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.AuthInterface
 import uk.co.culturebook.data.sharedPreferences
-import java.util.*
+import java.util.UUID
 
 class UserRepository(private val context: Context) {
     private val authInterface: AuthInterface = Singletons.getAuthInterface()

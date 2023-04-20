@@ -7,9 +7,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
-        android:allowBackup="false"
         android:fullBackupContent="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -45,10 +45,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="https"/>
-                <data android:host="api.culturebook.co.uk"/>
-                <data android:scheme="app"/>
-                <data android:host="api.culturebook.co.uk"/>
+                <data android:scheme="https" />
+                <data android:host="api.culturebook.co.uk" />
+                <data android:scheme="app" />
+                <data android:host="api.culturebook.co.uk" />
             </intent-filter>
         </activity>
     </application>

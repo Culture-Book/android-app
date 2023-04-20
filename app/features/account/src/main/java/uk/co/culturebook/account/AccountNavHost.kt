@@ -16,14 +16,14 @@ fun NavGraphBuilder.accountGraph(navController: NavController) {
         Route.Account.Home.route,
         Route.Account.route
     ) {
-        composable(Route.Account.Home.route) { AccountRoute(navController) }
+        composable(Route.Account.Home.route) { AccountRoute { navController.navigate(it) } }
 
-        composable(Route.Account.Profile.route) { ProfileRoute(navController) }
+        composable(Route.Account.Profile.route) { ProfileRoute { navController.navigateUp() } }
 
-        composable(Route.Account.Elements.route) { ElementsRoute(navController) }
+        composable(Route.Account.Elements.route) { ElementsRoute({ navController.navigate(it) }) { navController.navigateUp() } }
 
-        composable(Route.Account.About.route) { AboutRoute(navController) }
+        composable(Route.Account.About.route) { AboutRoute({ navController.navigate(it) }) { navController.navigateUp() } }
 
-        composable(Route.Account.Settings.route) { SettingsRoute(navController) }
+        composable(Route.Account.Settings.route) { SettingsRoute { navController.navigateUp() } }
     }
 }

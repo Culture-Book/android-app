@@ -16,7 +16,7 @@ fun NavGraphBuilder.homeGraph(navController: NavController) {
     ) {
         accountGraph(navController)
         composable(ExploreRoute.Explore.route) {
-            ExploreRoute(navController)
+            ExploreRoute { navController.navigate(it) }
         }
     }
 }

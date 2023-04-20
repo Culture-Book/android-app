@@ -14,7 +14,7 @@ import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.ui.R
-import java.util.*
+import java.util.UUID
 
 class ExploreViewModel(
     private val userRepository: UserRepository,
@@ -48,6 +48,7 @@ class ExploreViewModel(
                     _exploreState.emit(
                         ExploreState.Navigate(event.contribution.id.toString(), true)
                     )
+
                 is ExploreEvent.GoToElementDetails ->
                     _exploreState.emit(
                         ExploreState.Navigate(event.element.id.toString(), false)
@@ -63,12 +64,14 @@ class ExploreViewModel(
                 is ApiResponse.Success, is ApiResponse.Success.Empty -> {
                     _exploreState.emit(ExploreState.Success.UserFetched)
                 }
+
                 is ApiResponse.Failure -> {
                     when (user.message) {
                         "ToSUpdate", "PrivacyUpdate" -> postEvent(ExploreEvent.Error.ToSUpdate)
                         else -> postEvent(ExploreEvent.Error.Generic(user.errorMessage))
                     }
                 }
+
                 is ApiResponse.Exception -> user.throwable.logE()
             }
         }
@@ -83,6 +86,7 @@ class ExploreViewModel(
                     postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
                     apiResponse.message.logD()
                 }
+
                 is ApiResponse.Exception -> {
                     postEvent(ExploreEvent.Error.Generic(R.string.generic_sorry))
                     apiResponse.throwable.logE()
@@ -103,6 +107,7 @@ class ExploreViewModel(
                     }
                     _exploreState.emit(ExploreState.Success.ElementsReceived(elements))
                 }
+
                 else -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
             }
         }
@@ -123,6 +128,7 @@ class ExploreViewModel(
                     }
                     _exploreState.emit(ExploreState.Success.ContributionsReceived(contributions))
                 }
+
                 else -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
             }
         }
@@ -135,6 +141,7 @@ class ExploreViewModel(
                 is ApiResponse.Success -> {
                     _exploreState.emit(ExploreState.Success.CulturesReceived(response.data))
                 }
+
                 else -> _exploreState.emit(ExploreState.Error.Generic(R.string.generic_sorry))
             }
         }

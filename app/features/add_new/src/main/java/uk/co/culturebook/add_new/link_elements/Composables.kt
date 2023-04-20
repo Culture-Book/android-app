@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.common.BlockOptionsState
 import uk.co.common.ElementTypesComposableHorizontal
 import uk.co.common.PageInformation
@@ -29,7 +28,7 @@ import java.util.*
 
 @Composable
 fun LinkElementsRoute(
-    navController: NavController,
+    navigateBack: () -> Boolean,
     elements: List<Element>,
     onSubmit: (List<Element>) -> Unit
 ) {
@@ -43,7 +42,7 @@ fun LinkElementsRoute(
 
     LaunchedEffect(state) {
         if (state is LinkState.ElementsLinked) {
-            if (navController.navigateUp()) {
+            if (navigateBack()) {
                 onSubmit((state as LinkState.ElementsLinked).elements)
             }
         }
@@ -71,7 +70,7 @@ fun LinkElementsRoute(
         },
         onFavouriteClicked = { viewModel.postEvent(LinkEvent.FavouriteElement(it)) },
         onSubmit = { viewModel.postEvent(LinkEvent.LinkElements) },
-        onBack = { navController.navigateUp() }
+        onBack = { navigateBack() }
     )
 }
 
@@ -101,6 +100,7 @@ fun LinkBody(
                 stringId = R.string.generic_sorry,
                 snackbarState = snackbarState
             )
+
             is LinkState.ElementsFetched -> {
                 Column {
                     SearchElementAndTypes(
@@ -136,6 +136,7 @@ fun LinkBody(
                     }
                 }
             }
+
             LinkState.Idle -> {
                 SearchElementAndTypes(
                     Modifier.padding(padding),
@@ -145,6 +146,7 @@ fun LinkBody(
                     }
                 )
             }
+
             LinkState.Loading -> LoadingComposable()
         }
     }

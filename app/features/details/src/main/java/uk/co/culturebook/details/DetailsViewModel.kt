@@ -12,7 +12,7 @@ import uk.co.culturebook.data.repositories.cultural.DetailsRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
 import uk.co.culturebook.ui.R
-import java.util.*
+import java.util.UUID
 
 // Todo break apart the show contributions logic.
 class DetailsViewModel(
@@ -42,37 +42,45 @@ class DetailsViewModel(
                     event.parentId,
                     event.reaction
                 )
+
                 is DetailEvent.BlockElementComment -> blockElementComment(
                     event.elementId,
                     Comment(event.id)
                 )
+
                 is DetailEvent.GetContributions -> getContributions(event.uuid)
                 is DetailEvent.DeleteElementComment -> deleteElementComment(
                     event.elementId,
                     Comment(event.id)
                 )
+
                 is DetailEvent.AddContributionComment -> addContributionComment(
                     event.parentId,
                     event.comment
                 )
+
                 is DetailEvent.BlockContributionComment -> blockContributionComment(
                     event.contributionId,
                     Comment(event.id)
                 )
+
                 is DetailEvent.DeleteContributionComment -> deleteContributionComment(
                     event.contributionId,
                     Comment(event.id)
                 )
+
                 is DetailEvent.ToggleContributionReaction -> toggleContributionReaction(
                     event.contributionId,
                     event.reaction
                 )
+
                 is DetailEvent.GetContributionComments -> getContributionComments(event.contributionId)
                 is DetailEvent.GetElementComments -> getElementComments(event.elementId)
                 is DetailEvent.FavouriteFromShowContributions -> favouriteContribution(
                     event.contributionId,
                     event.elementId
                 )
+
                 is DetailEvent.BlockFromShowContributions -> blockContributionFromShowContributions(
                     event.contributionId,
                     event.elementId
@@ -86,6 +94,7 @@ class DetailsViewModel(
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ElementReceived(response.data)
             )
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -95,6 +104,7 @@ class DetailsViewModel(
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ContributionReceived(response.data)
             )
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -103,6 +113,7 @@ class DetailsViewModel(
         when (updateRepository.blockElement(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 _detailStateFlow.emit(DetailState.Blocked)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -111,6 +122,7 @@ class DetailsViewModel(
         when (updateRepository.blockContribution(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 _detailStateFlow.emit(DetailState.Blocked)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -119,6 +131,7 @@ class DetailsViewModel(
         when (updateRepository.blockContribution(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContributions(elementId))
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -127,6 +140,7 @@ class DetailsViewModel(
         when (updateRepository.favouriteElement(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetElement(uuid))
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -135,6 +149,7 @@ class DetailsViewModel(
         when (updateRepository.favouriteContribution(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContribution(uuid))
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -143,6 +158,7 @@ class DetailsViewModel(
         when (updateRepository.favouriteContribution(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContributions(elementId))
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -151,6 +167,7 @@ class DetailsViewModel(
         when (detailsRepository.addElementComment(uuid!!, comment)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetElementComments(uuid), false)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -159,6 +176,7 @@ class DetailsViewModel(
         when (detailsRepository.addContributionComment(uuid!!, comment)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContributionComments(uuid), false)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -167,6 +185,7 @@ class DetailsViewModel(
         when (detailsRepository.blockElementComment(uuid!!, comment.id)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetElementComments(uuid), false)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -175,6 +194,7 @@ class DetailsViewModel(
         when (detailsRepository.blockContributionComment(uuid!!, comment.id)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContributionComments(uuid), false)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -183,6 +203,7 @@ class DetailsViewModel(
         when (detailsRepository.deleteElementComment(comment.id)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetElementComments(uuid!!), false)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -191,6 +212,7 @@ class DetailsViewModel(
         when (detailsRepository.deleteContributionComment(comment.id)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContributionComments(uuid!!), false)
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -199,6 +221,7 @@ class DetailsViewModel(
         when (detailsRepository.toggleElementReaction(uuid!!, reaction)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetElement(uuid))
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -207,6 +230,7 @@ class DetailsViewModel(
         when (detailsRepository.toggleContributionReaction(uuid!!, reaction)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(DetailEvent.GetContribution(uuid))
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -216,6 +240,7 @@ class DetailsViewModel(
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ElementCommentsReceived(response.data)
             )
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -225,6 +250,7 @@ class DetailsViewModel(
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ContributionCommentsReceived(response.data)
             )
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }
@@ -236,6 +262,7 @@ class DetailsViewModel(
             is ApiResponse.Success -> _detailStateFlow.emit(
                 DetailState.ContributionsReceived(response.data)
             )
+
             else -> _detailStateFlow.emit(DetailState.Error(R.string.generic_sorry))
         }
     }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import uk.co.culturebook.data.models.cultural.ElementType
-import java.util.*
+import java.util.UUID
 
 @Stable
 class TypeData {

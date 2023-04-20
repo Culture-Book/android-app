@@ -5,10 +5,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import uk.co.common.*
+import uk.co.common.AskForLocationPermission
+import uk.co.common.BlockOptionsState
+import uk.co.common.PageInformation
+import uk.co.common.ShowContributions
+import uk.co.common.ShowCultures
+import uk.co.common.ShowElements
+import uk.co.common.coarseLocationOnly
+import uk.co.common.fineLocationGranted
 import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
@@ -48,6 +59,7 @@ fun ExploreBody(
                     )
                 }
             }
+
             is ExploreState.Success.ContributionsReceived -> {
                 ShowContributions(
                     contributions = exploreState.contributions,
@@ -61,11 +73,13 @@ fun ExploreBody(
                                     it.id
                                 )
                             )
+
                             is BlockOptionsState.Hide -> postEvent(
                                 ExploreEvent.BlockContribution(
                                     it.id
                                 )
                             )
+
                             is BlockOptionsState.Report -> postEvent(
                                 ExploreEvent.BlockContribution(
                                     it.id
@@ -84,6 +98,7 @@ fun ExploreBody(
                     )
                 }
             }
+
             is ExploreState.Success.CulturesReceived -> {
                 ShowCultures(
                     cultures = exploreState.cultures,
@@ -106,6 +121,7 @@ fun ExploreBody(
                     )
                 }
             }
+
             else -> LoadingComposable()
         }
     }

@@ -5,7 +5,13 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.MultipartBody
 import uk.co.culturebook.data.Singletons
-import uk.co.culturebook.data.models.cultural.*
+import uk.co.culturebook.data.models.cultural.Contribution
+import uk.co.culturebook.data.models.cultural.CultureRequest
+import uk.co.culturebook.data.models.cultural.Element
+import uk.co.culturebook.data.models.cultural.ElementType
+import uk.co.culturebook.data.models.cultural.Location
+import uk.co.culturebook.data.models.cultural.MediaFile
+import uk.co.culturebook.data.models.cultural.toRequestBody
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 
 class AddNewRepository(private val context: Context) {

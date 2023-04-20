@@ -39,7 +39,7 @@ fun SearchAppBar(
             IconButton(onClick = { onFiltersClicked() }) {
                 Icon(
                     painter = AppIcon.Filter.getPainter(),
-                    contentDescription = "search icon"
+                    contentDescription = "filters"
                 )
             }
         }

@@ -10,7 +10,7 @@ import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.remote.interfaces.getDataOrNull
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
-import java.util.*
+import java.util.UUID
 
 class SettingsViewModel(
     private val userRepository: UserRepository,
@@ -39,6 +39,7 @@ class SettingsViewModel(
             is ApiResponse.Success -> {
                 updateState(SettingsState.AccountDeleted)
             }
+
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {
                 updateState(SettingsState.Error())
@@ -53,6 +54,7 @@ class SettingsViewModel(
                 updateState(SettingsState.ElementUnblocked)
                 postEvent(SettingsEvent.FetchBlockedList)
             }
+
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {
                 updateState(SettingsState.Error())
@@ -67,6 +69,7 @@ class SettingsViewModel(
                 updateState(SettingsState.ElementUnblocked)
                 postEvent(SettingsEvent.FetchBlockedList)
             }
+
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {
                 updateState(SettingsState.Error())
@@ -81,6 +84,7 @@ class SettingsViewModel(
                 updateState(SettingsState.ElementUnblocked)
                 postEvent(SettingsEvent.FetchBlockedList)
             }
+
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {
                 updateState(SettingsState.Error())
@@ -98,6 +102,7 @@ class SettingsViewModel(
                     )
                 )
             }
+
             is ApiResponse.Exception,
             is ApiResponse.Failure -> {
                 updateState(SettingsState.Error())

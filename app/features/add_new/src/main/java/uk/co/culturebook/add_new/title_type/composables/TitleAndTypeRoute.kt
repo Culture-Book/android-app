@@ -7,17 +7,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.culturebook.add_new.data.TypeData
 import uk.co.culturebook.add_new.title_type.TitleAndTypeViewModel
 import uk.co.culturebook.add_new.title_type.events.TitleAndTypeEvent
 import uk.co.culturebook.add_new.title_type.states.TitleAndTypeState
 import uk.co.culturebook.data.repositories.cultural.AddNewRepository
-import uk.co.culturebook.nav.Route
 
 @Composable
 fun TitleAndTypeRoute(
-    navController: NavController,
+    navigateBack: () -> Unit,
     typeData: TypeData,
     onElementAndTitleSelected: (TypeData) -> Unit
 ) {
@@ -32,7 +30,6 @@ fun TitleAndTypeRoute(
         val success = state as? TitleAndTypeState.Success
         if (success != null) {
             onElementAndTitleSelected(success.typeData)
-            navController.navigate(Route.AddNew.AddInfo.Base.route)
             viewModel.postEvent(TitleAndTypeEvent.Idle)
         }
     }
@@ -40,7 +37,7 @@ fun TitleAndTypeRoute(
     TitleAndTypeScreen(
         state,
         _typeData = typeData,
-        onBack = { navController.navigateUp() },
+        onBack = navigateBack,
         postEvent = viewModel::postEvent
     )
 }

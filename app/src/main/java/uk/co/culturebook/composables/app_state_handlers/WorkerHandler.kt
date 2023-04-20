@@ -2,7 +2,11 @@ package uk.co.culturebook.composables.app_state_handlers
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +25,13 @@ import kotlinx.coroutines.delay
 import uk.co.culturebook.states.AppState
 import uk.co.culturebook.states.WorkerState
 import uk.co.culturebook.ui.R
-import uk.co.culturebook.ui.theme.*
-import java.util.*
+import uk.co.culturebook.ui.theme.AppTheme
+import uk.co.culturebook.ui.theme.SystemBarsColors
+import uk.co.culturebook.ui.theme.mediumFooterRoundedShape
+import uk.co.culturebook.ui.theme.mediumSize
+import uk.co.culturebook.ui.theme.smallSize
+import uk.co.culturebook.ui.theme.surfaceColorAtElevation
+import java.util.UUID
 
 
 @Composable
@@ -75,6 +84,7 @@ fun ShowBannerMessage(
             MaterialTheme.colorScheme.surfaceVariant,
             smallSize
         )
+
         is WorkerState.Idle -> MaterialTheme.colorScheme.background
     }
     val onBackgroundColor = when (appState.workerState) {
@@ -84,6 +94,7 @@ fun ShowBannerMessage(
             MaterialTheme.colorScheme.onSurfaceVariant,
             smallSize
         )
+
         is WorkerState.Idle -> MaterialTheme.colorScheme.onBackground
     }
 
@@ -94,10 +105,12 @@ fun ShowBannerMessage(
                 delay(5000)
                 appState.workerState = WorkerState.Idle
             }
+
             is WorkerState.ShowUploadFailed -> {
                 delay(5000)
                 appState.workerState = WorkerState.Idle
             }
+
             else -> {}
         }
     }

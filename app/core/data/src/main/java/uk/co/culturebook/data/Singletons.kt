@@ -1,6 +1,7 @@
 package uk.co.culturebook.data
 
 import android.content.Context
+import androidx.annotation.RestrictTo
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.cache.NoOpCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
@@ -10,7 +11,6 @@ import coil.imageLoader
 import coil.memory.MemoryCache
 import uk.co.culturebook.data.remote.interfaces.ApiInterface
 import uk.co.culturebook.data.remote.interfaces.AuthInterface
-import uk.co.culturebook.data.remote.retrofit.ClientFactory
 import uk.co.culturebook.data.remote.retrofit.getAuthenticatedRetrofitClient
 import uk.co.culturebook.data.remote.retrofit.getAuthenticationRetrofitClient
 import uk.co.culturebook.data.remote.retrofit.imageLoaderClient
@@ -94,8 +94,7 @@ object Singletons {
     fun getAuthInterface(): AuthInterface =
         authInterface.let {
             if (it == null) {
-                val authInt = getAuthenticationRetrofitClient()
-                authInterface = ClientFactory.getApiInstance(authInt).createService(AuthInterface::class.java)
+                authInterface = getAuthenticationRetrofitClient()
                 return authInterface!!
             } else {
                 return it
@@ -105,13 +104,18 @@ object Singletons {
     fun getApiInterface(context: Context): ApiInterface =
         apiInterface.let {
             if (it == null) {
-                val apiInt = getAuthenticatedRetrofitClient(context)
-                apiInterface = ClientFactory.getApiInstance().createService(ApiInterface::class.java)
+                apiInterface = getAuthenticatedRetrofitClient(context)
                 return apiInterface!!
             } else {
                 return it
             }
         }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    fun setMockInterfaces(authInterface: AuthInterface, apiInterface: ApiInterface) {
+        this.authInterface = authInterface
+        this.apiInterface = apiInterface
+    }
 
     fun resetInterfaces() {
         authInterface = null

@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.models.cultural.*
@@ -28,7 +27,7 @@ import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsRoute(navController: NavController) {
+fun SettingsRoute(navigateBack: () -> Unit) {
     val viewModel = viewModel {
         val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
         SettingsViewModel(UserRepository(app), UpdateRepository(app))
@@ -74,9 +73,11 @@ fun SettingsRoute(navController: NavController) {
                     SearchType.Element -> {
                         viewModel.postEvent(SettingsEvent.UnblockElement(uuid))
                     }
+
                     SearchType.Contribution -> {
                         viewModel.postEvent(SettingsEvent.UnblockContribution(uuid))
                     }
+
                     SearchType.Culture -> {
                         viewModel.postEvent(SettingsEvent.UnblockCulture(uuid))
                     }
@@ -95,6 +96,7 @@ fun SettingsRoute(navController: NavController) {
                 blockedCultureList = blockedList.blockedCulture
                 blockedContributionList = blockedList.blockedContribution
             }
+
             else -> {
                 blockedElementList = emptyList()
                 blockedCultureList = emptyList()
@@ -115,7 +117,8 @@ fun SettingsRoute(navController: NavController) {
         topBar = {
             SimpleBackAppBar(
                 title = stringResource(id = R.string.settings),
-                onBackTapped = { navController.navigateUp() })
+                onBackTapped = navigateBack
+            )
         },
         snackbarHost = { SnackbarHost(snackbarState) }
     ) { padding ->

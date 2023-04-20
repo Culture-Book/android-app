@@ -8,24 +8,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import uk.co.culturebook.account.profile.ProfilePicture
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 
 @Composable
-fun AccountRoute(navController: NavController) {
-    Account(navController)
+fun AccountRoute(onNavigate: (String) -> Unit = {}) {
+    Account(onNavigate)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun Account(navController: NavController = NavController(LocalContext.current)) {
+fun Account(onNavigate: (String) -> Unit = {}) {
     Scaffold(
         topBar = { ProfilePicture(modifier = Modifier.fillMaxWidth()) }
     ) { padding ->
@@ -39,7 +37,7 @@ fun Account(navController: NavController = NavController(LocalContext.current)) 
             LazyVerticalGrid(columns = GridCells.Fixed(2)) {
                 items(AllAccountItems) { item ->
                     AccountItemComposable(item.icon, stringResource(item.titleId)) {
-                        navController.navigate(item.route)
+                        onNavigate(item.route)
                     }
                 }
             }

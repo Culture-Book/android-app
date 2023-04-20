@@ -6,7 +6,7 @@ import uk.co.culturebook.data.models.cultural.Comment
 import uk.co.culturebook.data.models.cultural.Reaction
 import uk.co.culturebook.data.models.cultural.RequestComment
 import uk.co.culturebook.data.models.cultural.RequestReaction
-import java.util.*
+import java.util.UUID
 
 class DetailsRepository(context: Context) {
     private val apiInterface = Singletons.getApiInterface(context)

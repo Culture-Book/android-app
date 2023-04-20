@@ -14,17 +14,20 @@ import uk.co.culturebook.auth.composables.ForgotRoute
 import uk.co.culturebook.auth.composables.LoginRoute
 import uk.co.culturebook.auth.composables.RegistrationRoute
 import uk.co.culturebook.data.remote_config.RemoteConfig
+import uk.co.culturebook.data.utils.toUUID
 import uk.co.culturebook.details.DetailsScreenRoute
 import uk.co.culturebook.details.ShowContributionsRoute
 import uk.co.culturebook.home.composables.homeGraph
 import uk.co.culturebook.nav.DeepLinks
 import uk.co.culturebook.nav.Route
+import uk.co.culturebook.nav.Route.Details.isContribution
+import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.molecules.WebViewComposable
 
 
 @Composable
-fun AppNavHost(modifier: Modifier, navController: NavHostController) {
+fun AppNavHost(modifier: Modifier = Modifier, navController: NavHostController) {
     val addNewViewModel: AddNewViewModel = viewModel { AddNewViewModel() }
     NavHost(
         modifier = modifier,
@@ -33,8 +36,16 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
     ) {
         homeGraph(navController)
         addNewGraph(navController, addNewViewModel)
-        composable(Route.Login.route) { LoginRoute(navController) }
-        composable(Route.Registration.route) { RegistrationRoute(navController) }
+        composable(Route.Login.route) {
+            LoginRoute(
+                { navController.navigate(it) },
+                { navController.navigateTop(it) })
+        }
+        composable(Route.Registration.route) {
+            RegistrationRoute(
+                { navController.navigate(it) },
+                { navController.navigateTop(it) })
+        }
         composable(Route.WebView.ToS.route) {
             WebViewComposable(
                 titleId = R.string.tos,
@@ -56,22 +67,41 @@ fun AppNavHost(modifier: Modifier, navController: NavHostController) {
         ) { backStackEntry ->
             val userId = backStackEntry.arguments?.getString(Route.Forgot.userIdArgument) ?: ""
             val token = backStackEntry.arguments?.getString(Route.Forgot.tokenArgument) ?: ""
-            ForgotRoute(navController, userId, token)
+            ForgotRoute({ navController.navigateTop(Route.Login) }, userId, token)
         }
         composable(
             Route.Details.route + "?" + Route.Details.id + "=" +
-                    "{${Route.Details.id}}" + "&" + Route.Details.isContribution + "=" +
-                    "{${Route.Details.isContribution}}",
+                    "{${Route.Details.id}}" + "&" + isContribution + "=" +
+                    "{$isContribution}",
             arguments = Route.Details.args,
             deepLinks = DeepLinks.detailsDeepLink
         ) {
-            DetailsScreenRoute(navController)
+            val uuid =
+                navController.currentBackStackEntry?.arguments?.getString(Route.Details.id).toUUID()
+
+            val isContribution =
+                navController.currentBackStackEntry?.arguments?.getBoolean(isContribution, false)
+                    ?: false
+
+            DetailsScreenRoute(
+                { navController.navigateUp() },
+                { navController.navigate(it) },
+                uuid,
+                isContribution
+            )
         }
         composable(
             Route.Details.ShowContributions.route + "?" + Route.Details.ShowContributions.elementId + "=" +
                     "{${Route.Details.ShowContributions.elementId}}"
         ) {
-            ShowContributionsRoute(navController)
+            val elementId =
+                navController.currentBackStackEntry?.arguments?.getString(Route.Details.ShowContributions.elementId)
+                    ?.toUUID()
+            ShowContributionsRoute(
+                { navController.navigateUp() },
+                { navController.navigate(it) },
+                elementId
+            )
         }
     }
 }

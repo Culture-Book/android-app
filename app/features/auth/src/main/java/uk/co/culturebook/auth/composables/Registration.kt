@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.culturebook.auth.events.RegisterState
 import uk.co.culturebook.auth.events.RegistrationEvent
 import uk.co.culturebook.auth.events.toEvent
@@ -19,28 +18,31 @@ import uk.co.culturebook.auth.states.RegistrationState
 import uk.co.culturebook.auth.viewModels.RegistrationViewModel
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.nav.Route
-import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.*
 import uk.co.culturebook.ui.theme.molecules.*
 import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @Composable
-fun RegistrationRoute(navController: NavController) {
+fun RegistrationRoute(
+    navigate: (String) -> Unit,
+    navigateTop: (String) -> Unit
+) {
     val viewModel = viewModel {
         val userRepository = UserRepository(this[APPLICATION_KEY] as Application)
         RegistrationViewModel(userRepository)
     }
 
     val state by viewModel.registrationState.collectAsState()
-    RegistrationComposable(state, navController, viewModel::postEvent)
+    RegistrationComposable(state, navigate, navigateTop, viewModel::postEvent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationComposable(
     registrationState: RegistrationState,
-    navController: NavController,
+    navigate: (String) -> Unit,
+    navigateTop: (String) -> Unit,
     postEvent: (RegistrationEvent) -> Unit
 ) {
     val snackbarState = remember { SnackbarHostState() }
@@ -48,7 +50,7 @@ fun RegistrationComposable(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { RegistrationAppBar { navController.navigateTop(Route.Login) } },
+        topBar = { RegistrationAppBar { navigateTop(Route.Login.route) } },
         snackbarHost = { SnackbarHost(hostState = snackbarState) }) { padding ->
 
         if (registrationState is RegistrationState.Error) {
@@ -65,12 +67,13 @@ fun RegistrationComposable(
                     modifier = Modifier.padding(padding),
                     registerState = registerState,
                     onRegistration = { postEvent(it) },
-                    onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
-                    onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) })
+                    onTosClicked = { navigate(Route.WebView.ToS.route) },
+                    onPrivacyClicked = { navigate(Route.WebView.Privacy.route) })
             }
+
             RegistrationState.Loading -> LoadingComposable(padding)
             RegistrationState.Success -> LaunchedEffect(Unit) {
-                navController.navigateTop(Route.Home)
+                navigateTop(Route.Home.route)
             }
         }
 

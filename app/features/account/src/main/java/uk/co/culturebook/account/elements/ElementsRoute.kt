@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.common.*
 import uk.co.culturebook.account.SimpleBackAppBar
 import uk.co.culturebook.data.models.cultural.SearchType
@@ -27,7 +26,7 @@ import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ElementsRoute(navController: NavController) {
+fun ElementsRoute(onNavigate: (String) -> Unit, navigateBack: () -> Unit) {
     val viewModel = viewModel {
         val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
         ElementsViewModel(ElementsRepository(app))
@@ -75,6 +74,7 @@ fun ElementsRoute(navController: NavController) {
                 }
             )
         }
+
         is ElementsState.DeleteCulture -> {
             AlertDialog(
                 onDismissRequest = { viewModel.postEvent(ElementsEvent.FetchCultures) },
@@ -94,6 +94,7 @@ fun ElementsRoute(navController: NavController) {
                 }
             )
         }
+
         is ElementsState.DeleteElement -> {
             AlertDialog(
                 onDismissRequest = { viewModel.postEvent(ElementsEvent.Idle) },
@@ -113,6 +114,7 @@ fun ElementsRoute(navController: NavController) {
                 }
             )
         }
+
         else -> {}
     }
 
@@ -120,7 +122,8 @@ fun ElementsRoute(navController: NavController) {
         topBar = {
             SimpleBackAppBar(
                 title = stringResource(id = R.string.elements),
-                onBackTapped = { navController.navigateUp() })
+                onBackTapped = navigateBack
+            )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
@@ -156,7 +159,7 @@ fun ElementsRoute(navController: NavController) {
                             val route =
                                 Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
                                         "${Route.Details.isContribution}=true"
-                            navController.navigate(route)
+                            onNavigate(route)
                         },
                         onEditClicked = { viewModel.postEvent(ElementsEvent.DeleteContribution(it.id!!)) }
                     ) {
@@ -168,6 +171,7 @@ fun ElementsRoute(navController: NavController) {
                         )
                     }
                 }
+
                 is ElementsState.CulturesFetched -> {
                     val cultures = (state as ElementsState.CulturesFetched).cultures
                     ShowCultures(
@@ -183,6 +187,7 @@ fun ElementsRoute(navController: NavController) {
                         )
                     }
                 }
+
                 is ElementsState.ElementsFetched -> {
                     val elements = (state as ElementsState.ElementsFetched).elements
                     ShowElements(
@@ -191,7 +196,7 @@ fun ElementsRoute(navController: NavController) {
                             val route =
                                 Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
                                         "${Route.Details.isContribution}=false"
-                            navController.navigate(route)
+                            onNavigate(route)
                         },
                         onEditClicked = { viewModel.postEvent(ElementsEvent.DeleteElement(it.id!!)) }
                     ) {
@@ -203,6 +208,7 @@ fun ElementsRoute(navController: NavController) {
                         )
                     }
                 }
+
                 is ElementsState.FavouriteContributionsFetched -> {
                     val contributions =
                         (state as ElementsState.FavouriteContributionsFetched).contributions
@@ -212,7 +218,7 @@ fun ElementsRoute(navController: NavController) {
                             val route =
                                 Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
                                         "${Route.Details.isContribution}=true"
-                            navController.navigate(route)
+                            onNavigate(route)
                         },
                     ) {
                         PageInformation(
@@ -223,6 +229,7 @@ fun ElementsRoute(navController: NavController) {
                         )
                     }
                 }
+
                 is ElementsState.FavouriteCulturesFetched -> {
                     val cultures = (state as ElementsState.FavouriteCulturesFetched).cultures
                     ShowCultures(
@@ -237,6 +244,7 @@ fun ElementsRoute(navController: NavController) {
                         )
                     }
                 }
+
                 is ElementsState.FavouriteElementsFetched -> {
                     val elements = (state as ElementsState.FavouriteElementsFetched).elements
                     ShowElements(
@@ -245,7 +253,7 @@ fun ElementsRoute(navController: NavController) {
                             val route =
                                 Route.Details.route + "?" + "${Route.Details.id}=${it.id}" + "&" +
                                         "${Route.Details.isContribution}=false"
-                            navController.navigate(route)
+                            onNavigate(route)
                         },
                     ) {
                         PageInformation(
@@ -256,6 +264,7 @@ fun ElementsRoute(navController: NavController) {
                         )
                     }
                 }
+
                 else -> {}
             }
         }

@@ -60,11 +60,13 @@ fun BlockedElementsSheet(
                 listOfElements = listOfElements,
                 onUnblock = onUnblock
             )
+
             SearchType.Contribution -> BlockedContributionsList(
                 modifier = Modifier.fillMaxWidth(),
                 listOfContributions = listOfContributions,
                 onUnblock = onUnblock
             )
+
             SearchType.Culture -> BlockedCulturesList(
                 modifier = Modifier.fillMaxWidth(),
                 listOfCultures = listOfCultures,

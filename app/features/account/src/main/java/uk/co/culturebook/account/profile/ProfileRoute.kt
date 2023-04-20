@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.culturebook.account.SimpleBackAppBar
 import uk.co.culturebook.data.models.authentication.enums.VerificationStatus
 import uk.co.culturebook.data.models.cultural.MediaFile
@@ -33,7 +32,7 @@ import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileRoute(navController: NavController) {
+fun ProfileRoute(onNavigateBack: () -> Unit) {
     val context = LocalContext.current
     val viewModel = viewModel {
         val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
@@ -69,6 +68,7 @@ fun ProfileRoute(navController: NavController) {
                 onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
+
         is ProfileState.VerificationRequested -> {
             ShowSnackbar(
                 stringId = R.string.verification_requested,
@@ -76,6 +76,7 @@ fun ProfileRoute(navController: NavController) {
                 onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
+
         is ProfileState.PasswordUpdated -> {
             ShowSnackbar(
                 stringId = R.string.password_updated,
@@ -83,6 +84,7 @@ fun ProfileRoute(navController: NavController) {
                 onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
+
         is ProfileState.ProfilePictureAdded -> {
             ShowSnackbar(
                 stringId = R.string.profile_picture_added,
@@ -90,6 +92,7 @@ fun ProfileRoute(navController: NavController) {
                 onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
+
         is ProfileState.ProfilePictureRemoved -> {
             ShowSnackbar(
                 stringId = R.string.profile_picture_removed,
@@ -97,6 +100,7 @@ fun ProfileRoute(navController: NavController) {
                 onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
+
         is ProfileState.UserUpdated -> {
             ShowSnackbar(
                 stringId = R.string.user_updated,
@@ -104,6 +108,7 @@ fun ProfileRoute(navController: NavController) {
                 onShow = { viewModel.postEvent(ProfileEvent.FetchProfile) }
             )
         }
+
         else -> {}
     }
 
@@ -111,7 +116,7 @@ fun ProfileRoute(navController: NavController) {
         topBar = {
             SimpleBackAppBar(
                 title = stringResource(id = R.string.profile),
-                onBackTapped = { navController.navigateUp() })
+                onBackTapped = { onNavigateBack() })
         },
         snackbarHost = { SnackbarHost(hostState = snackbarState) }
     ) { padding ->

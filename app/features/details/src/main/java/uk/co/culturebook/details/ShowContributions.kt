@@ -8,23 +8,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.common.BlockOptionsState
 import uk.co.common.PageInformation
 import uk.co.common.ShowContributions
 import uk.co.culturebook.data.repositories.cultural.DetailsRepository
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
-import uk.co.culturebook.data.utils.toUUID
 import uk.co.culturebook.nav.Route
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.AppIcon
 import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.utils.ShowSnackbar
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowContributionsRoute(navController: NavController) {
+fun ShowContributionsRoute(navigateBack: () -> Unit, navigate: (String) -> Unit, elementId: UUID?) {
     val viewModel = viewModel {
         val app = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
 
@@ -34,9 +33,6 @@ fun ShowContributionsRoute(navController: NavController) {
             DetailsRepository(app),
         )
     }
-    val elementId =
-        navController.currentBackStackEntry?.arguments?.getString(Route.Details.ShowContributions.elementId)
-            ?.toUUID()
     val state by viewModel.detailStateFlow.collectAsState()
     val snackbarState = remember { SnackbarHostState() }
     val searchCriteria = viewModel.searchCriteria
@@ -46,7 +42,7 @@ fun ShowContributionsRoute(navController: NavController) {
     }
 
     Scaffold(
-        topBar = { ShowContributionsAppBar(onBack = { navController.navigateUp() }) },
+        topBar = { ShowContributionsAppBar(onBack = navigateBack) },
         snackbarHost = { SnackbarHost(hostState = snackbarState) }
     ) { padding ->
         when (state) {
@@ -61,11 +57,13 @@ fun ShowContributionsRoute(navController: NavController) {
                                     it.id, elementId!!
                                 )
                             )
+
                             is BlockOptionsState.Hide -> viewModel.postEvent(
                                 DetailEvent.BlockFromShowContributions(
                                     it.id, elementId!!
                                 )
                             )
+
                             is BlockOptionsState.Report -> viewModel.postEvent(
                                 DetailEvent.BlockFromShowContributions(
                                     it.id, elementId!!
@@ -85,7 +83,7 @@ fun ShowContributionsRoute(navController: NavController) {
                         val route =
                             Route.Details.route + "?" + "${Route.Details.id}=${contribution.id}" + "&" +
                                     "${Route.Details.isContribution}=true"
-                        navController.navigate(route)
+                        navigate(route)
                     },
                     lastComposable = {
                         PageInformation(
@@ -98,10 +96,12 @@ fun ShowContributionsRoute(navController: NavController) {
                     }
                 )
             }
+
             is DetailState.Error -> ShowSnackbar(
                 stringId = (state as DetailState.Error).error,
                 snackbarState
             )
+
             else -> LoadingComposable(padding)
         }
     }

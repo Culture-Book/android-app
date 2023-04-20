@@ -1,6 +1,6 @@
 package uk.co.culturebook.account.elements
 
-import java.util.*
+import java.util.UUID
 
 sealed interface ElementsEvent {
     object FetchElements : ElementsEvent

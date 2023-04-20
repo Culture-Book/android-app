@@ -15,7 +15,7 @@ import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.ui.R
 import java.net.URI
-import java.util.*
+import java.util.UUID
 
 class LoginViewModel(
     private val userRepository: UserRepository
@@ -35,6 +35,7 @@ class LoginViewModel(
                 LoginEvent.Idle -> _loginState.emit(LoginState.Idle)
                 is LoginEvent.Login ->
                     login(loginEvent.email, loginEvent.password)
+
                 is LoginEvent.Error -> _loginState.emit(LoginState.Error(loginEvent.messageId))
                 is LoginEvent.GoogleLogin -> registerOrLogin(loginEvent.googleSignInAccount.toUser())
             }
@@ -48,6 +49,7 @@ class LoginViewModel(
                 userRepository.saveUserToken(loginRes.data)
                 _loginState.emit(LoginState.Success)
             }
+
             is ApiResponse.Failure -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
             is ApiResponse.Exception -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
             is ApiResponse.Success.Empty -> _loginState.emit(LoginState.Idle)
@@ -74,6 +76,7 @@ class LoginViewModel(
                 userRepository.saveUserToken(loginRes.data)
                 _loginState.emit(LoginState.Success)
             }
+
             is ApiResponse.Failure -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
             is ApiResponse.Exception -> _loginState.emit(LoginState.Error(loginRes.errorMessage))
             is ApiResponse.Success.Empty -> _loginState.emit(LoginState.Idle)

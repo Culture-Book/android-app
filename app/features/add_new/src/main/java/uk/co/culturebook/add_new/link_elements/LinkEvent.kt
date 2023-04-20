@@ -2,7 +2,7 @@ package uk.co.culturebook.add_new.link_elements
 
 import uk.co.culturebook.data.models.cultural.Element
 import uk.co.culturebook.data.models.cultural.SearchCriteriaState
-import java.util.*
+import java.util.UUID
 
 sealed interface LinkEvent {
     data class FavouriteElement(val uuid: UUID?) : LinkEvent

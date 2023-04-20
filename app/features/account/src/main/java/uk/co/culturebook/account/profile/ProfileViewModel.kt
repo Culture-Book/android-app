@@ -31,6 +31,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
                     event.oldPassword,
                     event.newPassword
                 )
+
                 ProfileEvent.FetchProfile -> {
                     userRepository.getUser().getDataOrNull()?.let { user ->
                         uiState.displayName = user.displayName ?: ""
@@ -49,6 +50,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         when (userRepository.updateProfilePicture(profilePicture)) {
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> updateState(ProfileState.ProfilePictureAdded(profilePicture))
+
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())
         }
@@ -60,6 +62,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
             is ApiResponse.Success -> updateState(ProfileState.ProfilePictureRemoved).also {
                 uiState.profilePicture = null
             }
+
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())
         }
@@ -69,6 +72,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         when (userRepository.updateUser(user)) {
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> updateState(ProfileState.UserUpdated)
+
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())
         }
@@ -78,6 +82,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         when (userRepository.requestVerificationStatus(reason)) {
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> updateState(ProfileState.VerificationRequested)
+
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())
         }
@@ -87,6 +92,7 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         when (userRepository.updatePassword(oldPassword, newPassword)) {
             is ApiResponse.Success.Empty,
             is ApiResponse.Success -> updateState(ProfileState.PasswordUpdated)
+
             is ApiResponse.Exception -> updateState(ProfileState.Error())
             is ApiResponse.Failure -> updateState(ProfileState.Error())
         }

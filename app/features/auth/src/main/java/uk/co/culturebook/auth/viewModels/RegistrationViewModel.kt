@@ -39,6 +39,7 @@ class RegistrationViewModel(
                 userRepository.saveUserToken(regRes.data)
                 _registrationState.emit(RegistrationState.Success)
             }
+
             is ApiResponse.Failure -> _registrationState.emit(RegistrationState.Error(regRes.errorMessage))
             is ApiResponse.Exception -> _registrationState.emit(RegistrationState.Error(regRes.errorMessage))
             is ApiResponse.Success.Empty -> _registrationState.emit(RegistrationState.Idle)

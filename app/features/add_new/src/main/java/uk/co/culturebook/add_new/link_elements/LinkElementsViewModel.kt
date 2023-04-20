@@ -14,7 +14,7 @@ import uk.co.culturebook.data.models.cultural.SearchCriteriaState
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.cultural.ElementsRepository
 import uk.co.culturebook.data.repositories.cultural.UpdateRepository
-import java.util.*
+import java.util.UUID
 
 class LinkElementsViewModel(
     initialSelectedElements: List<Element> = emptyList(),
@@ -31,6 +31,7 @@ class LinkElementsViewModel(
             when (event) {
                 is LinkEvent.LinkElements ->
                     _linkState.value = LinkState.ElementsLinked(selectedElements)
+
                 is LinkEvent.FetchElements -> fetchElements(event.searchCriteria.toSearchCriteria())
                 is LinkEvent.BlockElement -> blockElement(event.uuid)
                 is LinkEvent.FavouriteElement -> favouriteElement(event.uuid)
@@ -54,6 +55,7 @@ class LinkElementsViewModel(
             is ApiResponse.Success.Empty,
             is ApiResponse.Exception,
             is ApiResponse.Failure -> LinkState.Error
+
             is ApiResponse.Success -> LinkState.ElementsFetched(response.data)
         }
         _linkState.emit(state)
@@ -65,6 +67,7 @@ class LinkElementsViewModel(
         when (updateRepository.favouriteElement(uuid)) {
             is ApiResponse.Success, is ApiResponse.Success.Empty ->
                 postEvent(LinkEvent.FetchElements(searchCriteria))
+
             else -> _linkState.emit(LinkState.Error)
         }
     }
@@ -78,6 +81,7 @@ class LinkElementsViewModel(
                     searchCriteria
                 )
             )
+
             else -> _linkState.emit(LinkState.Error)
         }
     }

@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -120,6 +121,7 @@ fun EmojiPopUp(
                 )
 
                 EmojiComposable(
+                    modifier = Modifier.testTag("emoji"),
                     emoji = emoji.reaction,
                     color = background,
                     emojiSize = emojiSize,

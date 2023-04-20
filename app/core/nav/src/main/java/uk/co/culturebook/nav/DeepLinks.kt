@@ -1,7 +1,7 @@
 package uk.co.culturebook.nav
 
 import androidx.navigation.navDeepLink
-import java.util.*
+import java.util.UUID
 
 object DeepLinks {
     private const val deepLinkUri = "api.culturebook.co.uk"

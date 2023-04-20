@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.culturebook.add_new.AddInfoViewModel
 import uk.co.culturebook.add_new.data.AddNewState
 import uk.co.culturebook.add_new.info.events.AddInfoEvent
@@ -30,7 +29,8 @@ import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @Composable
 fun AddInfoRoute(
-    navController: NavController,
+    navigateBack: () -> Unit,
+    navigate: (String) -> Unit,
     addNewState: AddNewState
 ) {
     val viewModel = viewModel { AddInfoViewModel(addNewState) }
@@ -38,10 +38,10 @@ fun AddInfoRoute(
 
     AddInfoScreen(
         state,
-        onBack = { navController.navigateUp() },
+        onBack = navigateBack,
         postEvent = viewModel::postEvent,
         addNewState = addNewState,
-        navigate = { navController.navigate(it) }
+        navigate = navigate
     )
 }
 
@@ -82,9 +82,11 @@ fun AddInfoScreen(
             is AddInfoState.NavigateNext -> {
                 navigate(Route.AddNew.Review.route)
             }
+
             is AddInfoState.AddLinkElements -> {
                 navigate(Route.AddNew.AddInfo.LinkElements.route)
             }
+
             else -> {}
         }
         postEvent(AddInfoEvent.Idle)
@@ -105,6 +107,7 @@ fun AddInfoScreen(
         when (state) {
             is AddInfoState.NavigateNext,
             AddInfoState.Loading -> LoadingComposable(padding)
+
             else -> AddInfoBody(
                 modifier = Modifier
                     .padding(padding)

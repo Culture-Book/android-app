@@ -12,7 +12,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.culturebook.auth.composables.molecules.GoogleSignInButton
 import uk.co.culturebook.auth.events.LoginEvent
 import uk.co.culturebook.auth.events.LoginHState
@@ -21,7 +20,6 @@ import uk.co.culturebook.auth.viewModels.LoginViewModel
 import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.repositories.authentication.UserRepository
 import uk.co.culturebook.nav.Route
-import uk.co.culturebook.nav.navigateTop
 import uk.co.culturebook.ui.R
 import uk.co.culturebook.ui.theme.mediumSize
 import uk.co.culturebook.ui.theme.molecules.*
@@ -29,7 +27,7 @@ import uk.co.culturebook.ui.theme.smallSize
 import uk.co.culturebook.ui.theme.xxxlSize
 
 @Composable
-fun LoginRoute(navController: NavController) {
+fun LoginRoute(navigate: (String) -> Unit, navigateTop: (String) -> Unit) {
     val viewModel = viewModel {
         val userRepository = UserRepository((this[APPLICATION_KEY] as Application))
         LoginViewModel(userRepository = userRepository)
@@ -38,7 +36,8 @@ fun LoginRoute(navController: NavController) {
     val loginState by viewModel.loginState.collectAsState()
     LoginComposable(
         Modifier.padding(mediumSize),
-        navController,
+        navigate,
+        navigateTop,
         loginState,
         viewModel::postEvent
     )
@@ -48,7 +47,8 @@ fun LoginRoute(navController: NavController) {
 @Composable
 fun LoginComposable(
     modifier: Modifier,
-    navController: NavController,
+    navigate: (String) -> Unit,
+    navigateTop: (String) -> Unit,
     state: LoginState,
     postEvent: (LoginEvent) -> Unit
 ) {
@@ -104,21 +104,22 @@ fun LoginComposable(
                         OutlinedButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            onClick = { navController.navigate(Route.Registration.route) }) {
+                            onClick = { navigate(Route.Registration.route) }) {
                             Text(text = stringResource(R.string.register))
                         }
 
                         TextButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            onClick = { navController.navigate(Route.Forgot.route) }) {
+                            onClick = { navigate(Route.Forgot.route) }) {
                             Text(text = stringResource(R.string.forgot_password))
                         }
                     }
                 }
+
                 LoginState.Loading -> LoadingComposable(paddingValues)
                 is LoginState.Success -> LaunchedEffect(Unit) {
-                    navController.navigateTop(Route.Home)
+                    navigateTop(Route.Home.route)
                 }
             }
         }

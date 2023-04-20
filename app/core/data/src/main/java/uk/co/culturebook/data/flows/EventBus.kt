@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import uk.co.culturebook.data.models.authentication.UserSessionState
-import java.util.*
+import java.util.UUID
 
 object EventBus {
     private val _userSessionFlow = MutableStateFlow<UserSessionState>(UserSessionState.Idle)

@@ -6,9 +6,13 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import uk.co.culturebook.data.*
+import uk.co.culturebook.data.PrefKey
+import uk.co.culturebook.data.Singletons
+import uk.co.culturebook.data.logE
 import uk.co.culturebook.data.models.authentication.UserSession
+import uk.co.culturebook.data.put
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
+import uk.co.culturebook.data.sharedPreferences
 
 class RefreshJWT(private val context: Context) : Authenticator {
     private val authInterface = Singletons.getAuthInterface()

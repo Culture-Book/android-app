@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import uk.co.common.RegisterLocationChanges
 import uk.co.culturebook.data.flows.EventBus
 import uk.co.culturebook.data.location.LocationFlow
@@ -29,7 +28,7 @@ import uk.co.culturebook.ui.theme.molecules.LoadingComposable
 import uk.co.culturebook.ui.utils.ShowSnackbar
 
 @Composable
-fun ExploreRoute(navController: NavController) {
+fun ExploreRoute(navigate: (String) -> Unit) {
     val viewModel = viewModel {
         val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application
         val userRepository = UserRepository(app)
@@ -64,12 +63,14 @@ fun ExploreRoute(navController: NavController) {
                 val isContribution = (nearbyState as ExploreState.Navigate).isContribution
                 val route = Route.Details.route + "?" + "${Route.Details.id}=$id" + "&" +
                         "${Route.Details.isContribution}=$isContribution"
-                navController.navigate(route)
+                navigate(route)
                 viewModel.postEvent(ExploreEvent.Idle)
             }
+
             is ExploreState.Idle -> {
                 viewModel.postEvent(ExploreEvent.GetUser)
             }
+
             else -> {}
         }
     }
@@ -91,13 +92,13 @@ fun ExploreRoute(navController: NavController) {
 
     RegisterLocationChanges()
 
-    Explore(navController, searchCriteriaState, nearbyState, viewModel::postEvent)
+    Explore(navigate, searchCriteriaState, nearbyState, viewModel::postEvent)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Explore(
-    navController: NavController,
+    navigate: (String) -> Unit,
     searchCriteriaState: SearchCriteriaState,
     exploreState: ExploreState,
     postEvent: (ExploreEvent) -> Unit
@@ -110,8 +111,8 @@ fun Explore(
         ToSDialog(
             onCancel = { EventBus.logout() },
             onAccept = { postEvent(ExploreEvent.UpdateToS) },
-            onTosClicked = { navController.navigate(Route.WebView.ToS.route) },
-            onPrivacyClicked = { navController.navigate(Route.WebView.Privacy.route) }
+            onTosClicked = { navigate(Route.WebView.ToS.route) },
+            onPrivacyClicked = { navigate(Route.WebView.Privacy.route) }
         )
     }
 
@@ -141,7 +142,7 @@ fun Explore(
                 onSearchClicked = { searchCriteriaState.searchString = it })
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate(Route.AddNew.Location.route) }) {
+            FloatingActionButton(onClick = { navigate(Route.AddNew.Location.route) }) {
                 Icon(AppIcon.Add.getPainter(), contentDescription = "Add new element")
             }
         }
@@ -156,12 +157,14 @@ fun Explore(
             ExploreState.Idle,
             ExploreState.Success.UserFetched,
             ExploreState.Loading -> LoadingComposable(padding)
+
             is ExploreState.Error -> {
                 Text(
                     modifier = Modifier.fillMaxSize(),
                     text = stringResource(R.string.generic_sorry)
                 )
             }
+
             is ExploreState.Success.ContributionsReceived,
             is ExploreState.Success.CulturesReceived,
             is ExploreState.Success.ElementsReceived -> {

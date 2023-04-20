@@ -13,7 +13,7 @@ import uk.co.culturebook.data.models.cultural.Location
 import uk.co.culturebook.data.remote.interfaces.ApiResponse
 import uk.co.culturebook.data.repositories.cultural.AddNewRepository
 import uk.co.culturebook.ui.R
-import java.util.*
+import java.util.UUID
 
 class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewModel() {
     private val _locationState = MutableStateFlow<LocationState>(LocationState.ShowMap)
@@ -32,6 +32,7 @@ class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewMo
                         )
                     )
                 }
+
                 is LocationEvent.SelectCulture -> {
                     _locationState.emit(
                         LocationState.SelectedCulture(
@@ -40,6 +41,7 @@ class LocationViewModel(private val addNewRepository: AddNewRepository) : ViewMo
                         )
                     )
                 }
+
                 is LocationEvent.GetCultures -> _locationState.emit(getCultures(locationEvent.location))
                 is LocationEvent.AddCultureRequest -> _locationState.emit(
                     LocationState.AddCulture(
