@@ -12,6 +12,8 @@ jobs:
     strategy:
       matrix:
         api-level: [29] # Between api's 15 and 29
+    env:
+      emu-name: avd-${{ matrix.api-level }}
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -38,10 +40,13 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ matrix.api-level }}
+          key: ${{ env.emu-name }}
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+
+      - name: Make scripts executable
+        run: chmod +x ./scripts/*
 
       - name: Retrieve Version
         run: |
@@ -66,6 +71,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          avd-name: ${{ env.emu-name }}
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
@@ -75,6 +81,8 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          avd-name: ${{ env.emu-name }}
+          pre-emulator-launch-script: ./scripts/adb-wait-for-device.sh ${{env.emu-name}}
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
