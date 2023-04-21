@@ -75,7 +75,6 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
-          profile: Pixel 3XL
           script: echo "Generated AVD snapshot for caching."
 
       - name: Run instrumentation tests
@@ -87,7 +86,6 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          profile: Pixel 3XL
           script: ./gradlew connectedDebugAndroidTest
 
       - name: Run unit tests
