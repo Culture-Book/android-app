@@ -46,7 +46,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Make scripts executable
-        run: chmod +x ./scripts/*
+        run: chmod -R +x ./scripts
 
       - name: Retrieve Version
         run: |
@@ -82,7 +82,7 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           avd-name: ${{ env.emu-name }}
-          pre-emulator-launch-script: sh ./scripts/adb-wait-for-device.sh
+          pre-emulator-launch-script: sh ./scripts/set_emulator_size.sh
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
