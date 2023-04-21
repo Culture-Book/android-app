@@ -82,7 +82,7 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           avd-name: ${{ env.emu-name }}
-          pre-emulator-launch-script: ./scripts/adb-wait-for-device.sh ${{env.emu-name}}
+          pre-emulator-launch-script: sh ./scripts/adb-wait-for-device.sh
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
