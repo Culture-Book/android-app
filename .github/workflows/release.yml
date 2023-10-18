@@ -14,13 +14,10 @@ jobs:
           fetch-depth: 0
       - name: Tag it
         run: |
-          # Get the latest tag
-          latest_tag=$(git describe --tags --abbrev=0)
+          set +x
 
-          # If the latest tag is empty get branch name
-          if [ -z "$latest_tag" ]; then
-            latest_tag=$(git rev-parse --abbrev-ref HEAD)
-          fi
+          # Get the latest tag
+          latest_tag=$(git describe --tags --abbrev=0 || git rev-parse --abbrev-ref HEAD)
 
           # Extract the version parts
           IFS='.' read -ra version_parts <<< "$latest_tag"
